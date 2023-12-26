@@ -1,0 +1,356 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Departamento SIG - Municipio Valparaíso</title>
+
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Bootstrap -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!--  jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+    <!-- JavaScript de Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  
+    <!-- Datatables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+    <!-- Custom CSS -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ysabeau+Office:wght@300;700&display=swap" rel="stylesheet">
+    {% block custom_css %} 
+    <style>
+  body{
+    background-color: rgb(7, 25, 56);
+  }
+  .logo{
+    height: min-content;
+    width: min-content;
+    transform: translate(5%,10%);
+  }
+  .content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh; /* Ajusta la altura según tus necesidades */
+    }
+    
+    h1 {
+      font-size: 55px; /* Ajusta el tamaño de fuente según tus necesidades */
+      text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5); /* Ajusta los valores según tus preferencias */
+    }
+    
+    .cuadro-transparente {
+      border-radius: 20px;
+      position: absolute;
+      width: 70vh;
+      height: 365px; /* Ajusta la altura del cuadro según tus necesidades */
+      background-color: rgba(31, 30, 30, 0.555); /* Ajusta el nivel de transparencia cambiando el valor alpha */
+      z-index: 0; /* Asegura que el cuadro esté detrás del contenido */
+      display: flex;
+      flex-wrap: wrap; /* Permite que los elementos se envuelvan en varias líneas */
+      align-items: flex-start; /* Alinea los elementos en la parte superior */
+      justify-content: center;
+      gap: 10px; /* Espacio entre los iconos */
+      backdrop-filter: blur(15px);
+      
+    }
+    
+   
+    
+    .icon {
+      color: white;
+      transition: color 0.6s;
+      font-size: 40px;
+    }
+    
+    .icon:hover {
+      color: rgb(252, 252, 252); /* Cambia el color al pasar el mouse */
+    }
+    
+    .icon-link {
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 35px;
+        margin-top: 2%;
+    }
+    .icon-link:hover .icon,
+    .icon-link:hover .icon-text {
+    color: rgb(0, 110, 255); /* Cambia el color del icono y del texto al pasar el mouse */
+    }
+    
+    .icon-text {
+      color: rgb(255, 255, 255); /* Color del texto */
+      font-size: inherit; /* Hereda el tamaño de fuente del icono */
+      transition: color 0.6s, font-size 0.3s;
+    }
+    
+    .icon-link:hover .icon-text {
+      color: rgb(20, 88, 175); /* Cambia el color del texto al pasar el mouse */
+    }
+    .additional-content {
+    margin-top: 40px;
+    }
+
+    body {
+	background: linear-gradient(-45deg, #436fe9, #1f3e92, #0a205f, #010f38);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
+	height: 100vh;
+}
+@media (min-height: 600px ) {
+    .cuadro-transparente {
+      width: 90vh;
+      height: 300px; /* Ajusta la altura del cuadro según tus necesidades */
+
+  }
+  .icon{
+    font-size: 25px;
+  }
+  .icon-link {
+    padding: 30px;
+  }
+
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+
+    </style>
+    {% endblock custom_css %}
+  
+</head>
+<body>
+  
+<br>
+<br><br>
+
+<div class="container">
+  <h1 style="font-family: 'Ysabeau Office', sans-serif; color: white; display: flex; justify-content: center;">GEO DATA</h1>
+  <div class="content">
+   
+    <div class="cuadro-transparente">
+      <a href="{% url 'arcgis' %}?departamento={{ departamento_seleccionado }}" target=”_blank” class="icon-link">
+        <i class="fa-solid fa-laptop icon"></i>        
+        <br>       
+        <span class="icon-text">Plataformas SIG</span>
+      </a>
+  
+      <a href="{% url 'SS' %}" target=”_blank” class="icon-link">
+        <i class="fa-regular fa-pen-to-square icon"></i>        
+        <br>
+        <span class="icon-text"> Solicitud SIG</span>
+      </a>
+
+      <!-- <a href="{% url 'geoportal' %}" target=”_blank” class="icon-link">
+        <i class="bi bi-window icon"></i> 
+        <span class="icon-text">Geoportal</span>
+      </a> -->
+      <a href="#" class="icon-link" data-toggle="modal" data-target="#myModal">
+        <i class="fa-regular fa-calendar icon"></i>
+        <br>
+        <span class="icon-text">Gestión de Tiempo</span>
+      </a>
+
+      <a href="{% url 'gestionsig' %}" class="icon-link" target=”_blank”>
+        <i class="fa-regular fa-handshake icon"></i>
+        <br>
+        <span class="icon-text">Gestión SIG</span>
+     </a>
+
+     <a href="https://drive.google.com/file/d/1Rx3FDBdR3vndG1NsleuOQb_p1SM1Km6z/view?usp=drive_link" class="icon-link" target=”_blank”>
+      <i class="fa-regular fa-file icon"></i>
+      <br>
+      <span class="icon-text">Manual de Procedimiento</span>
+   </a>
+  </div>
+</div>
+<div class="col-10 offset-md-2 mx-auto">
+  <h4 style="display: flex; justify-content: center; font-size: 25px; font-family: 'Ysabeau Office', sans-serif; text-align: justify; color: #ffffff;">
+    Bienvenid@ a la plataforma que brinda acceso a una amplia gama de datos georreferenciados de nuestra comuna. Estos datos son fundamentales para la planificación urbana. En nuestro Departamento de Sistema de Información Geográfica, nos esforzamos por mantener y mejorar continuamente la calidad de los datos georreferenciados. Trabajamos en conformidad con estándares internacionales reconocidos en geodatos, siguiendo rigurosos procedimientos de captura, validación y actualización de la información.
+  </h4>
+</div>
+
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="margin-top: 20px;">
+        <h4 class="modal-title">Gestion de tiempo y Revision de Solicitud </h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <img src="/media/assets/image/Referencia.jpeg" class="img-fluid" alt="Imagen modal">
+      <p style="font-weight: bold;">Si tiene una solicitud y quiere ver su estado, inserte el codigo que se encuentra en la parte superior de la ficha.</p>
+      <p id="estado_protocolo" style="font-weight: bold; color: red;"></p>
+      <p> CODIGO: <input type="text" id="codigo_protocolo"> <button type="button" id="buscar_protocolo" class="btn btn-primary">Buscar</button> </p>
+    </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
+</div>
+<!-- Agrega este HTML en el cuerpo de tu página principal -->
+<div id="seleccionarDepartamentoModal" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Seleccionar Dirección</h5>
+   
+      </div>
+      <div class="modal-body">
+        <label for="departamentoSelect">Dirección:</label>
+        <select id="departamentoSelect" class="form-select">
+          <option value="ALCALDÍA">ALCALDÍA </option>
+          <option value="Dirección de Desarrollo Comunitario ">Dirección de Desarrollo Comunitario </option>
+          <option value="Dirección de Obras Municipales ">Dirección de Obras Municipales </option>
+          <option value="Dirección de Tránsito y Transporte público">Dirección de Tránsito y Transporte público</option>
+          <option value="Dirección de Administración y Finanzas ">Dirección de Administración y Finanzas  </option>
+          <option value="Dirección desarrollo Económico y Cooperación Internacional">Dirección desarrollo Económico y Cooperación Internacional</option>
+          <option value="Dirección de Operaciones">Dirección de Operaciones</option>
+          <option value="Dirección de Desarrollo Cultural ">Dirección de Desarrollo Cultural </option>
+          <option value="Dirección de Seguridad Ciudadana">Dirección de Seguridad Ciudadana</option>
+          <option value="Dirección de Vivienda, Barrio y Territorio ">Dirección de Vivienda, Barrio y Territorio </option>
+          <option value="Dirección de Medioambiente">Dirección de Medioambiente</option>
+          <option value="Dirección de Género, Mujeres y Diversidades">Dirección de Género, Mujeres y Diversidades</option>
+          <option value="Dirección de Asesoría Jurídica ">Dirección de Asesoría Jurídica </option>
+          <option value="SECPLA">SECPLA</option>
+          <option value="SIG">SIG</option>
+          <!-- Agrega más opciones de departamentos según tu lista -->
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="guardarDepartamentoBtn">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+
+    <!-- Datatables -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+    
+    <!-- Custom JS -->
+    {% block custom_js %}
+  <script>
+$(document).ready(function() {
+  $("#buscar_protocolo").click(function() {
+    var codigo = $("#codigo_protocolo").val();
+
+    // Realizar la solicitud AJAX para buscar el estado del protocolo
+    $.ajax({
+      url: "{% url 'buscar_protocolo' %}",
+      type: "POST",
+      data: {
+        codigo: codigo,
+        csrfmiddlewaretoken: "{{ csrf_token }}"
+      },
+      success: function(response) {
+        if (response.error) {
+          // El código de protocolo no existe
+          $("#estado_protocolo").text(response.message);
+          $("#estado_protocolo").css("color", "red");
+        } else {
+          // Actualizar el contenido del <p> con el estado del protocolo
+          $("#estado_protocolo").text(response.estado);
+          // Establecer el color del texto del <p> según el estado
+          if (response.estado === "RECIBIDO") {
+            $("#estado_protocolo").css("color", "green");
+          } else if (response.estado === "EN PROCESO") {
+            $("#estado_protocolo").css("color", "blue");
+          } else if (response.estado === "EJECUTADO") {
+            $("#estado_protocolo").css("color", "purple");
+          } else if (response.estado === "RECHAZADO") {
+            $("#estado_protocolo").css("color", "red");
+          }
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error("Error al buscar el protocolo:", error);
+      }
+    });
+  });
+});
+$(document).ready(function() {
+    // Comprueba si el departamento ya fue seleccionado previamente (almacenado en una cookie)
+    var departamentoGuardado = getCookie("departamento");
+
+    // Si el departamento no ha sido seleccionado previamente, muestra la ventana emergente
+    if (!departamentoGuardado) {
+      $("#seleccionarDepartamentoModal").modal("show");
+    }
+
+    // Maneja el evento de clic en el botón "Guardar" de la ventana emergente
+    $("#guardarDepartamentoBtn").click(function() {
+      var departamentoSeleccionado = $("#departamentoSelect").val();
+      
+      // Guarda la selección del departamento en una cookie
+      setCookie("departamento", departamentoSeleccionado, 365);
+
+      // Cierra la ventana emergente
+      $("#seleccionarDepartamentoModal").modal("hide");
+    });
+
+    // Función para guardar una cookie
+    function setCookie(name, value, days) {
+      var expires = "";
+      if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+    }
+
+    // Función para obtener el valor de una cookie
+    function getCookie(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+      }
+      return null;
+    }
+  });
+
+  </script>
+    {% endblock custom_js %}
+</body>
+</html>

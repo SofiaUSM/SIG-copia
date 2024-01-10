@@ -1,10 +1,12 @@
 from io import BytesIO
 from django.shortcuts import render
-from django.http import FileResponse, JsonResponse,HttpResponseBadRequest,HttpResponse
+from django.http import JsonResponse,HttpResponseBadRequest,HttpResponse
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
+from datetime import date
 from .models import *
 from .forms import CrearFormulario
+import pytz
 import uuid
 
 import smtplib
@@ -121,7 +123,9 @@ def crear_protocolo(request):
 
         # Agregar un espacio vertical despu1és del párrafo del código
         elementos.append(Spacer(1, 0.1 * inch))
-                
+        
+        # Crear un estilo de párrafo
+        
         # Dividir el texto en varias líneas
         texto_objetivos = Protocolo.objetivos
         texto_direccion = Protocolo.direccion
@@ -211,13 +215,13 @@ def crear_protocolo(request):
 
         # Obtén los datos necesarios para el correo
         correo_destino1 = 'deisy.pereira@munivalpo.cl'  
-        # correo_destino2 = 'departamento.sig@munivalpo.cl'
+        correo_destino2 = 'departamento.sig@munivalpo.cl'
         asunto = 'Nueva ficha generada'
 
-        # Construye el mensaje de correo                                                                                                                            
+        # Construye el mensaje de correo                                                                                                                         cc|
         mensaje = MIMEMultipart()
         mensaje['From'] = 'noreplydeptosig@gmail.com'  
-        mensaje['To'] = ', '.join([correo_destino1])  # Direcciones separadas por coma
+        mensaje['To'] = correo_destino1
         mensaje['Subject'] = asunto
 
         # Cuerpo del mensaje
@@ -250,7 +254,7 @@ def crear_protocolo(request):
         # Cierra la conexión con el servidor SMTP
         server.quit()
 
-        response = FileResponse(buffer, as_attachment=True, filename=nombre_archivo)
+
         return response
     
     return render(request,'formulario.html',{
@@ -261,8 +265,6 @@ def vista_previa(resquest,id):
     fecha_actual = Protocolo.fecha
     fecha = fecha_actual.strftime('%Y-%m-%d')
     data = {
-        'id': Protocolo.id,
-        'numero_sig':Protocolo.numero_interno,
         'fecha': fecha,
         'nombre_solicitante': Protocolo.nombre_solicitante,
         'nombre_proyecto': Protocolo.nombre_proyecto,

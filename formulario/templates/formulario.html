@@ -1,0 +1,151 @@
+{% csrf_token %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocolo</title>
+    <div class="container text-center mt-5">
+        <h1>Protocolo Traspaso de Datos Geoespaciales </h1>
+        <br>
+    
+      </div>
+      <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+      <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+      <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</head>
+<body  onload="myFunction()">
+    <div class="container">
+        <div class="form-container">
+
+          <!-- Modal -->
+          <div id="myModal" class="modal">
+            <span class="close" onclick="cerrarModal()">&times;</span>
+            <img class="modal-content" id="imagenModal">
+          </div>
+            <br>
+            <form method='POST' class="px-3">
+                {% csrf_token %}
+                <div class="form-group mb-3">
+                  {{ forms.direccion.label_tag }}
+                  {{ forms.direccion }}
+              </div>
+                <br>
+                <div class="form-group mb-3">
+                    {{ forms.departamento.label_tag }}
+                    {{ forms.departamento }}
+                </div>
+                <div class="form-group mb-3">
+                    {{ forms.nombre_solicitante.label_tag }}
+                    {{ forms.nombre_solicitante }}
+                </div>
+                <div class="form-group mb-3">
+                    {{ forms.nombre_proyecto.label_tag }}
+                    {{ forms.nombre_proyecto }}
+                </div>
+                <div class="form-group mb-3">
+                  {{ forms.corre_solicitante.label_tag }}
+                  {{ forms.corre_solicitante }}
+              </div>
+                <div class="form-group mb-3">
+                    {{ forms.area.label_tag }}
+                    {{ forms.area }}
+                </div>
+                <div class="form-group mb-3">
+                    {{ forms.objetivos.label_tag }}
+                    {{ forms.objetivos }}
+                </div>
+                <div class="form-group mb-3">
+                    {{ forms.insumo.label_tag }}
+                    {{ forms.insumo }}
+                </div>
+                <div class="form-group mb-3">
+                    {{ forms.producto.label_tag }}
+                    {{ forms.producto }}
+                </div>
+                <div class="form-group mb-3">
+                    {{ forms.cambios_posible.label_tag }}
+                    {{ forms.cambios_posible }}
+                </div>
+                <div class="text-center">
+                    <button type="submit" id="btn-guardar-pdf" class="btn btn-primary">Guardar, Descargar y enviar PDF</button>
+                </div>
+            
+                <br>
+                <label> <b>Una vez que hayas completado la ficha, recibirás una copia en formato PDF y obtendrás un código que te permitirá verificar el estado de la ficha en el menú principal de Gestión de Tiempo. </b></label>
+                <br>
+            </form>
+        </div>
+        <br>
+      </div>
+      <br>
+
+</body>
+
+</html>
+{% verbatim %}
+
+<script>
+function myFunction() {
+  alert("!!IMPORTANTE!!"
+  +"\nUna vez realizada y enviada la solicitud, la encargada del Departamento SIG (Deisy.Pereira@munivalpo.cl) revisará y asignará la solicitud de acuerdo con los procedimientos establecidos. Lo solicitado se entregará al correo institucional del solicitante.");
+}
+
+function cerrarModal() {
+  var modal = document.getElementById("myModal");
+  modal.style.display = "none";
+}
+
+const botonGuardarPDF = document.getElementById('btn-guardar-pdf');
+
+botonGuardarPDF.addEventListener('click', (event) => {
+  if (!validarCampos()) {
+    event.preventDefault(); // Evita el envío del formulario
+    alert('Por favor, complete todos los campos antes de generar el PDF.');
+  } else {
+
+    setTimeout(() => {
+      location.reload();
+    }, 12000);
+  }
+});
+
+function validarCampos() {
+  const formulario = document.forms[0];
+
+  // Acceder a los campos por su posición en el formulario
+  const direccion = formulario.elements[0].value.trim();
+  const departamento = formulario.elements[1].value.trim();
+  const nombreSolicitante = formulario.elements[2].value.trim();
+  const nombreProyecto = formulario.elements[3].value.trim();
+  const area = formulario.elements[4].value.trim();
+  const objetivos = formulario.elements[5].value.trim();
+  const insumo = formulario.elements[6].value.trim();
+  const producto = formulario.elements[7].value.trim();
+  const cambiosPosible = formulario.elements[8].value.trim();
+
+  // Validar que los campos no estén vacíos
+  if (
+    direccion === '' ||
+    departamento === '' ||
+    nombreSolicitante === '' ||
+    nombreProyecto === '' ||
+    area === '' ||
+    objetivos === '' ||
+    insumo === '' ||
+    producto === '' ||
+    cambiosPosible === ''
+  ) {
+    return false;
+  }
+
+  return true;
+}
+</script>
+{% endverbatim %}

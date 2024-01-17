@@ -1,0 +1,206 @@
+{% extends 'core/Slide.html' %}
+
+{% load static %}
+
+{% block main_content%}
+
+{% block custom_css %} 
+
+{% endblock custom_css %}
+<style>
+body {
+    font-weight: 300;
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+    line-height: 1.5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg id='hexagons' fill='%239C92AC' fill-opacity='0.25' fill-rule='nonzero'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"), linear-gradient(to right top, #343a40, #2b2c31, #211f22, #151314, #000000);
+}
+ body::before{
+    overflow-x: hidden;
+
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+   
+    background-color: #343a40;
+}
+body::after{
+    
+    background-color: rgba(240, 240, 240, 0.24);
+    right: 0;
+    top: 0;
+    transform: translate(50%);
+
+} 
+.table-custom {
+  background-color: #ffffff;
+  color: black; /* Color de fondo de la tabla */
+  }
+  #previewData {
+    color: black;
+  }
+</style>
+<section class="container">
+    <div class="row">
+        <div class="col-md-11 mx-auto">
+            <h2>   Solicitudes llegadas </h2>
+            <table id= "tabla_registro" class="display table-striped table-bordered table-custom" style="width: 100%; height: 10px;">
+                <thead style="background-color: rgb(160, 160, 160);"> 
+                    <tr>    
+                        <th class="text-center">Numero de creacion solicitud</th>
+                        <th class="text-center">Nombre del solicitante</th>
+                        <th class="text-center">Fecha</th>
+                        <th class="text-center">Departamento</th>
+                        <th class="text-center">Estado actual</th>
+                    </tr>
+                    <tbody >
+                        {% csrf_token %}
+                        {% for Solicitudes in Solicitudes%}
+                        <tr>
+                            <td class="text-center ">{{Solicitudes.id}}</td>
+              
+                            <td class="text-center"> <a href="#" data-id="{{ Solicitudes.id }}" class="preview-link"> {{Solicitudes.nombre_solicitante}} </a> </td>
+
+                            <td class="text-center ">{{Solicitudes.fecha}}</td>
+
+                            <td class="text-center ">{{Solicitudes.departamento}}</td>
+
+                            <td class="text-center ">
+                              <select name="estado" class="estado-select" data-solicitud-id="{{ Solicitudes.id }}">
+                                {% for estado in OPCIONES.ESTADO %}
+                                <option value="{{ estado.0 }}" {% if estado.0 == Solicitudes.estado %}selected{% endif %}>{{ estado.1 }}</option>
+                                {% endfor %}
+                            </select>
+                          </td>
+                            
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td>No hay datos</td>
+                            <td>No hay datos</td>
+                            <td>No hay datos</td>
+                            <td>No hay datos</td>
+                            <td>No hay datos</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header" style="background-color: #707eff;">
+              <h5 class="modal-title" id="previewModalLabel">Vista previa de solicitud</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+              <p id="previewData"></p>
+            </div>
+          </div>
+         
+        </div>
+      </div>
+</section>
+
+<!-- <tr>
+    {% csrf_token %}
+    <td>{{usuarios.username}}</td>
+    <td><input type="checkbox" id="checkbox-{{ usuarios.id }}" {% if usuarios.is_active %}checked{% endif %}> Activo</td>
+    
+    <td><button class="btn btn-primary" type="submit"> Cambiar contraseña</button></td>
+</tr> -->
+{% block custom_js %}
+<script>
+    //Darle diseño a al tabla mediante JS
+    $(document).ready(function() {
+    var tabla = $('#tabla_registro').DataTable({
+        searching: false,
+        pageLength: 12,
+        lengthChange: false,
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.12.1/i18n/es-CL.json'
+        },
+        order: [[0, 'desc']] // '0' indica la primera columna (Solicitudes.id), 'desc' indica orden descendente
+
+    });
+
+    $(".estado-select").change(function() {
+        var solicitudId = $(this).data('solicitud-id');
+        var nuevoEstado = $(this).val();
+
+        // Realizar la solicitud AJAX para actualizar el estado
+        $.ajax({
+            url: "{% url 'actualizar_estado' %}",
+            type: "POST",
+            data: {
+                solicitud_id: solicitudId,
+                estado: nuevoEstado,
+                csrfmiddlewaretoken: "{{ csrf_token }}"
+            },
+            success: function(response) {
+                // Manejar la respuesta exitosa si es necesario
+                console.log("Estado actualizado correctamente");
+            },
+            error: function(xhr, status, error) {
+                // Manejar el error si es necesario
+                console.error("Error al actualizar el estado:", error);
+            }
+        });
+    });
+});
+  
+
+    
+    var previewLinks = document.querySelectorAll('.preview-link');
+previewLinks.forEach(function(link) {
+  link.addEventListener('click', function(event) {
+    event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+
+    var registroId = this.getAttribute('data-id'); // Obtener el ID del registro
+
+    // Hacer una solicitud AJAX a la vista de Django para obtener los datos del registro
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/solicitud/vista_previa/' + registroId, true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+
+        var previewDataElement = document.getElementById('previewData');
+        previewDataElement.innerText =   'Fecha de la Solicitud: ' + data.fecha
+                                       + '\n'
+                                       + '\nCodigo: ' + data.codigo
+                                       + '\n'
+                                       + '\nDirección: ' + data.direccion
+                                       + '\n'
+                                       + '\nDepartamento o Unidad Responsable: ' + data.departamento
+                                       + '\n'
+                                       + '\nNombre del solicitante: ' + data.nombre_solicitante
+                                       + '\n'
+                                       + '\nNombre del proyecto: ' + data.nombre_proyecto
+                                       + '\n'
+                                       + '\nCorreo del solicitante: ' + data.corre_solicitante
+                                       + '\n'
+                                       + '\nArea De estudio: ' + data.area
+                                       + '\n'
+                                       + '\nObjetivos de la solicitud:' + data.objetivos
+                                       + '\n'
+                                       + '\nInsumo Solicitado: ' + data.insumo
+                                       + '\n'
+                                       + '\nProductos: ' + data.productos
+                                       + '\n'
+                                       + '\nCambios posible en el Insumo Entregado: ' + data.Cambios;
+        $('#previewModal').modal('show'); // Mostrar el modal utilizando jQuery
+
+      }
+    };
+    xhr.send();
+  });
+});
+
+</script>
+{% endblock custom_js %}
+{% endblock %}

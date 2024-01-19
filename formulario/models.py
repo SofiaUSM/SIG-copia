@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import os
 
 ESTADO ={
     ('RECIBIDO','RECIBIDO'),
@@ -24,6 +25,13 @@ DIRECCION ={
     }
 
 # Create your models here.
+def content_file_name_adjunto(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % ('adjunto', ext)
+    folder = "assets/document/" + str(instance.id)# Puedes ajustar la carpeta según tus necesidades
+    return os.path.join(folder, filename)
+
+
 class ProtocoloSolicitud(models.Model):
     id = models.BigAutoField(primary_key=True, unique=True)
     departamento = models.CharField(max_length=100, blank=True, default='')
@@ -40,6 +48,7 @@ class ProtocoloSolicitud(models.Model):
     codigo = models.CharField(max_length=10, blank=True, default='')
 
     estado = models.CharField(max_length=100, blank=True, default='RECIBIDO',choices=ESTADO)
+    archivo_adjunto = models.FileField(upload_to=content_file_name_adjunto, blank=True, null=True)
     
     class Meta:
         verbose_name = "protocolo_solicitud"
@@ -47,3 +56,4 @@ class ProtocoloSolicitud(models.Model):
 
     def __str__(self):
         return str(self.id) + ' - ' + self.departamento 
+    

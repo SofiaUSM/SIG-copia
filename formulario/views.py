@@ -38,7 +38,15 @@ def crear_protocolo(request):
    
 
     if request.method == "POST":
-        
+
+        archivo_adjunto = request.FILES.get('archivo_adjunto', None)
+
+        if archivo_adjunto:
+            cuerpo_mensaje = 'Se ha generado una nueva ficha. También este viene con un archivo Adjunto. Revisar la plataforma de control para ver el archivo, el PDF correspondiente.'
+        else:
+            cuerpo_mensaje = 'Se ha generado una nueva ficha. Adjunto el PDF correspondiente.'
+
+
         Protocolo =  ProtocoloSolicitud(
         direccion = request.POST['direccion'],
         departamento = request.POST['departamento'],
@@ -50,7 +58,9 @@ def crear_protocolo(request):
         insumo = request.POST['insumo'],
         producto = request.POST['producto'],
         cambios_posible = request.POST['cambios_posible'],
+        archivo_adjunto = archivo_adjunto,
         
+
         )
         nuevo_codigo = generar_codigo()
         while codigo_es_duplicado(nuevo_codigo):
@@ -214,7 +224,7 @@ def crear_protocolo(request):
         Protocolo.save()
 
         # Obtén los datos necesarios para el correo
-        correo_destino1 = 'deisy.pereira@munivalpo.cl'  
+        correo_destino1 = 'emanuelvperez2000@gmail.com'  
         correo_destino2 = 'departamento.sig@munivalpo.cl'
         asunto = 'Nueva ficha generada'
 
@@ -225,7 +235,7 @@ def crear_protocolo(request):
         mensaje['Subject'] = asunto
 
         # Cuerpo del mensaje
-        cuerpo_mensaje = 'Se ha generado una nueva ficha. Adjunto el PDF correspondiente.'
+
         mensaje.attach(MIMEText(cuerpo_mensaje, 'plain'))
 
         # Adjunta el PDF al mensaje de correo
@@ -264,6 +274,8 @@ def vista_previa(resquest,id):
     Protocolo = ProtocoloSolicitud.objects.get(id = id)
     fecha_actual = Protocolo.fecha
     fecha = fecha_actual.strftime('%Y-%m-%d')
+    archivo_adjunto_url = Protocolo.archivo_adjunto.url if Protocolo.archivo_adjunto else None
+
     data = {
         'fecha': fecha,
         'nombre_solicitante': Protocolo.nombre_solicitante,
@@ -277,17 +289,7 @@ def vista_previa(resquest,id):
         'productos': Protocolo.producto,
         'Cambios': Protocolo.cambios_posible,
         'codigo':Protocolo.codigo,
+        'archivo_adjunto_url': archivo_adjunto_url,
+
     }
-    # id = models.BigAutoField(primary_key=True, unique=True)
-    # orde_trabajo = models.CharField(max_length=100, blank=True, default='')
-    # departamento = models.CharField(max_length=100, blank=True, default='')
-    # nombre_solicitante = models.CharField(max_length=255, blank=True, default='')
-    # nombre_proyecto = models.CharField(max_length=255, blank=True, default='')
-    # area = models.CharField(max_length=50, blank=True, default='')
-    # objetivos = models.TextField()
-    # insumo = models.CharField(max_length=255, blank=True, default='')
-    # producto = models.CharField(max_length=255, blank=True, default='')
-    # cambios_posible = models.CharField(max_length=255, blank=True, default='')
-    # fecha = models.DateTimeField(auto_now_add=True)
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
     return JsonResponse(data)

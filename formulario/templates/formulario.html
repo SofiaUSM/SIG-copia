@@ -30,7 +30,7 @@
             <img class="modal-content" id="imagenModal">
           </div>
             <br>
-            <form method='POST' class="px-3">
+            <form method='POST' class="px-3" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="form-group mb-3">
                   {{ forms.direccion.label_tag }}
@@ -73,10 +73,19 @@
                     {{ forms.cambios_posible.label_tag }}
                     {{ forms.cambios_posible }}
                 </div>
+
+                <div class="form-group mb-3">
+                  {{ forms.archivo_adjunto.label_tag }}
+                  {{ forms.archivo_adjunto }}
+              </div>
+                <br>
+                <br>
+                <br>
                 <div class="text-center">
                     <button type="submit" id="btn-guardar-pdf" class="btn btn-primary">Guardar, Descargar y enviar PDF</button>
                 </div>
-            
+                <br>
+                <br>
                 <br>
                 <label> <b>Una vez que hayas completado la ficha, recibirás una copia en formato PDF y obtendrás un código que te permitirá verificar el estado de la ficha en el menú principal de Gestión de Tiempo. </b></label>
                 <br>

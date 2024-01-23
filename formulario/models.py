@@ -13,7 +13,7 @@ DIRECCION ={
     ('Dirección de Desarrollo Comunitario','Dirección de Desarrollo Comunitario'),
     ('Dirección de Obras Municipales','Dirección de Obras Municipales'),
     ('Dirección de Tránsito y Transporte públicos','Dirección de Tránsito y Transporte públicos'),
-    ('Dirección de Administración y Finaza','Dirección de Administración y Finaza'),
+    ('Dirección de Administración y Finanzas','Dirección de Administración y Finanzas'),
     ('Dirección desarrollo Económico y Cooperación Internacional','Dirección desarrollo Económico y Cooperación Internacional'),
     ('Dirección de Operaciones','Dirección de Operaciones'),
     ('Dirección de Desarrollo Cultural','Dirección de Desarrollo Cultural'),
@@ -22,6 +22,7 @@ DIRECCION ={
     ('Dirección de Medioambiente','Dirección de Medioambiente'),
     ('SECPLA','SECPLA'),
     ('Dirección de Género, Mujeres y Diversidades','Dirección de Género, Mujeres y Diversidades')
+    ('Otroz','Otroz'),
     }
 
 # Create your models here.

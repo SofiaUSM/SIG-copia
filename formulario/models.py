@@ -21,7 +21,7 @@ DIRECCION ={
     ('Dirección de Vivienda, Barrio y Territorio','Dirección de Vivienda, Barrio y Territorio'),
     ('Dirección de Medioambiente','Dirección de Medioambiente'),
     ('SECPLA','SECPLA'),
-    ('Dirección de Género, Mujeres y Diversidades','Dirección de Género, Mujeres y Diversidades')
+    ('Dirección de Género, Mujeres y Diversidades','Dirección de Género, Mujeres y Diversidades'),
     ('Otroz','Otroz'),
     }
 

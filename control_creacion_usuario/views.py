@@ -11,6 +11,8 @@ from datetime import date
 from openpyxl import Workbook
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
+from .forms import ImagenForm
+from .models import Imagen_sig
 
 def download_excel(request):
     # Crear un nuevo libro de trabajo de Excel y agregar datos
@@ -67,6 +69,26 @@ def solicitude_llegadas(request):
 def control(resquest):
 
     return render(resquest,'Control.html')
+
+
+def Gestion_imagen(request):
+    if request.method == 'POST':
+        form = ImagenForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('Gestion_imagen')  # Redirige a la misma vista después de guardar la imagen
+    else:
+        form = ImagenForm()
+
+    # Obtener todas las imágenes
+    imagenes = Imagen_sig.objects.all()
+
+    # Dividir las imágenes en grupos de 6 para su renderizado en la plantilla
+    imagenes_grouped = [imagenes[i:i+6] for i in range(0, len(imagenes), 6)]
+
+    return render(request, 'Gestion_imagen.html', {'form': form, 'imagenes_grouped': imagenes_grouped})
+
+
 
 @csrf_exempt
 def actualizar_estado(request):

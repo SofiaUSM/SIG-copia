@@ -7,7 +7,7 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Departamento SIG - Control Usuario</title>
-
+  
     <!-- Favicon-->
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
     <!-- Font Awesome icons (free version)-->
@@ -46,10 +46,12 @@
       <div class="collapse navbar-collapse" id="navbarsExample03">
         <ul class="navbar-nav me-auto mb-2 mb-sm-0">
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Gestion de Usuarios</a>
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Opciones</a>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="{% url 'solicitude_llegadas' %}">Solicitudes</a></li>
               <li><a class="dropdown-item" href="{% url 'Historial_Visitas' %}">Historial usuarios</a></li>
+              <li><a class="dropdown-item" href="{% url 'Gestion_imagen' %}">Gestion de imagenes SIG</a></li>
+
             </ul>
           </li>
         </ul>

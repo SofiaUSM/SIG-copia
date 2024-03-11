@@ -13,7 +13,8 @@ from openpyxl import Workbook
 from django.views.decorators.csrf import csrf_exempt
 from .forms import ImagenForm
 from .models import Imagen_sig
-
+from django.shortcuts import get_object_or_404, redirect
+import os
 def download_excel(request):
     # Crear un nuevo libro de trabajo de Excel y agregar datos
     workbook = Workbook()
@@ -83,10 +84,7 @@ def Gestion_imagen(request):
     # Obtener todas las imágenes
     imagenes = Imagen_sig.objects.all()
 
-    # Dividir las imágenes en grupos de 6 para su renderizado en la plantilla
-    imagenes_grouped = [imagenes[i:i+6] for i in range(0, len(imagenes), 6)]
-
-    return render(request, 'Gestion_imagen.html', {'form': form, 'imagenes_grouped': imagenes_grouped})
+    return render(request, 'Gestion_imagen.html', {'form': form, 'imagenes': imagenes})
 
 
 
@@ -104,3 +102,20 @@ def actualizar_estado(request):
         return JsonResponse({'success': True})
     else:
         return JsonResponse({'success': False, 'message': 'Método no permitido'})
+    
+
+def eliminar_imagen(request, imagen_id):
+    imagen = get_object_or_404(Imagen_sig, pk=imagen_id)
+    
+    if request.method == 'POST':
+        # Guarda la ruta del archivo de la imagen
+        ruta_archivo = imagen.archivo_adjunto.path
+        # Elimina la imagen de la base de datos
+        imagen.delete()
+        # Elimina el archivo de la imagen del sistema de archivos
+        if os.path.exists(ruta_archivo):
+            os.remove(ruta_archivo)
+        return redirect('Gestion_imagen')  # Redirige a la vista de gestión de imágenes después de eliminar la imagen
+    
+    return redirect('Gestion_imagen')  # Redirige a la vista de gestión de imágenes si la solicitud no es de tipo POST
+

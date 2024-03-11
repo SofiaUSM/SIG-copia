@@ -30,19 +30,58 @@ body {
     width: 370px;
     height: 370px;
 }
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 30px;
+}
+
+.grid {
+    display: flex;
+    flex-direction: column;
+}
+
+.grid img {
+    width: 100%;
+}
+
+.botones {
+    display: flex;
+    justify-content: space-between;
+}
+
+.botones button {
+    background-color: gray;
+    color: white;
+    border: none;
+    padding: 10px 20px; /* Aumenta el espacio alrededor del texto */
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    border-radius: 15px; /* Haz los bordes más redondeados */
+    outline: none; /* Elimina el contorno predeterminado del botón */
+}
+
+/* Cambio de estilos cuando el mouse está sobre los botones */
+.botones button:hover {
+    background-color: white;
+    color: black;
+}
+
 </style>
-  <section class="container">
+  <section >
       <div class="row">
           <div class="col-md-11 mx-auto">
               <h1>   Gestion de Imagenes SIG </h1>
               
               <br>
               <h2> Intrucciones de uso:</h2>
-              <h3> 1 xd</h3>
+              <h3> 1.- archivo adjunto: solo sirve para guarda la previa de la imagen.</h3>
+              <h3> 2.- boton agregar nueva imagen: ese boton sube la imagen en el servidor.</h3>
+              <h3> 3.- copia url: sirve para copiar la dirrecion de la imagen.</h3>
+              <h3> 4.- eliminar imagen: ese boton es para eliminar la imagen.</h3>
+                <br><br>
               <div class="colum">
-                <h4>Agregar una nueva imagen</h4> 
-                <br>
-                <br>
+          
 
                 <form method="post" enctype="multipart/form-data">
                   {% csrf_token %}
@@ -55,22 +94,31 @@ body {
           </div>
       </div>
   </section>
+  <br><br><br>
   <section>
-    {% for grupo_imagenes in imagenes_grouped %}
-        <div class="container">
-            {% for imagen in grupo_imagenes %}
-                {% if imagen.archivo_adjunto %}
-                    <!-- Si la imagen tiene un archivo adjunto, muéstrala -->
-                    <div>
-                        <a href="{{ imagen.archivo_adjunto.url }}">
-                            <img src="{{ imagen.archivo_adjunto.url }}" alt="Imagen">
-                        </a>
-                        <button onclick="copiarURL('{{ imagen.archivo_adjunto.url }}')">Copiar URL</button>
-                    </div>
-                {% endif %}
-            {% endfor %}
-        </div>
-    {% endfor %}
+    <div class="container">
+        {% for imagen in imagenes %}
+            {% if imagen.archivo_adjunto %}
+            <div class="grid">
+                <!-- Si la imagen tiene un archivo adjunto, muéstrala -->
+                <div>
+                    <a href="{{ imagen.archivo_adjunto.url }}">
+                        <img src="{{ imagen.archivo_adjunto.url }}" alt="Imagen">
+                    </a>
+                </div>
+                <br>
+                <div class="botones">
+                    <button onclick="copiarURL('{{ imagen.archivo_adjunto.url }}')">Copiar URL</button>
+                    <form action="{% url 'eliminar_imagen' imagen.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    
 </section>
 
 

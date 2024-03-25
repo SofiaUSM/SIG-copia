@@ -63,11 +63,14 @@ def crear_protocolo(request):
         
 
         )
-        nuevo_codigo = generar_codigo()
-        while codigo_es_duplicado(nuevo_codigo):
-            nuevo_codigo = generar_codigo()
-        Protocolo.codigo = nuevo_codigo
+        # nuevo_codigo = generar_codigo()
+        # while codigo_es_duplicado(nuevo_codigo):
+        #     nuevo_codigo = generar_codigo()
+
+        # Protocolo.codigo = nuevo_codigo
         Protocolo.save()
+        Protocolo.codigo = str(Protocolo.id)
+
         # Crear un buffer de memoria para el PDF
         buffer = BytesIO()
         # Crear un objeto de tipo SimpleDocTemplate con el buffer y el tamaño de página deseado (en este caso, carta)

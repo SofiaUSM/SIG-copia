@@ -10,6 +10,7 @@ ESTADO ={
 }
 DIRECCION ={
     ('',''),
+    ('Administración Municipal','Administración Municipal'),
     ('Dirección de Desarrollo Comunitario','Dirección de Desarrollo Comunitario'),
     ('Dirección de Obras Municipales','Dirección de Obras Municipales'),
     ('Dirección de Tránsito y Transporte públicos','Dirección de Tránsito y Transporte públicos'),

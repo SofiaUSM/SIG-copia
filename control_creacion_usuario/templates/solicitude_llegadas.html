@@ -51,6 +51,7 @@ body::after{
                         <th class="text-center">Nombre del solicitante</th>
                         <th class="text-center">Fecha</th>
                         <th class="text-center">Departamento</th>
+                        <th class="text-center">Descargar Ficha</th>
                         <th class="text-center">Estado actual</th>
                     </tr>
                     <tbody >
@@ -64,6 +65,11 @@ body::after{
                             <td class="text-center ">{{Solicitudes.fecha}}</td>
 
                             <td class="text-center ">{{Solicitudes.departamento}}</td>
+
+                            <td class="text-center">
+                              <a href="/solicitud/descargar_pdf/{{ Solicitudes.id }}" download>{{ Solicitudes.nombre_solicitante }}</a>
+                            </td>
+                          
 
                             <td class="text-center ">
                               <select name="estado" class="estado-select" data-solicitud-id="{{ Solicitudes.id }}">
@@ -160,7 +166,7 @@ previewLinks.forEach(function(link) {
   link.addEventListener('click', function(event) {
     event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
 
-    var registroId = this.getAttribute('data-id'); // Obtener el ID del registro
+    var registroId = parseInt(this.getAttribute('data-id')); // Convertir a número
 
     // Hacer una solicitud AJAX a la vista de Django para obtener los datos del registro
     var xhr = new XMLHttpRequest();
@@ -192,20 +198,22 @@ previewLinks.forEach(function(link) {
                                        + '\n'
                                        + '\nProductos: ' + data.productos
                                        + '\n'
-                                       + '\nCambios posible en el Insumo Entregado: ' + data.Cambios;
-                                       + '\n'
-                                       if (data.archivo_adjunto_url) {
-                                            // Agregar enlace al archivo adjunto
-                                            previewDataElement.innerHTML += '<br>'
-                                              + '<br><a href="' + data.archivo_adjunto_url + '" download>Descargar Archivo Adjunto</a>';
-                                        }
+                                       + '\nCambios posible en el Insumo Entregado: ' + data.Cambios
+                                       + '\n';
+                                       
+        if (data.archivo_adjunto_url) {
+            // Agregar enlace al archivo adjunto
+            previewDataElement.innerHTML += '<br>' +
+                                            '<br><a href="' + data.archivo_adjunto_url + '" download>Descargar Archivo Adjunto</a>';
+        }
+  
         $('#previewModal').modal('show'); // Mostrar el modal utilizando jQuery
-
       }
     };
     xhr.send();
   });
 });
+
 
 </script>
 {% endblock custom_js %}

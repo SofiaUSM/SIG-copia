@@ -36,10 +36,7 @@ def codigo_es_duplicado(codigo):
     return ProtocoloSolicitud.objects.filter(codigo=codigo).exists()
 
 def crear_protocolo(request):
-   
-
     if request.method == "POST":
-
         archivo_adjunto = request.FILES.get('archivo_adjunto', None)
 
         if archivo_adjunto:
@@ -271,7 +268,6 @@ def crear_protocolo(request):
 
 
         return response
-    
     return render(request,'formulario.html',{
             'forms':CrearFormulario()})
 def vista_previa(resquest,id):

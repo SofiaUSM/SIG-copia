@@ -22,7 +22,6 @@
 </head>
 <body  onload="myFunction()">
     <div class="container">
-        <div class="form-container">
 
           <!-- Modal -->
           <div id="myModal" class="modal">
@@ -30,8 +29,11 @@
             <img class="modal-content" id="imagenModal">
           </div>
             <br>
-            <form method='POST' class="px-3" enctype="multipart/form-data">
+          <div id="form-container">
+              
+            <form  method='POST' id="form-guardar-pdf" class="px-3" enctype="multipart/form-data" action="{% url 'crear_protocolo' %}">
                 {% csrf_token %}
+                <br>
                 <div class="form-group mb-3">
                   {{ forms.direccion.label_tag }}
                   {{ forms.direccion }}
@@ -90,11 +92,17 @@
                 <label> <b>Una vez que hayas completado la ficha, recibirás una copia en formato PDF y obtendrás un código que te permitirá verificar el estado de la ficha en el menú principal de Gestión de Tiempo. </b></label>
                 <br>
             </form>
-        </div>
+      </div>
+
         <br>
       </div>
       <br>
-
+      <div id="success-message" style="display: none; text-align: center; font-size: 24px;">
+        <p>Su formulario se ha enviado correctamente. Esta página se cerrará en breve.</p>
+    </div>
+    
+    
+    
 </body>
 
 </html>
@@ -157,4 +165,22 @@ function validarCampos() {
   return true;
 }
 </script>
+<script>
+  document.getElementById('form-guardar-pdf').addEventListener('submit', function(event) {
+      // Evitar el envío del formulario
+      event.preventDefault();
+      // Obtener el contenedor del formulario y el mensaje de éxito
+      var formContainer = document.getElementById('form-container');
+      var successMessage = document.getElementById('success-message');
+
+      // Ocultar el contenedor del formulario y mostrar el mensaje de éxito
+      formContainer.style.display = 'none';
+      successMessage.style.display = 'block';
+      this.submit();
+  });
+
+</script>
+
+
+
 {% endverbatim %}

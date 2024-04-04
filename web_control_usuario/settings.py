@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'sz308p48$%9_v+&$*=d)gd2dak5*n-2-zr5989(c#d(r+9)h55'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['192.168.12.80','departamentosig.munivalpo.cl','localhost',"*"]
 

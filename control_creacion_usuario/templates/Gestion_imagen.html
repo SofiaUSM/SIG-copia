@@ -20,7 +20,6 @@ body {
     height: 100vh;
     text-shadow: 8px 8px 10px #0000008c;
     background-color: #343a40;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg id='hexagons' fill='%239C92AC' fill-opacity='0.25' fill-rule='nonzero'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"), linear-gradient(to right top, #343a40, #2b2c31, #211f22, #151314, #000000);
 }
 .table-custom {
   background-color: #ffffff;
@@ -43,7 +42,10 @@ body {
 
 .grid img {
     width: 100%;
+    image-rendering: -webkit-optimize-contrast; /* Mejora el contraste */
+    object-fit: contain; /* Escala la imagen para que se ajuste al contenedor */
 }
+
 
 .botones {
     display: flex;
@@ -76,20 +78,23 @@ body {
               <br>
               <h2> Intrucciones de uso:</h2>
               <h3> 1.- archivo adjunto: solo sirve para guarda la previa de la imagen.</h3>
-              <h3> 2.- boton agregar nueva imagen: ese boton sube la imagen en el servidor.</h3>
+              <h3> 2.- boton Subir nueva imagen: ese boton sube la imagen en el servidor.</h3>
               <h3> 3.- copia url: sirve para copiar la dirrecion de la imagen.</h3>
               <h3> 4.- eliminar imagen: ese boton es para eliminar la imagen.</h3>
                 <br><br>
-              <div class="colum">
-          
-
-                <form method="post" enctype="multipart/form-data">
-                  {% csrf_token %}
-                  {{ form.as_p }}
-                  <button type="submit">Agregar nueva imagen</button>
-              </form>
-              
-             </div>
+                <div class="column">
+                    <form id="imageForm" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <br>
+                        <img id="previewImage" src="#" alt="Vista previa de la imagen" style="display: none;">
+                        <br>
+                        <button type="submit">Subir nueva imagen</button>
+                    </form>
+                </div>
+                
+                
+                
             <br>
           </div>
       </div>
@@ -97,7 +102,7 @@ body {
   <br><br><br>
   <section>
     <div class="container">
-        {% for imagen in imagenes %}
+        {% for imagen in page_obj %}
             {% if imagen.archivo_adjunto %}
             <div class="grid">
                 <!-- Si la imagen tiene un archivo adjunto, muéstrala -->
@@ -118,6 +123,30 @@ body {
             {% endif %}
         {% endfor %}
     </div>
+    <br>
+    <br>
+    <br>
+
+    <!-- Botones de paginación -->
+    <div class="pagination-container" style="display: flex; justify-content: center;">
+        
+        <!-- Botones de paginación -->
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a class="btn btn-warning" href="?page=1">&laquo;&nbsp; Primero</a> &nbsp;&nbsp;&nbsp;
+                <a class="btn btn-warning" href="?page={{ page_obj.previous_page_number }}">Anterior</a>&nbsp;&nbsp;&nbsp;
+            {% endif %}
+        
+            <span class="current" style="font-size: 1.2em; font-weight: bold;">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.</span>&nbsp;&nbsp;&nbsp;
+        
+            {% if page_obj.has_next %}
+                <a class="btn btn-warning" href="?page={{ page_obj.next_page_number }}">Siguiente</a>&nbsp;&nbsp;&nbsp;
+                <a class="btn btn-warning" href="?page={{ page_obj.paginator.num_pages }}">Último &nbsp;&raquo;</a>&nbsp;&nbsp;&nbsp;
+            {% endif %}
+        </div>
+    </div>
+    
+    
     
 </section>
 
@@ -159,6 +188,38 @@ body {
         alert('URL copiada: ' + urlCompleta);
     }
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var form = document.getElementById('imageForm');
+        var input = form.querySelector('input[type="file"]');
+        var preview = document.getElementById('previewImage');
+
+        input.addEventListener('change', function(event) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.src = "#";
+                preview.style.display = 'none';
+            }
+        });
+
+        form.addEventListener('submit', function(event) {
+            if (!input.files || input.files.length === 0 || !input.files[0]) {
+                event.preventDefault(); // Evitar la presentación del formulario si no se selecciona ninguna imagen
+                alert("Por favor, seleccione una imagen.");
+            }
+        });
+    });
+</script>
+
+
 
 
     

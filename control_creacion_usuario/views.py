@@ -14,6 +14,8 @@ from django.views.decorators.csrf import csrf_exempt
 from .forms import ImagenForm
 from .models import Imagen_sig
 from django.shortcuts import get_object_or_404, redirect
+from django.core.paginator import Paginator, Page
+
 import os
 def download_excel(request):
     # Crear un nuevo libro de trabajo de Excel y agregar datos
@@ -83,8 +85,11 @@ def Gestion_imagen(request):
 
     # Obtener todas las imágenes
     imagenes = Imagen_sig.objects.all()
+    paginator = Paginator(imagenes, 6)  # Muestra 6 imágenes por página
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
-    return render(request, 'Gestion_imagen.html', {'form': form, 'imagenes': imagenes})
+    return render(request, 'Gestion_imagen.html', {'form': form, 'imagenes': imagenes,'page_obj': page_obj})
 
 
 

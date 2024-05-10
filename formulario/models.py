@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 import os
-from multiupload.fields import MultiFileField
 
 ESTADO ={
     ('RECIBIDO','RECIBIDO'),

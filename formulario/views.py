@@ -63,16 +63,15 @@ def crear_protocolo(request):
         Protocolo.codigo = str(Protocolo.id)
 
         archivos_adjuntos = request.FILES.getlist('archivo')
-        if archivos_adjuntos:
-            for archivo in archivos_adjuntos:
-                ArchivoProtocolo.objects.create(protocolo=Protocolo, archivo=archivo)
-        
         if archivo_adjunto:
             cuerpo_mensaje = 'Se ha generado una nueva ficha. También este viene con un archivo Adjunto. Revisar la plataforma de control para ver el archivo, el PDF correspondiente.'
         else:
             cuerpo_mensaje = 'Se ha generado una nueva ficha. Adjunto el PDF correspondiente.'
-        
-        print(cuerpo_mensaje)
+
+        if archivos_adjuntos:
+            for archivo in archivos_adjuntos:
+                ArchivoProtocolo.objects.create(protocolo=Protocolo, archivo=archivo)
+
         # Crear un buffer de memoria para el PDF
         buffer = BytesIO()
         # Crear un objeto de tipo SimpleDocTemplate con el buffer y el tamaño de página deseado (en este caso, carta)

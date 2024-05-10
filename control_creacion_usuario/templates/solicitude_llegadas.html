@@ -201,11 +201,18 @@ previewLinks.forEach(function(link) {
                                        + '\nCambios posible en el Insumo Entregado: ' + data.Cambios
                                        + '\n';
                                        
-        if (data.archivo_adjunto_url) {
-            // Agregar enlace al archivo adjunto
-            previewDataElement.innerHTML += '<br>' +
-                                            '<br><a href="' + data.archivo_adjunto_url + '" download>Descargar Archivo Adjunto</a>';
-        }
+                                       if (data.archivos_adjuntos_urls && data.archivos_adjuntos_urls.length > 0) {
+    // Agregar enlaces a los archivos adjuntos si existen
+    previewDataElement.innerHTML += '<br><br><strong>Archivos Adjuntos:</strong><br>';
+    data.archivos_adjuntos_urls.forEach(function(url) {
+        previewDataElement.innerHTML += '<a href="' + url + '" download>' + url.split('/').pop() + '</a><br>';
+    });
+} else {
+    // Manejar el caso en el que no hay archivos adjuntos
+    previewDataElement.innerHTML += '<br><br>No hay archivos adjuntos disponibles';
+}
+
+
   
         $('#previewModal').modal('show'); // Mostrar el modal utilizando jQuery
       }

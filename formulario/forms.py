@@ -13,4 +13,3 @@ class CrearFormulario(forms.Form):
                              "*Para los archivos KMZ, SHAPE y  CAD sólo se puede entregar la información de una porción del territorio.",max_length=255, widget=forms.TextInput(attrs={'class': 'form-control '}) )
     producto = forms.CharField(label ="Productos(ESTUDIOS, INFORME, TABLA DE PLANO U OTROS QUE DERIVARAN DE LA INFORMACION ENTREGADA)",max_length=255, widget=forms.TextInput(attrs={'class': 'form-control '}))
     cambios_posible = forms.CharField(label ="Posibles cambios en el insumo Entregado",max_length=255, widget=forms.TextInput(attrs={'class': 'form-control '}) )
-    archivo_adjunto = forms.FileField(label="Adjuntar Archivo", required=False, widget=forms.FileInput(attrs={'class': 'form-control-file'}))

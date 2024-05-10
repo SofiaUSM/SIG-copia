@@ -10,5 +10,6 @@ urlpatterns = [
     path('control/', views.control, name="control"),
     path('actualizar_estado/', views.actualizar_estado, name='actualizar_estado'),
     path('eliminar_imagen/<int:imagen_id>/', views.eliminar_imagen, name='eliminar_imagen'),
+    path('Gestion_pdf/', views.Gestion_pdf, name="Gestion_pdf"),
 
 ]

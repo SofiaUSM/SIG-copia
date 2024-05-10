@@ -39,11 +39,6 @@ def crear_protocolo(request):
     if request.method == "POST":
         archivo_adjunto = request.FILES.get('archivo_adjunto', None)
 
-        if archivo_adjunto:
-            cuerpo_mensaje = 'Se ha generado una nueva ficha. También este viene con un archivo Adjunto. Revisar la plataforma de control para ver el archivo, el PDF correspondiente.'
-        else:
-            cuerpo_mensaje = 'Se ha generado una nueva ficha. Adjunto el PDF correspondiente.'
-
 
         Protocolo =  ProtocoloSolicitud(
         direccion = request.POST['direccion'],
@@ -55,11 +50,10 @@ def crear_protocolo(request):
         objetivos = request.POST['objetivos'],
         insumo = request.POST['insumo'],
         producto = request.POST['producto'],
-        cambios_posible = request.POST['cambios_posible'],
-        archivo_adjunto = archivo_adjunto,
-        
-
+        cambios_posible = request.POST['cambios_posible'],        
         )
+
+        
         # nuevo_codigo = generar_codigo()
         # while codigo_es_duplicado(nuevo_codigo):
         #     nuevo_codigo = generar_codigo()
@@ -68,6 +62,17 @@ def crear_protocolo(request):
         Protocolo.save()
         Protocolo.codigo = str(Protocolo.id)
 
+        archivos_adjuntos = request.FILES.getlist('archivo')
+        if archivos_adjuntos:
+            for archivo in archivos_adjuntos:
+                ArchivoProtocolo.objects.create(protocolo=Protocolo, archivo=archivo)
+        
+        if archivo_adjunto:
+            cuerpo_mensaje = 'Se ha generado una nueva ficha. También este viene con un archivo Adjunto. Revisar la plataforma de control para ver el archivo, el PDF correspondiente.'
+        else:
+            cuerpo_mensaje = 'Se ha generado una nueva ficha. Adjunto el PDF correspondiente.'
+        
+        print(cuerpo_mensaje)
         # Crear un buffer de memoria para el PDF
         buffer = BytesIO()
         # Crear un objeto de tipo SimpleDocTemplate con el buffer y el tamaño de página deseado (en este caso, carta)
@@ -226,7 +231,6 @@ def crear_protocolo(request):
 
         # Obtén los datos necesarios para el correo
         correo_destino1 = 'deisy.pereira@munivalpo.cl'  
-        # correo_destino1 = 'emanuelvperez2000@gmail.com'  
         correo_destino2 = 'departamento.sig@munivalpo.cl'
         asunto = 'Nueva ficha generada'
 
@@ -272,29 +276,33 @@ def crear_protocolo(request):
             'forms':CrearFormulario()})
 def vista_previa(resquest,id):
 
-    Protocolo = ProtocoloSolicitud.objects.get(id = id)
-    fecha_actual = Protocolo.fecha
+    protocolo = ProtocoloSolicitud.objects.get(id=id)
+    fecha_actual = protocolo.fecha
     fecha = fecha_actual.strftime('%Y-%m-%d')
-    archivo_adjunto_url = Protocolo.archivo_adjunto.url if Protocolo.archivo_adjunto else None
+    archivos_adjuntos = ArchivoProtocolo.objects.filter(protocolo=protocolo)
+    archivos_adjuntos_urls = [archivo.archivo.url for archivo in archivos_adjuntos]
 
+    print(archivos_adjuntos_urls)
     data = {
-        'id': Protocolo.id,
+        'id': protocolo.id,
         'fecha': fecha,
-        'nombre_solicitante': Protocolo.nombre_solicitante,
-        'nombre_proyecto': Protocolo.nombre_proyecto,
-        'corre_solicitante': Protocolo.corre_solicitante,
-        'departamento': Protocolo.departamento,
-        'direccion': Protocolo.direccion,
-        'area': Protocolo.area,
-        'objetivos': Protocolo.objetivos,
-        'insumo': Protocolo.insumo,
-        'productos': Protocolo.producto,
-        'Cambios': Protocolo.cambios_posible,
-        'codigo':Protocolo.codigo,
-        'archivo_adjunto_url': archivo_adjunto_url,
-
+        'nombre_solicitante': protocolo.nombre_solicitante,
+        'nombre_proyecto': protocolo.nombre_proyecto,
+        'corre_solicitante': protocolo.corre_solicitante,
+        'departamento': protocolo.departamento,
+        'direccion': protocolo.direccion,
+        'area': protocolo.area,
+        'objetivos': protocolo.objetivos,
+        'insumo': protocolo.insumo,
+        'productos': protocolo.producto,
+        'Cambios': protocolo.cambios_posible,
+        'codigo': protocolo.codigo,
+        'archivos_adjuntos_urls': archivos_adjuntos_urls,
     }
+    
     return JsonResponse(data)
+
+
 
 def descargar_pdf(request,id):
         Protocolo = ProtocoloSolicitud.objects.get(id = id)

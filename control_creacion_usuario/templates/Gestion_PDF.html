@@ -1,0 +1,230 @@
+{% extends 'core/Slide.html' %}
+
+{% load static %}
+
+{% block main_content%}
+
+{% block custom_css %} 
+
+{% endblock custom_css %}
+<style>
+body {
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.5;
+    color: rgb(226, 226, 226);
+    overflow-x: hidden;
+ 
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    text-shadow: 8px 8px 10px #0000008c;
+    background-color: #343a40;
+}
+.table-custom {
+  background-color: #ffffff;
+  color: black; /* Color de fondo de la tabla */
+  }
+  .container img {
+    width: 370px;
+    height: 370px;
+}
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 30px;
+}
+
+.grid {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.botones {
+    display: flex;
+    justify-content: space-between;
+}
+
+.botones button {
+    background-color: gray;
+    color: white;
+    border: none;
+    padding: 10px 20px; /* Aumenta el espacio alrededor del texto */
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    border-radius: 15px; /* Haz los bordes más redondeados */
+    outline: none; /* Elimina el contorno predeterminado del botón */
+}
+
+/* Cambio de estilos cuando el mouse está sobre los botones */
+.botones button:hover {
+    background-color: white;
+    color: black;
+}
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-..." crossorigin="anonymous">
+
+  <section >
+      <div class="row">
+          <div class="col-md-11 mx-auto">
+              <h1>   Gestion de PDF </h1>
+              
+              <br>
+              <h2> Intrucciones de uso:</h2>
+              <h3> 1.- archivo adjunto: solo sirve para guarda la previa de la PDF.</h3>
+              <h3> 2.- boton Subir nueva PDF: ese boton sube la PDF en el servidor.</h3>
+              <h3> 3.- copia url: sirve para copiar la dirrecion de la PDF.</h3>
+              <h3> 4.- eliminar PDF: ese boton es para eliminar la PDF.</h3>
+              <h3> 5.- Por la dudas si se puede subir otros archivos pero esto se van a descargar y no visualizar en la web como un PDF</h3>
+
+                <br><br>
+                <div class="column">
+                    <form id="PDFForm" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <h3>Subir el archivos</h3>
+
+                        {{ form.archivo_adjunto }}
+                        <br>
+                        <br>
+                        <h3>Nombre del Archivo</h3>
+                        {{ form.nombre }}
+                        <br>
+                        <br>
+                        <button type="submit">Subir nueva PDF</button>
+                    </form>
+                </div>
+                
+                
+                
+            <br>
+          </div>
+      </div>
+  </section>
+  <br><br><br>
+  <section>
+    <div class="container">
+        {% for PDF in page_obj %}
+            {% if PDF.archivo_adjunto %}
+            <div class="grid">
+                <!-- Si la PDF tiene un archivo adjunto, muéstrala -->
+                <div>
+                    <a href="{{ PDF.archivo_adjunto.url }}">
+                        <i class="fas fa-file-pdf" style="font-size: 150px; color: white;"></i>
+
+                    </a>
+                </div>
+                <br>
+                <h3>{{ PDF.nombre }}</h3>
+                <br>
+                <div class="botones">
+                    <button onclick="copiarURL('{{ PDF.archivo_adjunto.url }}')">Copiar URL</button>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <br>
+    <br>
+    <br>
+
+    <!-- Botones de paginación -->
+    <div class="pagination-container" style="display: flex; justify-content: center;">
+        
+        <!-- Botones de paginación -->
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a class="btn btn-warning" href="?page=1">&laquo;&nbsp; Primero</a> &nbsp;&nbsp;&nbsp;
+                <a class="btn btn-warning" href="?page={{ page_obj.previous_page_number }}">Anterior</a>&nbsp;&nbsp;&nbsp;
+            {% endif %}
+        
+            <span class="current" style="font-size: 1.2em; font-weight: bold;">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.</span>&nbsp;&nbsp;&nbsp;
+        
+            {% if page_obj.has_next %}
+                <a class="btn btn-warning" href="?page={{ page_obj.next_page_number }}">Siguiente</a>&nbsp;&nbsp;&nbsp;
+                <a class="btn btn-warning" href="?page={{ page_obj.paginator.num_pages }}">Último &nbsp;&raquo;</a>&nbsp;&nbsp;&nbsp;
+            {% endif %}
+        </div>
+    </div>
+    
+    
+    
+</section>
+
+
+
+
+
+  
+  <!-- <tr>
+      {% csrf_token %}
+      <td>{{usuarios.username}}</td>
+      <td><input type="checkbox" id="checkbox-{{ usuarios.id }}" {% if usuarios.is_active %}checked{% endif %}> Activo</td>
+      
+      <td><button class="btn btn-primary" type="submit"> Cambiar contraseña</button></td>
+  </tr> -->
+  {% block custom_js %}
+  <script>
+    function copiarURL(url) {
+        // Obtener el dominio de la página actual
+        var dominio = window.location.origin;
+        // Agregar el dominio a la URL de la imagen
+        var urlCompleta = dominio + url;
+        
+        // Crear un campo de texto temporal
+        var campoTemporal = document.createElement('textarea');
+        campoTemporal.value = urlCompleta;
+        
+        // Agregar el campo temporal al DOM
+        document.body.appendChild(campoTemporal);
+        
+        // Seleccionar y copiar el texto en el campo temporal
+        campoTemporal.select();
+        document.execCommand('copy');
+        
+        // Eliminar el campo temporal
+        document.body.removeChild(campoTemporal);
+        
+        // Mostrar un mensaje de éxito
+        alert('URL copiada: ' + urlCompleta);
+    }
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var form = document.getElementById('imageForm');
+        var input = form.querySelector('input[type="file"]');
+        var preview = document.getElementById('previewImage');
+
+        input.addEventListener('change', function(event) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.src = "#";
+                preview.style.display = 'none';
+            }
+        });
+
+        form.addEventListener('submit', function(event) {
+            if (!input.files || input.files.length === 0 || !input.files[0]) {
+                event.preventDefault(); // Evitar la presentación del formulario si no se selecciona ninguna imagen
+                alert("Por favor, seleccione una PDF.");
+            }
+        });
+    });
+</script>
+
+
+
+
+    
+  
+{% endblock custom_js %}
+{% endblock %}

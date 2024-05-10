@@ -11,8 +11,8 @@ from datetime import date
 from openpyxl import Workbook
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
-from .forms import ImagenForm
-from .models import Imagen_sig
+from .forms import ImagenForm,PDFForm
+from .models import Imagen_sig,PDF_sig
 from django.shortcuts import get_object_or_404, redirect
 from django.core.paginator import Paginator, Page
 
@@ -91,8 +91,6 @@ def Gestion_imagen(request):
 
     return render(request, 'Gestion_imagen.html', {'form': form, 'imagenes': imagenes,'page_obj': page_obj})
 
-
-
 @csrf_exempt
 def actualizar_estado(request):
     if request.method == 'POST':
@@ -124,3 +122,19 @@ def eliminar_imagen(request, imagen_id):
     
     return redirect('Gestion_imagen')  # Redirige a la vista de gestión de imágenes si la solicitud no es de tipo POST
 
+def Gestion_pdf(request):
+    if request.method == 'POST':
+        form = PDFForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('Gestion_pdf')  # Redirige a la misma vista después de guardar la imagen
+    else:
+        form = PDFForm()
+
+    # Obtener todas las imágenes
+    pdf = PDF_sig.objects.all()
+    paginator = Paginator(pdf, 6)  # Muestra 6 imágenes por página
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'Gestion_PDF.html', {'form': form, 'PDF': pdf,'page_obj': page_obj})

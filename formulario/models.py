@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import os
+from multiupload.fields import MultiFileField
 
 ESTADO ={
     ('RECIBIDO','RECIBIDO'),
@@ -30,7 +31,7 @@ DIRECCION ={
 def content_file_name_adjunto(instance, filename):
     ext = filename.split('.')[-1]
     filename = "%s.%s" % ('adjunto', ext)
-    folder = "assets/document/" + str(instance.id)# Puedes ajustar la carpeta según tus necesidades
+    folder = "assets/document/" + str("archivo")# Puedes ajustar la carpeta según tus necesidades
     return os.path.join(folder, filename)
 
 
@@ -59,3 +60,13 @@ class ProtocoloSolicitud(models.Model):
     def __str__(self):
         return str(self.id) + ' - ' + self.departamento 
     
+class ArchivoProtocolo(models.Model):
+    protocolo = models.ForeignKey(ProtocoloSolicitud, on_delete=models.CASCADE, related_name='archivos')
+    archivo = models.FileField(upload_to=content_file_name_adjunto)
+
+    class Meta:
+        verbose_name = "archivo_protocolo"
+        verbose_name_plural = "archivos_protocolo"
+
+    def __str__(self):
+        return str(self.protocolo.id) + ' - ' + str(self.id)

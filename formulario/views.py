@@ -64,10 +64,15 @@ def crear_protocolo(request):
 
         archivos_adjuntos = request.FILES.getlist('archivo')
         if archivo_adjunto:
-            cuerpo_mensaje = 'Se ha generado una nueva ficha. También este viene con un archivo Adjunto. Revisar la plataforma de control para ver el archivo, el PDF correspondiente.'
+            cuerpo_mensaje = (
+                    'Se ha generado una nueva ficha con el código: ' + Protocolo.codigo + 
+                    '. Adjunto el archivo PDF correspondiente. Revisa la plataforma de control para ver el archivo correspondiente.'
+                )
         else:
-            cuerpo_mensaje = 'Se ha generado una nueva ficha. Adjunto el PDF correspondiente.'
-
+                cuerpo_mensaje = (
+                    'Se ha generado una nueva ficha con el código: ' + Protocolo.codigo + 
+                    '. Adjunto el PDF correspondiente.'
+                )
         if archivos_adjuntos:
             for archivo in archivos_adjuntos:
                 ArchivoProtocolo.objects.create(protocolo=Protocolo, archivo=archivo)
@@ -229,18 +234,18 @@ def crear_protocolo(request):
         Protocolo.save()
 
         # Obtén los datos necesarios para el correo
-        correo_destino1 = 'deisy.pereira@munivalpo.cl'  
-        correo_destino2 = 'departamento.sig@munivalpo.cl'
+        correo_destino1 = 'deisy.pereira@munivalpo.cl' 
+        correo_destino2 = request.POST['corre_solicitante']  # Asegúrate de que esto sea una cadena y no una tupla
         asunto = 'Nueva ficha generada'
 
-        # Construye el mensaje de correo                                                                                                                         cc|
+        # Construye el mensaje de correo
         mensaje = MIMEMultipart()
         mensaje['From'] = 'noreplydeptosig@gmail.com'  
-        mensaje['To'] = correo_destino1
+        mensaje['To'] = ", ".join([correo_destino1, correo_destino2])
         mensaje['Subject'] = asunto
 
         # Cuerpo del mensaje
-
+        cuerpo_mensaje = cuerpo_mensaje# Asegúrate de definir el cuerpo del mensaje
         mensaje.attach(MIMEText(cuerpo_mensaje, 'plain'))
 
         # Adjunta el PDF al mensaje de correo
@@ -264,7 +269,7 @@ def crear_protocolo(request):
         server.login(smtp_usuario, smtp_contrasena)
 
         # Envía el correo electrónico
-        server.sendmail(smtp_usuario, correo_destino1, mensaje.as_string())
+        server.sendmail(smtp_usuario, [correo_destino1, correo_destino2], mensaje.as_string())
 
         # Cierra la conexión con el servidor SMTP
         server.quit()

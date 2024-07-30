@@ -241,7 +241,7 @@ def crear_protocolo(request):
         # Construye el mensaje de correo
         mensaje = MIMEMultipart()
         mensaje['From'] = 'noreplydeptosig@gmail.com'  
-        mensaje['To'] = ", ".join([correo_destino1, correo_destino2])
+        mensaje['To'] = correo_destino1
         mensaje['Subject'] = asunto
 
         # Cuerpo del mensaje
@@ -269,7 +269,7 @@ def crear_protocolo(request):
         server.login(smtp_usuario, smtp_contrasena)
 
         # Envía el correo electrónico
-        server.sendmail(smtp_usuario, [correo_destino1, correo_destino2], mensaje.as_string())
+        server.sendmail(smtp_usuario, correo_destino1, mensaje.as_string())
 
         # Cierra la conexión con el servidor SMTP
         server.quit()

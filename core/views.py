@@ -172,7 +172,7 @@ def Registro_arcgis(depa, pagina):
 def obtener_sigla(departamento):
 
     departamentos = {
-    "Alcaldia": "ALCALDIA",
+    "ALCALDÍA": "ALCALDIA",
     "Dirección de Administración y Finanzas": "DAF",
     "Dirección de Asesoría Jurídica": "DAJ",
     "Dirección desarrollo Económico y Cooperación Internacional": "DES_ECONOMICO",

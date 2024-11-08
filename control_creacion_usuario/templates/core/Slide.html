@@ -48,23 +48,28 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Opciones</a>
             <ul class="dropdown-menu">
+
+
               <li><a class="dropdown-item" href="{% url 'solicitude_llegadas' %}">Solicitudes</a></li>
               <li><a class="dropdown-item" href="{% url 'Historial_Visitas' %}">Historial usuarios</a></li>
               <li><a class="dropdown-item" href="{% url 'Gestion_imagen' %}">Gestion de imagenes SIG</a></li>
               <li><a class="dropdown-item" href="{% url 'Gestion_pdf' %}">Gestion de PDF SIG</a></li>
 
+              {% if request.user.is_authenticated %}
+              <li><a class="dropdown-item" href="{% url 'cambiar_contraseña' %}">Cambiar Contraseña</a></li>
+              <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesión</a></li>
+              {% endif %}
+      
             </ul>
           </li>
         </ul>
       </div>
     </div>
   </nav>
-      <div class="col-md-12">
-        <div class="flex-grow-1 p-3">
+<br>
           {% block main_content %}
           {% endblock main_content %}
-        </div>
-      </div>
+      
     </div>
   </div>
 

@@ -185,7 +185,7 @@ def crear_protocolo(request):
             ["Área de estudio o intervencion (Cerro,Sector,UV,etc.)", parrafo_area],
             ["Objetivos de las solicitud ", parrafo_objetivos],
             ["Insumo solicitado y formato (KMZ, SHAPE, CAD, EXCEL,\n DESARROLLO ARCGIS ONLINE)\n"+
-            "(Formulario Digital, cuadro de mando, mapa web, \n Aplicacion web y otra herramientas territoriales.)\n (previa a la Reunion)"
+            "(Formulario Digital, cuadro de mando, Planos Digitales,\n Planos Impresos,  Aplicacion web y otra\n herramientas territoriales.) (previa a la Reunion)\n"
             + "Para los archivos KMZ, SHAPE y CAD\n sólo se puede entregar la información \nde una porción del territorio."
              , parrafo_insumo],
             ["Producto (ESTUDIO, INFORME, TABLA, PLANO\nU OTROSQUE DERIVIRAN DE LA \nINFORMACION ENTREGADA.)", parrafo_producto],
@@ -234,45 +234,45 @@ def crear_protocolo(request):
         Protocolo.save()
 
         # Obtén los datos necesarios para el correo
-        correo_destino1 = 'deisy.pereira@munivalpo.cl' 
-        correo_destino2 = request.POST['corre_solicitante']  # Asegúrate de que esto sea una cadena y no una tupla
-        asunto = 'Nueva ficha generada'
+        # correo_destino1 = 'deisy.pereira@munivalpo.cl' 
+        # correo_destino2 = request.POST['corre_solicitante']  # Asegúrate de que esto sea una cadena y no una tupla
+        # asunto = 'Nueva ficha generada'
 
-        # Construye el mensaje de correo
-        mensaje = MIMEMultipart()
-        mensaje['From'] = 'noreplydeptosig@gmail.com'  
-        mensaje['To'] = correo_destino1
-        mensaje['Subject'] = asunto
+        # # Construye el mensaje de correo
+        # mensaje = MIMEMultipart()
+        # mensaje['From'] = 'noreplydeptosig@gmail.com'  
+        # mensaje['To'] = correo_destino1
+        # mensaje['Subject'] = asunto
 
-        # Cuerpo del mensaje
-        cuerpo_mensaje = cuerpo_mensaje# Asegúrate de definir el cuerpo del mensaje
-        mensaje.attach(MIMEText(cuerpo_mensaje, 'plain'))
+        # # Cuerpo del mensaje
+        # cuerpo_mensaje = cuerpo_mensaje# Asegúrate de definir el cuerpo del mensaje
+        # mensaje.attach(MIMEText(cuerpo_mensaje, 'plain'))
 
-        # Adjunta el PDF al mensaje de correo
-        archivo_pdf = buffer.getvalue()
+        # # Adjunta el PDF al mensaje de correo
+        # archivo_pdf = buffer.getvalue()
 
-        pdf_adjunto = MIMEApplication(archivo_pdf)
-        pdf_adjunto.add_header('Content-Disposition', 'attachment', filename='Ficha_de_protocolo.pdf')
-        mensaje.attach(pdf_adjunto)
+        # pdf_adjunto = MIMEApplication(archivo_pdf)
+        # pdf_adjunto.add_header('Content-Disposition', 'attachment', filename='Ficha_de_protocolo.pdf')
+        # mensaje.attach(pdf_adjunto)
 
-        # Configura el servidor SMTP
-        smtp_server = 'smtp.gmail.com'  # Cambia esto según tu proveedor de correo
-        smtp_port = 587    # Puerto de Gmail para TLS
-        smtp_usuario = 'noreplydeptosig@gmail.com'  # Tu dirección de correo
-        smtp_contrasena = 'vjom ooqh oujf slhi'  # Tu contraseña de correo
+        # # Configura el servidor SMTP
+        # smtp_server = 'smtp.gmail.com'  # Cambia esto según tu proveedor de correo
+        # smtp_port = 587    # Puerto de Gmail para TLS
+        # smtp_usuario = 'noreplydeptosig@gmail.com'  # Tu dirección de correo
+        # smtp_contrasena = 'vjom ooqh oujf slhi'  # Tu contraseña de correo
 
-        # Inicia la conexión con el servidor SMTP
-        server = smtplib.SMTP(smtp_server, smtp_port)
-        server.starttls()
+        # # Inicia la conexión con el servidor SMTP
+        # server = smtplib.SMTP(smtp_server, smtp_port)
+        # server.starttls()
 
-        # Inicia sesión en tu cuenta de correo
-        server.login(smtp_usuario, smtp_contrasena)
+        # # Inicia sesión en tu cuenta de correo
+        # server.login(smtp_usuario, smtp_contrasena)
 
-        # Envía el correo electrónico
-        server.sendmail(smtp_usuario, correo_destino1, mensaje.as_string())
+        # # Envía el correo electrónico
+        # server.sendmail(smtp_usuario, correo_destino1, mensaje.as_string())
 
-        # Cierra la conexión con el servidor SMTP
-        server.quit()
+        # # Cierra la conexión con el servidor SMTP
+        # server.quit()
 
 
         return response
@@ -419,7 +419,7 @@ def descargar_pdf(request,id):
             ["Área de estudio o intervencion (Cerro,Sector,UV,etc.)", parrafo_area],
             ["Objetivos de las solicitud ", parrafo_objetivos],
             ["Insumo solicitado y formato (KMZ, SHAPE, CAD, EXCEL,\n DESARROLLO ARCGIS ONLINE)\n"+
-            "(Formulario Digital, cuadro de mando, mapa web, \n Aplicacion web y otra herramientas territoriales.)\n (previa a la Reunion)"
+            "(Formulario Digital, cuadro de mando, Planos Digitales,\n Planos Impresos,  Aplicacion web y otra\n herramientas territoriales.) (previa a la Reunion)\n"
             + "Para los archivos KMZ, SHAPE y CAD\n sólo se puede entregar la información \nde una porción del territorio."
              , parrafo_insumo],
             ["Producto (ESTUDIO, INFORME, TABLA, PLANO\nU OTROSQUE DERIVIRAN DE LA \nINFORMACION ENTREGADA.)", parrafo_producto],

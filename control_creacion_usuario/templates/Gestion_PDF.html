@@ -18,7 +18,6 @@ body {
     margin: 0;
     width: 100vw;
     height: 100vh;
-    text-shadow: 8px 8px 10px #0000008c;
     background-color: #343a40;
 }
 .table-custom {
@@ -62,6 +61,50 @@ body {
     background-color: white;
     color: black;
 }
+.pdf-management {
+    font-family: 'Arial', sans-serif;
+    margin: 20px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.instructions {
+    color: #e6e6e6;
+    background-color: #828282;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.subtitle {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.instruction-list {
+    font-size: 18px;
+    padding-left: 20px;
+}
+
+.instruction-list li {
+    margin-bottom: 10px;
+}
+
+.instruction-list li::before {
+    content: '✓';
+    color: green;
+    font-weight: bold;
+    margin-right: 10px;
+}
 
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-..." crossorigin="anonymous">
@@ -69,15 +112,21 @@ body {
   <section >
       <div class="row">
           <div class="col-md-11 mx-auto">
-              <h1>   Gestion de PDF </h1>
-              
-              <br>
-              <h2> Intrucciones de uso:</h2>
-              <h3> 1.- archivo adjunto: solo sirve para guarda la previa de la PDF.</h3>
-              <h3> 2.- boton Subir nueva PDF: ese boton sube la PDF en el servidor.</h3>
-              <h3> 3.- copia url: sirve para copiar la dirrecion de la PDF.</h3>
-              <h3> 4.- eliminar PDF: ese boton es para eliminar la PDF.</h3>
-              <h3> 5.- Por la dudas si se puede subir otros archivos pero esto se van a descargar y no visualizar en la web como un PDF</h3>
+            <div class="pdf-management">
+                <p class="title">Gestión de PDF</p>
+                
+                <div class="instructions">
+                    <p class="subtitle">Instrucciones de uso:</p>
+                    <ul class="instruction-list">
+                        <li>1.- Archivo adjunto: solo sirve para guardar la previa del PDF.</li>
+                        <li>2.- Botón "Subir nueva PDF": sube el PDF en el servidor.</li>
+                        <li>3.- Copia URL: sirve para copiar la dirección del PDF.</li>
+                        <li>4.- Eliminar PDF: ese botón elimina el PDF.</li>
+                        <li>5.- Por si acaso, se pueden subir otros archivos, pero se descargarán y no se visualizarán en la web como un PDF.</li>
+                    </ul>
+                </div>
+            </div>
+            
 
                 <br><br>
                 <div class="column">

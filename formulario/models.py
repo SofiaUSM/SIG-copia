@@ -8,6 +8,27 @@ ESTADO ={
     ('EJECUTADO','EJECUTADO'),
     ('RECHAZADO','RECHAZADO')
 }
+
+PROFESIONAL ={
+    ('No Asignado','No Asignado'),
+    ('Nicolas Rebolledo','Nicolas Rebolledo'),
+    ('Andres Mardones','Andres Mardones'),
+    ('Osvaldo Moya','Osvaldo Moya'),
+    ('Francis Cadiz','Francis Cadiz'),
+    ('Ivan Cantero','Ivan Cantero'),
+    ('Deisy Pereira ','Deisy Pereira '),
+    ('Jaime Alvarado','Jaime Alvarado'),
+    ('Emanuel Venegas','Emanuel Venegas')
+}
+
+LIMITE_DE_DIA ={
+    ('',''),
+    ('L','LIVIANA 4 Dias máximos'),
+    ('M','MEDIA 8 Dias máximos'),
+    ('A','ALTO 15 Dias máximos'),
+    ('P','Plazo X Asignar los Dias máximos'),
+}
+
 DIRECCION ={
     ('',''),
     ('Administración Municipal','Administración Municipal'),
@@ -49,8 +70,21 @@ class ProtocoloSolicitud(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     codigo = models.CharField(max_length=10, blank=True, default='')
 
+    fecha_D = models.DateTimeField(null=True, blank=True)
+
+    fecha_T = models.DateTimeField(null=True, blank=True)
+
+    fecha_L = models.DateTimeField(null=True, blank=True)
+
+    profesional = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True )
+
+    tipo_limite = models.CharField(max_length=100, blank=True, default='',choices=LIMITE_DE_DIA)
+
     estado = models.CharField(max_length=100, blank=True, default='RECIBIDO',choices=ESTADO)
+
     archivo_adjunto = models.FileField(upload_to=content_file_name_adjunto, blank=True, null=True)
+
+
     
     class Meta:
         verbose_name = "protocolo_solicitud"

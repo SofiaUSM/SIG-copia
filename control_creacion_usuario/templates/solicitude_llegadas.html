@@ -7,90 +7,136 @@
 {% block custom_css %} 
 
 {% endblock custom_css %}
-<style>
-body {
-    font-weight: 300;
-    font-size: 16px;
-    color: rgb(255, 255, 255);
-    line-height: 1.5;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg id='hexagons' fill='%239C92AC' fill-opacity='0.25' fill-rule='nonzero'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"), linear-gradient(to right top, #343a40, #2b2c31, #211f22, #151314, #000000);
-}
- body::before{
-    overflow-x: hidden;
 
-    margin: 0;
-    width: 100vw;
-    height: 100vh;
-   
-    background-color: #343a40;
-}
-body::after{
-    
-    background-color: rgba(240, 240, 240, 0.24);
-    right: 0;
-    top: 0;
-    transform: translate(50%);
 
-} 
-.table-custom {
-  background-color: #ffffff;
-  color: black; /* Color de fondo de la tabla */
-  }
-  #previewData {
-    color: black;
-  }
-</style>
-<section class="container">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.7/css/dataTables.dataTables.css" />
+  
+<script src="https://cdn.datatables.net/2.1.7/js/dataTables.js"></script>
+
+<link rel="stylesheet" href="{% static 'css/table.css' %}" />
+
+
+<section class="d-flex justify-content-center">
     <div class="row">
-        <div class="col-md-11 mx-auto">
-            <h2>   Solicitudes llegadas </h2>
-            <table id= "tabla_registro" class="display table-striped table-bordered table-custom" style="width: 100%; height: 10px;">
-                <thead style="background-color: rgb(160, 160, 160);"> 
-                    <tr>    
-                        <th class="text-center">Numero de creacion solicitud</th>
-                        <th class="text-center">Nombre del solicitante</th>
-                        <th class="text-center">Fecha</th>
-                        <th class="text-center">Departamento</th>
-                        <th class="text-center">Descargar Ficha</th>
-                        <th class="text-center">Estado actual</th>
+        <div class="col">
+            <h2 style="text-align: center;">   Solicitudes llegadas </h2>
+            <table id="tabla_registro" class="display table-custom" style='width: 100%;  font-family: "Roboto Condensed"'>
+                <thead>
+                    <tr>
+                        <th>Id de la solicitud</th>
+                        <th>solicitante</th>
+                        <th>Fecha de llegada</th>
+                        <th>Departamento</th>
+                        <th style="min-width: 220px;">Acciones</th>
+                        <th>Profesional SIG</th>
+
+                        <th>Estado</th>
+                        <th>Carga de trabajo</th>
+                        <th>Fecha Designio</th>
+                        <th>Fecha Termino</th>
+                        <th>Dias Limite</th>
                     </tr>
-                    <tbody >
-                        {% csrf_token %}
-                        {% for Solicitudes in Solicitudes%}
-                        <tr>
-                            <td class="text-center ">{{Solicitudes.id}}</td>
-              
-                            <td class="text-center"> <a href="#" data-id="{{ Solicitudes.id }}" class="preview-link"> {{Solicitudes.nombre_solicitante}} </a> </td>
+                </thead>
+                <tbody>
+                    {% for Solicitudes in Solicitudes %}
+                    <tr>
+                        <td data-label="Numero de creacion solicitud">{{ Solicitudes.id }}</td>
+                        <td data-label="Nombre del solicitante">
+                            <p style="font-weight: bolder;" class="nombre-solicitante">
+                                {{ Solicitudes.nombre_solicitante }}
 
-                            <td class="text-center ">{{Solicitudes.fecha}}</td>
+                            </p>
+                        </td>
+                        <td data-label="Fecha de llegada">{{ Solicitudes.fecha|date:"Y/m/d H:i" }}</td>
+                        <td data-label="Departamento" class="nombre-solicitante">{{ Solicitudes.departamento }}</td>
+                        <td data-label="Descargar Ficha">
+                            <a style="text-decoration: none; position: relative;" href="/solicitud/descargar_pdf/{{ Solicitudes.id }}" download>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="acciones">
+                                    <path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32v242.7l-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7V32zM64 352c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64v-32c0-35.3-28.7-64-64-64H346.5l-45.3 45.3c-25 25-65.5 25-90.5 0L165.5 352H64zm368 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/>
+                                </svg>
+                            </a>
 
-                            <td class="text-center ">{{Solicitudes.departamento}}</td>
+                            <a style="text-decoration: none;" href="#" data-id="{{ Solicitudes.id }}" class="preview-link">
 
-                            <td class="text-center">
-                              <a href="/solicitud/descargar_pdf/{{ Solicitudes.id }}" download>Descargar PDF</a>
-                            </td>
-                          
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="acciones">
+                                    <path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"/>
+                                </svg>
+                            </a>
+                            
+                            <a style="text-decoration: none; position: relative;" href="#" class="email-link" data-bs-toggle="modal" data-bs-target="#dynamicEmailModal" data-email-id="1">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="acciones">
+                                    <path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/>
+                                </svg>
+                            </a>
+                            
+                            
 
-                            <td class="text-center ">
-                              <select name="estado" class="estado-select" data-solicitud-id="{{ Solicitudes.id }}">
-                                {% for estado in OPCIONES.ESTADO %}
-                                <option value="{{ estado.0 }}" {% if estado.0 == Solicitudes.estado %}selected{% endif %}>{{ estado.1 }}</option>
+                        </td>
+                        <td data-label="Profesional Asignado">
+                            <!-- Select de profesional -->
+                            {% if request.user.is_superuser %}
+                            <div class="select-wrapper">
+                                <select id="profesional-{{ Solicitudes.id }}" class="profesional-select" data-solicitud-id="{{ Solicitudes.id }}" required>
+                                    <option value="" disabled {% if not Solicitudes.profesional %}selected{% endif %}>Selecciona un profesional</option>
+                                    {% for usuario in Usuarios %}
+                                    <option value="{{ usuario.id }}" {% if Solicitudes.profesional and usuario.id == Solicitudes.profesional.id %}selected{% endif %}>
+                                        {{ usuario.first_name }} {{ usuario.last_name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        
+                            {% else %}
+                            <select id="profesional-{{ Solicitudes.id }}" class="profesional-select" data-solicitud-id="{{ Solicitudes.id }}" disabled>
+                                <option value="" disabled {% if not Solicitudes.profesional %}selected{% endif %}>Selecciona un profesional</option>
+                                {% for usuario in Usuarios %}
+                                <option value="{{ usuario.id }}" {% if Solicitudes.profesional and usuario.id == Solicitudes.profesional.id %}selected{% endif %}>
+                                    {{ usuario.first_name }} {{ usuario.last_name }}
+                                </option>
                                 {% endfor %}
                             </select>
-                          </td>
-                            
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td>No hay datos</td>
-                            <td>No hay datos</td>
-                            <td>No hay datos</td>
-                            <td>No hay datos</td>
-                            <td>No hay datos</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </thead>
+                            {% endif %}
+                        </td>
+                        <td data-label="Estado actual">
+                            <select name="estado" class="estado-select" data-solicitud-id="{{ Solicitudes.id }}">
+                                {% for estado in OPCIONES.ESTADO %}
+                                <option value="{{ estado.0 }}" {% if estado.0 == Solicitudes.estado %}selected{% endif %}>
+                                    {{ estado.1 }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td data-label="Carga de trabajo">
+                            <select name="limite" class="limite-select" data-solicitud-id="{{ Solicitudes.id }}" {% if not request.user.is_superuser %}disabled{% endif %}>
+                                {% for limite in OPCIONES.LIMITE_DE_DIA %}
+                                <option value="{{ limite.0 }}" {% if limite.0 == Solicitudes.tipo_limite %}selected{% endif %}>{{ limite.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td data-label="Fecha Designio">{{ Solicitudes.fecha_D|date:"Y/m/d H:i" }}</td>
+                        <td data-label="Fecha Termino">{{ Solicitudes.fecha_T|date:"Y/m/d H:i" }}</td>
+
+                        {% if Solicitudes.estado == 'RECHAZADO' %}
+                        <td data-label="Dias Limite" class="text-danger">
+                            RECHAZADO
+                        </td>
+                        {% else %}
+                            <td data-label="Dias Limite" 
+                                class="{% if 'Trabajo terminado' in Solicitudes.dias_restantes %}text-success
+                                    {% elif 'Fecha límite pasada' in Solicitudes.dias_restantes %}text-danger
+                                    {% elif 'Fecha de termino esperada' in Solicitudes.dias_restantes %}text-warning
+                                    {% else %}text-muted{% endif %}">
+                                {{ Solicitudes.dias_restantes }}
+                            </td>
+                        {% endif %}
+
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="11">No hay datos</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
     </div>
@@ -109,119 +155,163 @@ body::after{
           </div>
          
         </div>
-      </div>
+    </div>
+
+<!-- Modal Dinámico de Bootstrap -->
+<div class="modal fade" id="dynamicEmailModal" tabindex="-1" aria-labelledby="dynamicEmailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="dynamicEmailModalLabel">Enviar Correo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="dynamicEmailForm">
+                    <!-- Campo para agregar correos -->
+                    <div class="mb-3">
+                        <label for="emailInput" class="form-label">Correo electrónico</label>
+                        <input type="email" class="form-control" id="emailInput" placeholder="Ingresa un correo">
+                    </div>
+
+                    <!-- Botón para agregar correo -->
+                    <button type="button" class="btn btn-primary mb-3" onclick="addEmail()">Agregar Correo</button>
+
+                    <!-- Lista de correos agregados -->
+                    <ul id="emailList" class="list-group mb-3"></ul>
+
+                    <!-- Área de texto para mensaje -->
+                    <div class="mb-3">
+                        <label for="messageText" class="form-label">Mensaje</label>
+                        <textarea class="form-control" id="messageText" rows="5" placeholder="Escribe tu mensaje aquí">Estimado Nombre, favor proceder con lo solicitado.             Atte.
+                        </textarea>
+                    </div>
+
+                    <!-- Campo para adjuntar archivos -->
+                    <div class="mb-3">
+                        <label for="fileInput" class="form-label">Adjuntar Archivos</label>
+                        <input type="file" class="form-control" id="fileInput" multiple>
+                    </div>
+
+                    <!-- Lista de archivos adjuntados -->
+                    <ul id="fileList" class="list-group mb-3"></ul>
+                </form>
+            </div>
+            <br>
+            <div id="loadingSpinner" class="text-center mb-3" style="display: none;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Enviando...</span>
+                </div>
+                <p>Enviando datos, por favor espera...</p>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="sendData()">Enviar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 </section>
+<br>
+<br>
 
-<!-- <tr>
-    {% csrf_token %}
-    <td>{{usuarios.username}}</td>
-    <td><input type="checkbox" id="checkbox-{{ usuarios.id }}" {% if usuarios.is_active %}checked{% endif %}> Activo</td>
-    
-    <td><button class="btn btn-primary" type="submit"> Cambiar contraseña</button></td>
-</tr> -->
 {% block custom_js %}
+<script src="{% static 'js/table.js' %}"></script>
+
+<!-- JavaScript para manejar correos y archivos -->
 <script>
-    //Darle diseño a al tabla mediante JS
-    $(document).ready(function() {
-    var tabla = $('#tabla_registro').DataTable({
-        searching: false,
-        pageLength: 12,
-        lengthChange: false,
-        language: {
-            url: '//cdn.datatables.net/plug-ins/1.12.1/i18n/es-CL.json'
-        },
-        order: [[0, 'desc']] // '0' indica la primera columna (Solicitudes.id), 'desc' indica orden descendente
+    function addEmail() {
+        const emailInput = document.getElementById('emailInput');
+        const emailList = document.getElementById('emailList');
+        const email = emailInput.value.trim();
 
+        if (email) {
+            // Crear un elemento de lista para el nuevo correo
+            const listItem = document.createElement('li');
+            listItem.classList.add('list-group-item');
+            listItem.textContent = email;
+
+            // Agregar el elemento a la lista
+            emailList.appendChild(listItem);
+
+            // Limpiar el campo de entrada
+            emailInput.value = '';
+        }
+    }
+
+    // Manejar la selección de archivos y mostrar los nombres en la lista
+    document.getElementById('fileInput').addEventListener('change', function () {
+        const fileList = document.getElementById('fileList');
+        fileList.innerHTML = ''; // Limpiar la lista de archivos anteriores
+
+        for (const file of this.files) {
+            const listItem = document.createElement('li');
+            listItem.classList.add('list-group-item');
+            listItem.textContent = file.name;
+            fileList.appendChild(listItem);
+        }
     });
 
-    $(".estado-select").change(function() {
-        var solicitudId = $(this).data('solicitud-id');
-        var nuevoEstado = $(this).val();
+    function sendData() {
+    // Mostrar el spinner de carga
+    document.getElementById('loadingSpinner').style.display = 'block';
 
-        // Realizar la solicitud AJAX para actualizar el estado
-        $.ajax({
-            url: "{% url 'actualizar_estado' %}",
-            type: "POST",
-            data: {
-                solicitud_id: solicitudId,
-                estado: nuevoEstado,
-                csrfmiddlewaretoken: "{{ csrf_token }}"
-            },
-            success: function(response) {
-                // Manejar la respuesta exitosa si es necesario
-                console.log("Estado actualizado correctamente");
-            },
-            error: function(xhr, status, error) {
-                // Manejar el error si es necesario
-                console.error("Error al actualizar el estado:", error);
-            }
-        });
-    });
-});
-  
-
+    // Recopilar los correos de la lista
+    const emailList = Array.from(document.getElementById('emailList').children).map(item => item.textContent);
     
-var previewLinks = document.querySelectorAll('.preview-link');
-previewLinks.forEach(function(link) {
-  link.addEventListener('click', function(event) {
-    event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+    // Recopilar el mensaje
+    const messageText = document.getElementById('messageText').value;
+    
+    // Recopilar los archivos
+    const fileInput = document.getElementById('fileInput');
+    const formData = new FormData();
+    formData.append('emails', JSON.stringify(emailList)); // Convertir la lista de correos a JSON
+    formData.append('message', messageText);
+    
+    for (const file of fileInput.files) {
+        formData.append('files', file); // Agregar cada archivo al FormData
+    }
 
-    var registroId = parseInt(this.getAttribute('data-id')); // Convertir a número
+    // Enviar datos mediante AJAX
+    fetch('/correos/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}', // CSRF token para Django
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Ocultar el spinner de carga
+        document.getElementById('loadingSpinner').style.display = 'none';
 
-    // Hacer una solicitud AJAX a la vista de Django para obtener los datos del registro
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/solicitud/vista_previa/' + registroId, true);
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
-
-        var previewDataElement = document.getElementById('previewData');
-        previewDataElement.innerText =   'Fecha de la Solicitud: ' + data.fecha
-                                       + '\n'
-                                       + '\nCodigo: ' + data.codigo
-                                       + '\n'
-                                       + '\nDirección: ' + data.direccion
-                                       + '\n'
-                                       + '\nDepartamento o Unidad Responsable: ' + data.departamento
-                                       + '\n'
-                                       + '\nNombre del solicitante: ' + data.nombre_solicitante
-                                       + '\n'
-                                       + '\nNombre del proyecto: ' + data.nombre_proyecto
-                                       + '\n'
-                                       + '\nCorreo del solicitante: ' + data.corre_solicitante
-                                       + '\n'
-                                       + '\nArea De estudio: ' + data.area
-                                       + '\n'
-                                       + '\nObjetivos de la solicitud:' + data.objetivos
-                                       + '\n'
-                                       + '\nInsumo Solicitado: ' + data.insumo
-                                       + '\n'
-                                       + '\nProductos: ' + data.productos
-                                       + '\n'
-                                       + '\nCambios posible en el Insumo Entregado: ' + data.Cambios
-                                       + '\n';
-                                       
-                                       if (data.archivos_adjuntos_urls && data.archivos_adjuntos_urls.length > 0) {
-    // Agregar enlaces a los archivos adjuntos si existen
-    previewDataElement.innerHTML += '<br><br><strong>Archivos Adjuntos:</strong><br>';
-    data.archivos_adjuntos_urls.forEach(function(url) {
-        previewDataElement.innerHTML += '<a href="' + url + '" download>' + url.split('/').pop() + '</a><br>';
+        if (data.success) {
+            // Mostrar mensaje de éxito
+            alert('Datos enviados con éxito');
+            
+            // Cerrar el modal después de un breve retardo para que el usuario vea el mensaje
+            setTimeout(() => {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('dynamicEmailModal'));
+                modal.hide();
+            }, 1000);
+        } else {
+            alert('Hubo un problema al enviar los datos');
+        }
+    })
+    .catch(error => {
+        // Ocultar el spinner de carga y mostrar mensaje de error
+        document.getElementById('loadingSpinner').style.display = 'none';
+        console.error('Error:', error);
+        alert('Ocurrió un error al enviar los datos');
     });
-} else {
-    // Manejar el caso en el que no hay archivos adjuntos
-    previewDataElement.innerHTML += '<br><br>No hay archivos adjuntos disponibles';
 }
 
-
-  
-        $('#previewModal').modal('show'); // Mostrar el modal utilizando jQuery
-      }
-    };
-    xhr.send();
-  });
-});
-
-
 </script>
+
+
+
+
 {% endblock custom_js %}
 {% endblock %}

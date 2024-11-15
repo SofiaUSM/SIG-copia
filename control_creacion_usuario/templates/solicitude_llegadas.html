@@ -29,7 +29,6 @@
                         <th>Departamento</th>
                         <th style="min-width: 220px;">Acciones</th>
                         <th>Profesional SIG</th>
-
                         <th>Estado</th>
                         <th>Carga de trabajo</th>
                         <th>Fecha Designio</th>
@@ -58,17 +57,28 @@
 
                             <a style="text-decoration: none;" href="#" data-id="{{ Solicitudes.id }}" class="preview-link">
 
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="acciones">
-                                    <path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="acciones">
+                                    <path d="M0 64C0 28.7 28.7 0 64 0L224 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zm384 64l-128 0L256 0 384 128z"/>
                                 </svg>
                             </a>
-                            
-                            <a style="text-decoration: none; position: relative;" href="#" class="email-link" data-bs-toggle="modal" data-bs-target="#dynamicEmailModal" data-email-id="1">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="acciones">
-                                    <path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/>
-                                </svg>
-                            </a>
-                            
+                        {% if request.user.is_superuser %}
+
+                            {% if Solicitudes.enviado_correo %}
+
+                                <a style="text-decoration: none; position: relative;" href="#" class="email-link" data-bs-toggle="modal" data-bs-target="#dynamicEmailModal" data-email-id="1" data-id="{{ Solicitudes.id }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="acciones" style="fill: rgb(66, 190, 13);">
+                                        <path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/>
+                                    </svg>
+                                </a>
+                            {% else %}
+
+                                <a style="text-decoration: none; position: relative;" href="#" class="email-link" data-bs-toggle="modal" data-bs-target="#dynamicEmailModal" data-email-id="1" data-id="{{ Solicitudes.id }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="acciones">
+                                        <path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/>
+                                    </svg>
+                                </a>
+                            {% endif %}
+                        {% endif %}
                             
 
                         </td>
@@ -76,7 +86,10 @@
                             <!-- Select de profesional -->
                             {% if request.user.is_superuser %}
                             <div class="select-wrapper">
-                                <select id="profesional-{{ Solicitudes.id }}" class="profesional-select" data-solicitud-id="{{ Solicitudes.id }}" required>
+                                <select id="profesional-{{ Solicitudes.id }}" class="profesional-select" 
+                                        data-solicitud-id="{{ Solicitudes.id }}" 
+                                        data-antiguo-profesional="{% if Solicitudes.profesional %}{{ Solicitudes.profesional.id }}{% else %}None{% endif %}" 
+                                        required>
                                     <option value="" disabled {% if not Solicitudes.profesional %}selected{% endif %}>Selecciona un profesional</option>
                                     {% for usuario in Usuarios %}
                                     <option value="{{ usuario.id }}" {% if Solicitudes.profesional and usuario.id == Solicitudes.profesional.id %}selected{% endif %}>
@@ -85,6 +98,7 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                            
                         
                             {% else %}
                             <select id="profesional-{{ Solicitudes.id }}" class="profesional-select" data-solicitud-id="{{ Solicitudes.id }}" disabled>
@@ -97,7 +111,11 @@
                             </select>
                             {% endif %}
                         </td>
+
                         <td data-label="Estado actual">
+
+                            {% if request.user.is_superuser %}
+                            
                             <select name="estado" class="estado-select" data-solicitud-id="{{ Solicitudes.id }}">
                                 {% for estado in OPCIONES.ESTADO %}
                                 <option value="{{ estado.0 }}" {% if estado.0 == Solicitudes.estado %}selected{% endif %}>
@@ -105,6 +123,21 @@
                                 </option>
                                 {% endfor %}
                             </select>
+
+                            {% else %}
+                                <select name="estado" class="estado-select" data-solicitud-id="{{ Solicitudes.id }}">
+                                    {% for estado in OPCIONES.ESTADO|slice:"1:-1" %}
+                                    <option value="{{ estado.0 }}" {% if estado.0 == Solicitudes.estado %}selected{% endif %}>
+                                        {{ estado.1 }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            
+                            
+                            {% endif %}
+
+                           
+                            
                         </td>
                         <td data-label="Carga de trabajo">
                             <select name="limite" class="limite-select" data-solicitud-id="{{ Solicitudes.id }}" {% if not request.user.is_superuser %}disabled{% endif %}>
@@ -141,7 +174,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header" style="background-color: #707eff;">
@@ -157,7 +190,7 @@
         </div>
     </div>
 
-<!-- Modal Dinámico de Bootstrap -->
+<!-- Modal Dinámico de ENVIAR AL CORREO -->
 <div class="modal fade" id="dynamicEmailModal" tabindex="-1" aria-labelledby="dynamicEmailModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -212,16 +245,308 @@
     </div>
 </div>
 
-
+<!-- Modal Bootstrap para el motivo del cambio -->
+<div class="modal fade" id="registro_De_Designio" tabindex="-1" role="dialog" aria-labelledby="registro_De_DesignioLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="registro_De_DesignioLabel">Motivo del cambio de profesional</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="motivoCambioForm">
+            <div class="form-group">
+              <label for="motivo">Motivo del cambio</label>
+              <textarea class="form-control" id="motivo" name="motivo" rows="3" required></textarea>
+            </div>
+            <input type="hidden" id="nuevo_profesional_id" name="nuevo_profesional_id">
+            <input type="hidden" id="solicitud_id" name="solicitud_id">
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="guardarMotivo">Guardar motivo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 </section>
 <br>
 <br>
 
 {% block custom_js %}
-<script src="{% static 'js/table.js' %}"></script>
+<script>
+    //Darle diseño a al tabla mediante JS
+    $(document).ready(function() {
+        var tabla = $('#tabla_registro').DataTable({
+            searching: false,
+            pageLength: 12,
+            lengthChange: false,
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.12.1/i18n/es-CL.json'
+            },
+            order: [[0, 'desc']] // '0' indica la primera columna (Solicitudes.id), 'desc' indica orden descendente
+        });
+    
+    
+        $(".estado-select").change(function() {
+            var solicitudId = $(this).data('solicitud-id');
+            var nuevoEstado = $(this).val();
+    
+            console.log(nuevoEstado)
+            // Realizar la solicitud AJAX para actualizar el estado
+            $.ajax({
+                url: "{% url 'actualizar_estado' %}",
+                type: "POST",
+                data: {
+                    solicitud_id: solicitudId,
+                    estado: nuevoEstado,
+                    csrfmiddlewaretoken: "{{ csrf_token }}"
+                },
+                success: function(response) {
+                    // Manejar la respuesta exitosa si es necesario
+                    console.log("Estado actualizado correctamente");
+                },
+                error: function(xhr, status, error) {
+                    // Manejar el error si es necesario
+                    console.error("Error al actualizar el estado:", error);
+                }
+            });
+        });
+    
+        
+    
+        $(".limite-select").change(function() {
+        var solicitudId = $(this).data('solicitud-id'); // Obtener el ID de la solicitud
+        var nuevoLimite = $(this).val(); // Obtener el nuevo límite seleccionado
+        var profesionalSelect = $("select[data-solicitud-id='" + solicitudId + "']"); // Obtener el select del profesional basado en la solicitud ID
+        var profesional = profesionalSelect.val(); // Obtener el valor seleccionado del <select> de profesional
+    
+        console.log(nuevoLimite);
+    
+        // Si nuevoLimite es 'P', mostrar el menú desplegable adicional para seleccionar días
+        if (nuevoLimite === 'P') {
+            var dias = prompt("Selecciona la cantidad de días que deseas agregar:", "1");
+    
+            // Verificar que el usuario haya ingresado un valor para los días
+            if (dias !== null && dias !== '') {
+                // Realizar la solicitud AJAX con los días seleccionados
+                if (profesional !== undefined && profesional !== null && profesional !== '') {
+                    $.ajax({
+                        url: "{% url 'actualizar_limite' %}", // URL del endpoint
+                        type: "POST",
+                        data: {
+                            solicitud_id: solicitudId,
+                            nuevoLimite: nuevoLimite,
+                            dias: dias, // Agregar los días al envío de datos
+                            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val() // Obtener el CSRF token de un input oculto
+                        },
+                        success: function(response) {
+                            // Manejar la respuesta exitosa
+                            alert("Estado actualizado correctamente");
+                        },
+                        error: function(xhr, status, error) {
+                            // Manejar el error si ocurre
+                            alert("Error al actualizar el estado:", error);
+                        }
+                    });
+                } else {
+                    alert("El profesional seleccionado es 'Selecciona un profesional', no se realizará ninguna acción.");
+                }
+            } else {
+                alert("No se ingresó una cantidad de días válida.");
+            }
+        } else {
+            // Si nuevoLimite no es 'P', seguir con la lógica normal
+            if (profesional !== undefined && profesional !== null && profesional !== '') {
+                $.ajax({
+                    url: "{% url 'actualizar_limite' %}", // URL del endpoint
+                    type: "POST",
+                    data: {
+                        solicitud_id: solicitudId,
+                        nuevoLimite: nuevoLimite,
+                        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val() // Obtener el CSRF token de un input oculto
+                    },
+                    success: function(response) {
+                        // Manejar la respuesta exitosa
+                        alert("Estado actualizado correctamente");
+                    },
+                    error: function(xhr, status, error) {
+                        // Manejar el error si ocurre
+                        alert("Error al actualizar el estado:", error);
+                    }
+                });
+            } else {
+                alert("El profesional seleccionado es 'Selecciona un profesional', no se realizará ninguna acción.");
+            }
+        }
+    });
+    
+    });
+      
+
+    $(".profesional-select").change(function() {
+    var solicitudId = $(this).data('solicitud-id');
+    var nuevoProfesional = $(this).val();
+    var antProfesional = $(this).data('antiguo-profesional');
+    console.log(antProfesional)
+    // Verificar si el profesional anterior está vacío o es None
+    if (!antProfesional || antProfesional === "None") {
+        // Si el profesional anterior es None o vacío, solo actualizar directamente
+        actualizarProfesional(solicitudId, nuevoProfesional);
+    } else {
+        // Si hay un profesional anterior, mostrar el modal para el motivo
+        $("#nuevo_profesional_id").val(nuevoProfesional);
+        $("#solicitud_id").val(solicitudId);
+        $("#registro_De_Designio").modal("show");
+    }
+});
+
+
+    // Función para actualizar el profesional sin motivo
+    function actualizarProfesional(solicitudId, nuevoProfesional) {
+        var csrfToken = '{{ csrf_token }}';
+
+        $.ajax({
+            url: "{% url 'actualizar_profesional' %}",
+            type: "POST",
+            data: {
+                solicitud_id: solicitudId,
+                profesional: nuevoProfesional,
+                csrfmiddlewaretoken: csrfToken
+            },
+            success: function(response) {
+                if (response.success) {
+                    $("#response-message").html('<div class="alert alert-success">Profesional actualizado correctamente sin motivo</div>');
+                } else {
+                    $("#response-message").html('<div class="alert alert-danger">Error al actualizar el profesional</div>');
+                }
+            },
+            error: function(xhr, status, error) {
+                $("#response-message").html('<div class="alert alert-danger">Ocurrió un error al actualizar el profesional</div>');
+                console.error("Error al actualizar el profesional:", error);
+            }
+        });
+    }
+
+    // Al hacer clic en "Guardar motivo" en el modal
+    $("#guardarMotivo").click(function() {
+        var motivo = $("#motivo").val();
+        var solicitudId = $("#solicitud_id").val();
+        var nuevoProfesional = $("#nuevo_profesional_id").val();
+        var csrfToken = '{{ csrf_token }}';
+
+        if (!motivo) {
+            alert("Debe ingresar el motivo del cambio.");
+            return;
+        }
+
+        $.ajax({
+            url: "{% url 'actualizar_profesional' %}",
+            type: "POST",
+            data: {
+                solicitud_id: solicitudId,
+                profesional: nuevoProfesional,
+                motivo: motivo,
+                csrfmiddlewaretoken: csrfToken
+            },
+            success: function(response) {
+                if (response.success) {
+                    $("#response-message").html('<div class="alert alert-success">Profesional y motivo actualizados correctamente</div>');
+                } else {
+                    $("#response-message").html('<div class="alert alert-danger">Error al actualizar el profesional</div>');
+                }
+                $("#registro_De_Designio").modal("hide");
+            },
+            error: function(xhr, status, error) {
+                $("#response-message").html('<div class="alert alert-danger">Ocurrió un error al actualizar el profesional</div>');
+                console.error("Error al actualizar el profesional:", error);
+                $("#registro_De_Designio").modal("hide");
+            }
+        });
+    });
+
+    
+    
+        
+    var previewLinks = document.querySelectorAll('.preview-link');
+    previewLinks.forEach(function(link) {
+      link.addEventListener('click', function(event) {
+        event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+    
+        var registroId = parseInt(this.getAttribute('data-id')); // Convertir a número
+    
+        // Hacer una solicitud AJAX a la vista de Django para obtener los datos del registro
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/solicitud/vista_previa/' + registroId, true);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            var data = JSON.parse(xhr.responseText);
+    
+            var previewDataElement = document.getElementById('previewData');
+            previewDataElement.innerText =   'Fecha de la Solicitud: ' + data.fecha
+                                           + '\n'
+                                           + '\nCodigo: ' + data.codigo
+                                           + '\n'
+                                           + '\nDirección: ' + data.direccion
+                                           + '\n'
+                                           + '\nDepartamento o Unidad Responsable: ' + data.departamento
+                                           + '\n'
+                                           + '\nNombre del solicitante: ' + data.nombre_solicitante
+                                           + '\n'
+                                           + '\nNombre del proyecto: ' + data.nombre_proyecto
+                                           + '\n'
+                                           + '\nCorreo del solicitante: ' + data.corre_solicitante
+                                           + '\n'
+                                           + '\nArea De estudio: ' + data.area
+                                           + '\n'
+                                           + '\nObjetivos de la solicitud:' + data.objetivos
+                                           + '\n'
+                                           + '\nInsumo Solicitado: ' + data.insumo
+                                           + '\n'
+                                           + '\nProductos: ' + data.productos
+                                           + '\n'
+                                           + '\nCambios posible en el Insumo Entregado: ' + data.Cambios
+                                           + '\n';
+                                           
+                                           if (data.archivos_adjuntos_urls && data.archivos_adjuntos_urls.length > 0) {
+        // Agregar enlaces a los archivos adjuntos si existen
+        previewDataElement.innerHTML += '<br><br><strong>Archivos Adjuntos:</strong><br>';
+        data.archivos_adjuntos_urls.forEach(function(url) {
+            previewDataElement.innerHTML += '<a href="' + url + '" download>' + url.split('/').pop() + '</a><br>';
+        });
+    } else {
+        // Manejar el caso en el que no hay archivos adjuntos
+        previewDataElement.innerHTML += '<br><br>No hay archivos adjuntos disponibles';
+    }
+    
+    
+      
+            $('#previewModal').modal('show'); // Mostrar el modal utilizando jQuery
+          }
+        };
+        xhr.send();
+      });
+    });
+
+</script>
 
 <!-- JavaScript para manejar correos y archivos -->
 <script>
+
+    let selectedFichaId = null; // Variable global para almacenar el ID de la ficha seleccionada
+
+    // Agregar un evento 'click' a cada enlace para capturar el data-id
+    document.querySelectorAll('.email-link').forEach(link => {
+        link.addEventListener('click', function(event) {
+            selectedFichaId = this.getAttribute('data-id'); // Guardar el data-id del enlace seleccionado
+        });
+    });
+
+
     function addEmail() {
         const emailInput = document.getElementById('emailInput');
         const emailList = document.getElementById('emailList');
@@ -269,6 +594,7 @@
     const formData = new FormData();
     formData.append('emails', JSON.stringify(emailList)); // Convertir la lista de correos a JSON
     formData.append('message', messageText);
+    formData.append('ficha_id', selectedFichaId); // Usar el id de la ficha seleccionada
     
     for (const file of fileInput.files) {
         formData.append('files', file); // Agregar cada archivo al FormData
@@ -288,10 +614,7 @@
         document.getElementById('loadingSpinner').style.display = 'none';
 
         if (data.success) {
-            // Mostrar mensaje de éxito
             alert('Datos enviados con éxito');
-            
-            // Cerrar el modal después de un breve retardo para que el usuario vea el mensaje
             setTimeout(() => {
                 const modal = bootstrap.Modal.getInstance(document.getElementById('dynamicEmailModal'));
                 modal.hide();
@@ -301,12 +624,13 @@
         }
     })
     .catch(error => {
-        // Ocultar el spinner de carga y mostrar mensaje de error
         document.getElementById('loadingSpinner').style.display = 'none';
         console.error('Error:', error);
         alert('Ocurrió un error al enviar los datos');
     });
 }
+
+
 
 </script>
 

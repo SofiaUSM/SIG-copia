@@ -230,10 +230,10 @@ def crear_protocolo(request):
         response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
         
 
-        # Después de guardar la ficha
+        # # Después de guardar la ficha
         Protocolo.save()
 
-        # Obtén los datos necesarios para el correo
+        # # Obtén los datos necesarios para el correo
         # correo_destino1 = 'deisy.pereira@munivalpo.cl' 
         # correo_destino2 = request.POST['corre_solicitante']  # Asegúrate de que esto sea una cadena y no una tupla
         # asunto = 'Nueva ficha generada'

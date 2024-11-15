@@ -8,7 +8,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.http import HttpResponse,JsonResponse
 from core.models import UserActivity
-from formulario.models import ProtocoloSolicitud
+from formulario.models import ProtocoloSolicitud,Registro_designio
 from django.utils import timezone
 from openpyxl import Workbook
 # Create your views here.
@@ -17,14 +17,14 @@ from .forms import ImagenForm,PDFForm
 from .models import Imagen_sig,PDF_sig
 from django.shortcuts import get_object_or_404, redirect
 from django.core.paginator import Paginator, Page
-import datetime
+from datetime import datetime, timedelta
+
 from django.db.models import Q,F, Sum
 import os
 from django.contrib import messages
 from django.utils.timezone import now
 from arcgis.gis import GIS
 from arcgis.features import FeatureLayer
-
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -32,6 +32,7 @@ from email.mime.application import MIMEApplication
 
 gis = GIS("https://www.arcgis.com", "jimmi.gomez_munivalpo", "Jimgomez8718")
 
+from .pdf_generator import *
 
 def login(request):
     if request.user.is_authenticated:
@@ -88,6 +89,7 @@ def Historial_Visitas(request):
 
 @login_required(login_url='/login/')
 def solicitude_llegadas(request,dia_p = None):
+    
     ESTADO = [
         ('RECIBIDO', 'RECIBIDO'),
         ('EN PROCESO', 'EN PROCESO'),
@@ -97,9 +99,9 @@ def solicitude_llegadas(request,dia_p = None):
 
     LIMITE_DE_DIA = {
         ('', ''),
-        ('L', 'LIVIANA 4 Días máximos'),
-        ('M', 'MEDIA 8 Días máximos'),
-        ('A', 'ALTO 15 Días máximos'),
+        ('L', 'LIVIANA 0 - 4 Días máximos'),
+        ('M', 'MEDIA 0 - 8 Días máximos'),
+        ('A', 'ALTO 0 - 15 Días máximos'),
         ('P','Plazo X Asignar los Dias máximos'),
 
     }
@@ -113,7 +115,8 @@ def solicitude_llegadas(request,dia_p = None):
 
     # Verificar si el usuario es superuser
     if request.user.is_superuser:
-        solicitudes = ProtocoloSolicitud.objects.all()  # Superusuario ve todas las solicitudes
+        solicitudes = ProtocoloSolicitud.objects.all()
+          # Superusuario ve todas las solicitudes
     else:
         solicitudes = ProtocoloSolicitud.objects.filter(profesional=request.user)  # Usuario normal solo ve sus solicitudes
 
@@ -238,19 +241,25 @@ def actualizar_profesional(request):
     if request.method == 'POST':
         solicitud_id = request.POST.get('solicitud_id')
         nuevo_profesional_id = request.POST.get('profesional')
+        motivo = request.POST.get('motivo')
+        solicitud = get_object_or_404(ProtocoloSolicitud, id=solicitud_id)
 
-        # Agregar un print o logging para depurar
-        print("Solicitud ID:", solicitud_id)
-        print("Nuevo profesional ID:", nuevo_profesional_id)
 
         if not nuevo_profesional_id or not solicitud_id:
-            return JsonResponse({'success': False, 'message': 'Faltan datos de la solicitud o profesional.'})
+            return JsonResponse({'success': False, 'message': 'Necesita'})
 
-        # Obtener la solicitud y el nuevo profesional
-        solicitud = get_object_or_404(ProtocoloSolicitud, id=solicitud_id)
+
+        if solicitud.profesional:
+            
+            Reg = Registro_designio(
+                objetivos = motivo,
+                protocolo = solicitud,
+                profesional = solicitud.profesional,
+                
+                )
+            Reg.save()
+            
         nuevo_profesional = get_object_or_404(User, id=nuevo_profesional_id)
-
-        # Actualizar el profesional y la fecha de actualización
         solicitud.profesional = nuevo_profesional
         solicitud.fecha_D = timezone.now()
         solicitud.save()
@@ -264,7 +273,7 @@ def calcular_fecha_limite(inicio, dias):
     dias_restantes = dias
 
     while dias_restantes > 0:
-        fecha_limite += datetime.timedelta(days=1)
+        fecha_limite += timedelta(days=1)
         if fecha_limite.weekday() < 5:  # Lunes=0, Domingo=6
             dias_restantes -= 1
     
@@ -394,16 +403,18 @@ def Envio_de_correo(request):
     if request.method == 'POST':
         # Obtener los datos
         emails = json.loads(request.POST.get('emails', '[]'))  # Convertir JSON de vuelta a lista
+        
         message = request.POST.get('message', '')
+        ficha_id = request.POST.get('ficha_id')
+        Protocolo = ProtocoloSolicitud.objects.get(id = ficha_id)
+        Protocolo.enviado_correo = True
+        Protocolo.save()
 
-        # Manejar los archivos adjuntados
-        files = request.FILES.getlist('files')
-        for file in files:
-            # Procesa cada archivo aquí (guardar, analizar, etc.)
-            pass
+        print(ficha_id)
+        buffer = Generar_PDF(ficha_id)
 
-        correo_destino1 = 'deisy.pereira@munivalpo.cl' 
-        correo_destino2 = request.POST['corre_solicitante']  # Asegúrate de que esto sea una cadena y no una tupla
+                # Obtén los datos necesarios para el correo
+        correo_destino1 = 'emanuelvperez2000@gmail.com' 
         asunto = 'Nueva ficha generada'
 
         # Construye el mensaje de correo
@@ -413,10 +424,8 @@ def Envio_de_correo(request):
         mensaje['Subject'] = asunto
 
         # Cuerpo del mensaje
-        cuerpo_mensaje = cuerpo_mensaje# Asegúrate de definir el cuerpo del mensaje
-        mensaje.attach(MIMEText(cuerpo_mensaje, 'plain'))
+        mensaje.attach(MIMEText(message, 'plain'))
 
-        buffer = BytesIO()
         # Adjunta el PDF al mensaje de correo
         archivo_pdf = buffer.getvalue()
 
@@ -446,3 +455,4 @@ def Envio_de_correo(request):
         return JsonResponse({'success': True})
 
     return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=405)
+

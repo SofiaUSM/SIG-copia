@@ -84,7 +84,7 @@ class ProtocoloSolicitud(models.Model):
 
     archivo_adjunto = models.FileField(upload_to=content_file_name_adjunto, blank=True, null=True)
 
-
+    enviado_correo = models.BooleanField(default=False)
     
     class Meta:
         verbose_name = "protocolo_solicitud"
@@ -103,3 +103,18 @@ class ArchivoProtocolo(models.Model):
 
     def __str__(self):
         return str(self.protocolo.id) + ' - ' + str(self.id)
+    
+class Registro_designio(models.Model):
+    id = models.BigAutoField(primary_key=True, unique=True)
+
+    protocolo = models.ForeignKey(ProtocoloSolicitud, on_delete=models.CASCADE, related_name='archivos')
+    profesional = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True )
+    objetivos = models.TextField()
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Registro_designio"
+        verbose_name_plural = "Registros_designios"
+
+    def __str__(self):
+        return str(self.profesional.first_name) + ' - ' + str(self.protocolo.id)

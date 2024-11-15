@@ -107,7 +107,7 @@ class ArchivoProtocolo(models.Model):
 class Registro_designio(models.Model):
     id = models.BigAutoField(primary_key=True, unique=True)
 
-    protocolo = models.ForeignKey(ProtocoloSolicitud, on_delete=models.CASCADE, related_name='archivos')
+    protocolo = models.ForeignKey(ProtocoloSolicitud, on_delete=models.CASCADE, related_name='protocolo')
     profesional = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True )
     objetivos = models.TextField()
     fecha = models.DateTimeField(auto_now_add=True)

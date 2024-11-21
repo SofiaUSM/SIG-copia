@@ -1,228 +1,106 @@
-{% extends 'core/Slide.html' %}
+<!-- C:\Users\jaime.sanchez\Proyectos\solicitudes_gis\control_creacion_usuario\templates\Gestion_imagen.html -->
 
+{% extends 'core/Slide.html' %}
 {% load static %}
 
-{% block main_content%}
+{% block custom_css %}
+  <link href="{% static 'css/gestion_imagen.css' %}" rel="stylesheet" />
+{% endblock %}
 
-{% block custom_css %} 
+{% block main_content %}
+  <section class="container">
+    <h1 class="section-title">Gestión de Imágenes</h1>
 
-{% endblock custom_css %}
-<style>
-body {
-    font-weight: 300;
-    font-size: 16px;
-    line-height: 1.5;
-    color: rgb(226, 226, 226);
-    overflow-x: hidden;
- 
-    margin: 0;
-    width: 100vw;
-    height: 100vh;
-    text-shadow: 8px 8px 10px #0000008c;
-    background-color: #343a40;
-}
-.table-custom {
-  background-color: #ffffff;
-  color: black; /* Color de fondo de la tabla */
-  }
-  .container img {
-    width: 370px;
-    height: 370px;
-}
-.container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-gap: 30px;
-}
-
-.grid {
-    display: flex;
-    flex-direction: column;
-}
-
-.grid img {
-    width: 100%;
-    image-rendering: -webkit-optimize-contrast; /* Mejora el contraste */
-    object-fit: contain; /* Escala la imagen para que se ajuste al contenedor */
-}
-
-
-.botones {
-    display: flex;
-    justify-content: space-between;
-}
-
-.botones button {
-    background-color: gray;
-    color: white;
-    border: none;
-    padding: 10px 20px; /* Aumenta el espacio alrededor del texto */
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-    border-radius: 15px; /* Haz los bordes más redondeados */
-    outline: none; /* Elimina el contorno predeterminado del botón */
-}
-
-/* Cambio de estilos cuando el mouse está sobre los botones */
-.botones button:hover {
-    background-color: white;
-    color: black;
-}
-
-</style>
-  <section >
-      <div class="row">
-          <div class="col-md-11 mx-auto">
-              <h1>   Gestion de Imagenes SIG </h1>
-              
-              <br>
-              <h2> Intrucciones de uso:</h2>
-              <h3> 1.- archivo adjunto: solo sirve para guarda la previa de la imagen.</h3>
-              <h3> 2.- boton Subir nueva imagen: ese boton sube la imagen en el servidor.</h3>
-              <h3> 3.- copia url: sirve para copiar la dirrecion de la imagen.</h3>
-              <h3> 4.- eliminar imagen: ese boton es para eliminar la imagen.</h3>
-                <br><br>
-                <div class="column">
-                    <form id="imageForm" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <br>
-                        <img id="previewImage" src="#" alt="Vista previa de la imagen" style="display: none;">
-                        <br>
-                        <button type="submit">Subir nueva imagen</button>
-                    </form>
-                </div>
-                
-                
-                
-            <br>
-          </div>
+    <div class="flex-row-content mb-4">
+      <!-- Instrucciones de Uso -->
+      <div class="info-box">
+        <h2 class="section-subtitle">Instrucciones de uso:</h2>
+        <ol class="font-light">
+          <li>
+            <strong>Archivo adjunto:</strong> Solo sirve para guardar la previa de la imagen.
+          </li>
+          <li>
+            <strong>Botón "Subir nueva imagen":</strong> Ese botón sube la imagen al servidor.
+          </li>
+          <li>
+            <strong>Copia URL:</strong> Sirve para copiar la dirección de la imagen.
+          </li>
+          <li>
+            <strong>Eliminar imagen:</strong> Ese botón es para eliminar la imagen.
+          </li>
+        </ol>
       </div>
-  </section>
-  <br><br><br>
-  <section>
-    <div class="container">
-        {% for imagen in page_obj %}
+    </div>
+
+    <div class="flex-row-content mb-4">
+      <!-- Formulario de Subida de Imágenes -->
+      <div class="info-box">
+        <form id="imageForm" method="post" enctype="multipart/form-data" class="mb-4">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <div class="mb-3">
+            <img id="previewImage" src="#" alt="Vista previa de la imagen" class="img-thumbnail" style="display: none;" />
+          </div>
+          <button type="submit" class="btn btn-custom">Subir nueva imagen</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="flex-row-content mb-4">
+      <!-- Galería de Imágenes -->
+      <div class="image-gallery">
+        <div class="row">
+          {% for imagen in page_obj %}
             {% if imagen.archivo_adjunto %}
-            <div class="grid">
-                <!-- Si la imagen tiene un archivo adjunto, muéstrala -->
-                <div>
-                    <a href="{{ imagen.archivo_adjunto.url }}">
-                        <img src="{{ imagen.archivo_adjunto.url }}" alt="Imagen">
-                    </a>
-                </div>
-                <br>
-                <div class="botones">
-                    <button onclick="copiarURL('{{ imagen.archivo_adjunto.url }}')">Copiar URL</button>
-                    <form action="{% url 'eliminar_imagen' imagen.id %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit">Eliminar</button>
+              <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                  <a href="{{ imagen.archivo_adjunto.url }}"><img src="{{ imagen.archivo_adjunto.url }}" class="card-img-top" alt="Imagen" /></a>
+                  <div class="card-body d-flex justify-content-between">
+                    <button class="btn btn-success" onclick="copiarURL('{{ imagen.archivo_adjunto.url }}')">Copiar URL</button>
+                    <form action="{% url 'eliminar_imagen' imagen.id %}" method="post" class="mb-0">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-danger">Eliminar</button>
                     </form>
+                  </div>
                 </div>
-            </div>
+              </div>
             {% endif %}
-        {% endfor %}
-    </div>
-    <br>
-    <br>
-    <br>
-
-    <!-- Botones de paginación -->
-    <div class="pagination-container" style="display: flex; justify-content: center;">
-        
-        <!-- Botones de paginación -->
-        <div class="pagination">
-            {% if page_obj.has_previous %}
-                <a class="btn btn-warning" href="?page=1">&laquo;&nbsp; Primero</a> &nbsp;&nbsp;&nbsp;
-                <a class="btn btn-warning" href="?page={{ page_obj.previous_page_number }}">Anterior</a>&nbsp;&nbsp;&nbsp;
-            {% endif %}
-        
-            <span class="current" style="font-size: 1.2em; font-weight: bold;">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.</span>&nbsp;&nbsp;&nbsp;
-        
-            {% if page_obj.has_next %}
-                <a class="btn btn-warning" href="?page={{ page_obj.next_page_number }}">Siguiente</a>&nbsp;&nbsp;&nbsp;
-                <a class="btn btn-warning" href="?page={{ page_obj.paginator.num_pages }}">Último &nbsp;&raquo;</a>&nbsp;&nbsp;&nbsp;
-            {% endif %}
+          {% endfor %}
         </div>
+      </div>
     </div>
-    
-    
-    
-</section>
 
+    <div class="flex-row-content">
+      <!-- Paginación -->
+      <nav aria-label="Paginación">
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link btn btn-warning me-2" href="?page=1">&laquo; Primero</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link btn btn-warning me-2" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+            </li>
+          {% endif %}
 
+          <li class="page-item disabled">
+            <span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+          </li>
 
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link btn btn-warning ms-2" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link btn btn-warning ms-2" href="?page={{ page_obj.paginator.num_pages }}">Último &raquo;</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </section>
+{% endblock %}
 
-
-  
-  <!-- <tr>
-      {% csrf_token %}
-      <td>{{usuarios.username}}</td>
-      <td><input type="checkbox" id="checkbox-{{ usuarios.id }}" {% if usuarios.is_active %}checked{% endif %}> Activo</td>
-      
-      <td><button class="btn btn-primary" type="submit"> Cambiar contraseña</button></td>
-  </tr> -->
-  {% block custom_js %}
-  <script>
-    function copiarURL(url) {
-        // Obtener el dominio de la página actual
-        var dominio = window.location.origin;
-        // Agregar el dominio a la URL de la imagen
-        var urlCompleta = dominio + url;
-        
-        // Crear un campo de texto temporal
-        var campoTemporal = document.createElement('textarea');
-        campoTemporal.value = urlCompleta;
-        
-        // Agregar el campo temporal al DOM
-        document.body.appendChild(campoTemporal);
-        
-        // Seleccionar y copiar el texto en el campo temporal
-        campoTemporal.select();
-        document.execCommand('copy');
-        
-        // Eliminar el campo temporal
-        document.body.removeChild(campoTemporal);
-        
-        // Mostrar un mensaje de éxito
-        alert('URL copiada: ' + urlCompleta);
-    }
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var form = document.getElementById('imageForm');
-        var input = form.querySelector('input[type="file"]');
-        var preview = document.getElementById('previewImage');
-
-        input.addEventListener('change', function(event) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                };
-
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                preview.src = "#";
-                preview.style.display = 'none';
-            }
-        });
-
-        form.addEventListener('submit', function(event) {
-            if (!input.files || input.files.length === 0 || !input.files[0]) {
-                event.preventDefault(); // Evitar la presentación del formulario si no se selecciona ninguna imagen
-                alert("Por favor, seleccione una imagen.");
-            }
-        });
-    });
-</script>
-
-
-
-
-    
-  
-{% endblock custom_js %}
+{% block custom_js %}
+  <script src="{% static 'js/gestion_imagen.js' %}"></script>
 {% endblock %}

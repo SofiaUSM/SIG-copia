@@ -1,0 +1,137 @@
+/* =========================================
+   Variables Paleta de Colores SIG
+========================================= */
+:root {
+    --tea-green: #DDF8C3;
+    --tea-green-v2: #C5ECAC;
+    --mint-green: #D1EFEE;
+    --tiffany-blue: #A8E1DF;
+    --sky-blue: #88C7DB;
+    --blue-gray: #5D97D1;
+    --oxford-blue: #16233E;
+
+    /* =========================================
+       Variables de Tipografía
+    ========================================= */
+    --primary-font: 'Helvetica Neue', sans-serif;
+    --complementary-font: 'Trebuchet MS', sans-serif;
+    --complementary-font-2: 'Fjalla One', sans-serif;
+}
+
+/* =========================================
+   Importación de Fuentes Primaria: Helvetica Neue
+========================================= */
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/HelveticaNeueRoman.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/HelveticaNeueBlack.otf') format('opentype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/HelveticaNeueBlackItalic.otf') format('opentype');
+    font-weight: 900;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/HelveticaNeueBold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/HelveticaNeueBoldItalic.otf') format('opentype');
+    font-weight: 700;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/HelveticaNeueLight.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/HelveticaNeueLightItalic.otf') format('opentype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+/* =========================================
+   Importación de Fuente Complementaria: Trebuchet MS
+========================================= */
+@font-face {
+    font-family: 'Trebuchet MS';
+    src: url('../fonts/Trebuchet-MS.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Trebuchet MS';
+    src: url('../fonts/Trebuchet-MS-Italic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+}
+
+/* =========================================
+   Importación de Fuente Complementaria: Fjalla One (GOOGLE FONTS)
+========================================= */
+@font-face {
+    font-family: 'Fjalla One';
+    src: url('../fonts/FjallaOne-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* =========================================
+   Container Styles con Neumorfismo
+========================================= */
+.container {
+    background-color: var(--tea-green-v2);
+    /* Fondo adaptado */
+    border-radius: 20px;
+    padding: calc(var(--bs-gutter-x) * 0.5) 40px;
+    box-shadow:
+        8px 8px 16px #A1D6A3,
+        /* Sombra externa oscura adaptada */
+        -8px -8px 16px var(--mint-green);
+    /* Sombra externa clara adaptada al fondo del body */
+    /* Sombra externa clara ahora coincide con el color de fondo del body */
+    text-align: center;
+    height: -webkit-fill-available;
+    margin-block: 1.5rem;
+}
+
+
+.container h1 {
+    font-size: 36px;
+    color: var(--oxford-blue) !important;
+    /* Asegura que el título usa OXFORD BLUE */
+    font-weight: 600;
+    margin-bottom: 32px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

@@ -1,4 +1,3 @@
-from io import BytesIO
 import json
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required,user_passes_test
@@ -19,7 +18,9 @@ from django.shortcuts import get_object_or_404, redirect
 from django.core.paginator import Paginator, Page
 from datetime import datetime, timedelta
 
-from django.db.models import Q,F, Sum
+from formulario.models import *
+
+from django.db.models import Q,F, Sum,Count
 import os
 from django.contrib import messages
 from django.utils.timezone import now
@@ -80,6 +81,7 @@ def download_excel(request):
     workbook.save(response)
 
     return response
+
 def Historial_Visitas(request):
     Historial = UserActivity.objects.all()
     data = {
@@ -88,8 +90,7 @@ def Historial_Visitas(request):
     return render(request,'Historial_Visitas.html',data)
 
 @login_required(login_url='/login/')
-def solicitude_llegadas(request,dia_p = None):
-    
+def solicitude_llegadas(request, dia_p=None):
     ESTADO = [
         ('RECIBIDO', 'RECIBIDO'),
         ('EN PROCESO', 'EN PROCESO'),
@@ -102,8 +103,7 @@ def solicitude_llegadas(request,dia_p = None):
         ('L', 'LIVIANA 0 - 4 Días máximos'),
         ('M', 'MEDIA 0 - 8 Días máximos'),
         ('A', 'ALTO 0 - 15 Días máximos'),
-        ('P','Plazo X Asignar los Dias máximos'),
-
+        ('P', 'Plazo X Asignar los Dias máximos'),
     }
 
     OPCIONES = {
@@ -113,40 +113,154 @@ def solicitude_llegadas(request,dia_p = None):
 
     usuarios = User.objects.all()
 
-    # Verificar si el usuario es superuser
+    # Filtrar las solicitudes según el usuario
     if request.user.is_superuser:
         solicitudes = ProtocoloSolicitud.objects.all()
-          # Superusuario ve todas las solicitudes
     else:
-        solicitudes = ProtocoloSolicitud.objects.filter(profesional=request.user)  # Usuario normal solo ve sus solicitudes
+        solicitudes = ProtocoloSolicitud.objects.filter(profesional=request.user)
+
+    # Agregar información adicional sobre número de designios y días restantes
+    solicitudes_data = []
+    for solicitud in solicitudes:
+        # Obtener el número de designios asociados a la solicitud
+        numero_designios = Registro_designio.objects.filter(protocolo=solicitud).count()
 
         # Calcular los días restantes hasta la fecha límite
-    for solicitud in solicitudes:
         if solicitud.fecha_T:
-            solicitud.dias_restantes = "Trabajo terminado"
+            dias_restantes = "Trabajo terminado"
         elif solicitud.fecha_L:
             dias_restantes = (solicitud.fecha_L.date() - now().date()).days
-            # Si ya ha pasado la fecha límite
             if dias_restantes < 0:
-                solicitud.dias_restantes = f"Fecha límite pasada por {-dias_restantes} días"
+                dias_restantes = f"Fecha límite pasada por {-dias_restantes} días"
             else:
-                solicitud.dias_restantes = f"Fecha de termino esperada {dias_restantes} días"
+                dias_restantes = f"Fecha de termino esperada {dias_restantes} días"
         else:
-            solicitud.dias_restantes = "Sin fecha límite"
+            dias_restantes = "Sin fecha límite"
 
-
+        # Agregar los datos al listado de solicitudes
+        solicitudes_data.append({
+            'solicitud': solicitud,
+            'numero_designios': numero_designios,
+            'dias_restantes': dias_restantes
+        })
 
     data = {
         'OPCIONES': OPCIONES,
-        'Solicitudes': solicitudes,  # Enviar las solicitudes filtradas según el usuario
-        'Usuarios': usuarios,  # Enviar la lista de usuarios al template
+        'Solicitudes': solicitudes_data,  # Lista con la información adicional
+        'Usuarios': usuarios,  # Lista de usuarios
     }
 
     return render(request, 'solicitude_llegadas.html', data)
 
-def control(resquest):
+def control(request):
+    # Obtener todas las solicitudes
+    total_solicitudes = ProtocoloSolicitud.objects.count()
 
-    return render(resquest,'Control.html')
+    # Contar solicitudes por estado
+    estados = ProtocoloSolicitud.objects.values("estado").annotate(
+        total=Count("estado")
+    )
+    # Convertir a un diccionario para facilitar el acceso
+    estado_counts = {estado["estado"]: estado["total"] for estado in estados}
+
+    # Asegurarse de que todos los estados estén representados, incluso si son 0
+    estados_posibles = ["RECIBIDO", "EN PROCESO", "EJECUTADO", "RECHAZADO"]
+    for estado in estados_posibles:
+        estado_counts.setdefault(estado, 0)
+
+    # Contar solicitudes por profesional SIG
+    solicitudes_per_profesional = (
+        ProtocoloSolicitud.objects.filter(profesional__isnull=False)
+        .values("profesional__first_name", "profesional__last_name")
+        .annotate(total=Count("id"))
+        .order_by("-total")
+    )
+
+    # Crear listas para etiquetas y datos del gráfico
+    labels = [
+        f"{item['profesional__first_name']} {item['profesional__last_name']}"
+        for item in solicitudes_per_profesional
+    ]
+    data = [item["total"] for item in solicitudes_per_profesional]
+
+    # Convertir las listas a JSON para utilizarlas en JavaScript
+    labels_json = json.dumps(labels)
+    data_json = json.dumps(data)
+
+    # Mapeo de tipo_limite a días máximos
+    tipo_limite_days = {
+        "L": 4,  # LIVIANA
+        "M": 8,  # MEDIA
+        "A": 15,  # ALTO
+    }
+
+    # Contar solicitudes por tipo_limite
+    counts_per_tipo = (
+        ProtocoloSolicitud.objects.filter(tipo_limite__in=tipo_limite_days.keys())
+        .values("tipo_limite")
+        .annotate(total=Count("tipo_limite"))
+    )
+
+    # Calcular el promedio ponderado de carga de trabajo
+    weighted_sum = sum(
+        tipo_limite_days[item["tipo_limite"]] * item["total"]
+        for item in counts_per_tipo
+    )
+    total_tipo = sum(item["total"] for item in counts_per_tipo)
+    average_carga_trabajo = round(weighted_sum / total_tipo, 2) if total_tipo > 0 else 0
+
+    # Preparar datos de tipo_limite para la plantilla
+    tipo_limite_stats = [
+        {
+            "tipo_limite": "ALTO",
+            "dias_maximos": 15,
+            "total": next(
+                (
+                    item["total"]
+                    for item in counts_per_tipo
+                    if item["tipo_limite"] == "A"
+                ),
+                0,
+            ),
+        },
+        {
+            "tipo_limite": "MEDIA",
+            "dias_maximos": 8,
+            "total": next(
+                (
+                    item["total"]
+                    for item in counts_per_tipo
+                    if item["tipo_limite"] == "M"
+                ),
+                0,
+            ),
+        },
+        {
+            "tipo_limite": "LIVIANA",
+            "dias_maximos": 4,
+            "total": next(
+                (
+                    item["total"]
+                    for item in counts_per_tipo
+                    if item["tipo_limite"] == "L"
+                ),
+                0,
+            ),
+        },
+    ]
+
+    context = {
+        "total_solicitudes": total_solicitudes,
+        "en_proceso": estado_counts.get("EN PROCESO", 0),
+        "ejecutado": estado_counts.get("EJECUTADO", 0),
+        "rechazado": estado_counts.get("RECHAZADO", 0),
+        "labels_json": labels_json,
+        "data_json": data_json,
+        "average_carga_trabajo": average_carga_trabajo,
+        "tipo_limite_stats": tipo_limite_stats,
+    }
+
+    return render(request, "Control.html", context)
 
 def cambiar_contraseña(request):
     if request.method == 'POST':
@@ -193,6 +307,7 @@ def actualizar_estado(request):
     if request.method == 'POST':
         solicitud_id = request.POST.get('solicitud_id')
         nuevo_estado = request.POST.get('estado')
+        ArchivoProtocolo = request.POST.get('files')
         solicitud = ProtocoloSolicitud.objects.get(id=solicitud_id)
         tdc = None
 
@@ -401,58 +516,173 @@ def Calculor_de_trabajo():
 
 def Envio_de_correo(request):
     if request.method == 'POST':
-        # Obtener los datos
+        user = request.user
         emails = json.loads(request.POST.get('emails', '[]'))  # Convertir JSON de vuelta a lista
+        if user.is_superuser:
+            # Obtener los datos
+            message = request.POST.get('message', '')
+            ficha_id = request.POST.get('ficha_id')
+            Protocolo = ProtocoloSolicitud.objects.get(id=ficha_id)
+            Protocolo.enviado_correo = True
+            profesional = Protocolo.profesional
+            Protocolo.estado = 'EN PROCESO'
+            Protocolo.save()
+
+            # Generar PDF (opcional, según tu lógica)
+            buffer = Generar_PDF(ficha_id)
+
+            # Configuración del correo
+            asunto = 'Nueva ficha generada'
+            mensaje = MIMEMultipart()
+            mensaje['From'] = 'noreplydeptosig@gmail.com'
+            destinatarios = list(set([user.email, profesional.email] + emails))
+            mensaje['To'] = ', '.join(destinatarios)
+            mensaje['Subject'] = asunto
+            mensaje.attach(MIMEText(message, 'plain'))
+
+            # Adjuntar PDF generado
+            archivo_pdf = buffer.getvalue()
+            pdf_adjunto = MIMEApplication(archivo_pdf)
+            pdf_adjunto.add_header('Content-Disposition', 'attachment', filename='Ficha_de_protocolo.pdf')
+            mensaje.attach(pdf_adjunto)
+
+            # Adjuntar archivos enviados
+            archivos = request.FILES.getlist('files')  # Obtener todos los archivos enviados
+            for archivo in archivos:
+                archivo_adjunto = MIMEApplication(archivo.read())
+                archivo_adjunto.add_header(
+                    'Content-Disposition', 
+                    'attachment', 
+                    filename=archivo.name
+                )
+                mensaje.attach(archivo_adjunto)
+
+            # Configuración del servidor SMTP
+            smtp_server = 'smtp.gmail.com'
+            smtp_port = 587
+            smtp_usuario = 'noreplydeptosig@gmail.com'
+            smtp_contrasena = 'vjom ooqh oujf slhi'
+
+            # Enviar el correo
+            server = smtplib.SMTP(smtp_server, smtp_port)
+            server.starttls()
+            server.login(smtp_usuario, smtp_contrasena)
+            server.sendmail(smtp_usuario, destinatarios, mensaje.as_string())
+            server.quit()
+
+            return JsonResponse({'success': True})
+        else:
+
+            message = request.POST.get('message', '')
+            ficha_id = request.POST.get('ficha_id')
+            Protocolo = ProtocoloSolicitud.objects.get(id=ficha_id)
+            solicitante = Protocolo.corre_solicitante
+            profesional = Protocolo.profesional
+            Protocolo.estado = 'EJECUTADO'
+            Protocolo.fecha_T = timezone.now()
+            Protocolo.save()
+
+                        # Generar PDF (opcional, según tu lógica)
+            buffer = Generar_PDF(ficha_id)
+            
+            superusers = User.objects.filter(is_superuser=True).values_list('email', flat=True)
+            superuser_emails = list(superusers)
+
+            # Configuración del correo
+            asunto = 'Nueva ficha generada'
+            mensaje = MIMEMultipart()
+            mensaje['From'] = 'noreplydeptosig@gmail.com'
+            destinatarios = [user.email, profesional.email, solicitante] + emails + superuser_emails
+            mensaje['To'] = ', '.join(destinatarios)
+            mensaje['Subject'] = asunto
+            mensaje.attach(MIMEText(message, 'plain'))
+
+            # Adjuntar PDF generado
+            archivo_pdf = buffer.getvalue()
+            pdf_adjunto = MIMEApplication(archivo_pdf)
+            pdf_adjunto.add_header('Content-Disposition', 'attachment', filename='Ficha_de_protocolo.pdf')
+            mensaje.attach(pdf_adjunto)
+
+            # Adjuntar archivos enviados
+            archivos = request.FILES.getlist('files')  # Obtener todos los archivos enviados
+            for archivo in archivos:
+                archivo_adjunto = MIMEApplication(archivo.read())
+                archivo_adjunto.add_header(
+                    'Content-Disposition', 
+                    'attachment', 
+                    filename=archivo.name
+                )
+                mensaje.attach(archivo_adjunto)
+
+            # Configuración del servidor SMTP
+            smtp_server = 'smtp.gmail.com'
+            smtp_port = 587
+            smtp_usuario = 'noreplydeptosig@gmail.com'
+            smtp_contrasena = 'vjom ooqh oujf slhi'
+
+            # Enviar el correo
+            server = smtplib.SMTP(smtp_server, smtp_port)
+            server.starttls()
+            server.login(smtp_usuario, smtp_contrasena)
+            server.sendmail(smtp_usuario, destinatarios, mensaje.as_string())
+            server.quit()
+            return JsonResponse({'success': True})
         
-        message = request.POST.get('message', '')
-        ficha_id = request.POST.get('ficha_id')
-        Protocolo = ProtocoloSolicitud.objects.get(id = ficha_id)
-        Protocolo.enviado_correo = True
-        Protocolo.save()
-
-        print(ficha_id)
-        buffer = Generar_PDF(ficha_id)
-
-                # Obtén los datos necesarios para el correo
-        correo_destino1 = 'emanuelvperez2000@gmail.com' 
-        asunto = 'Nueva ficha generada'
-
-        # Construye el mensaje de correo
-        mensaje = MIMEMultipart()
-        mensaje['From'] = 'noreplydeptosig@gmail.com'  
-        mensaje['To'] = correo_destino1
-        mensaje['Subject'] = asunto
-
-        # Cuerpo del mensaje
-        mensaje.attach(MIMEText(message, 'plain'))
-
-        # Adjunta el PDF al mensaje de correo
-        archivo_pdf = buffer.getvalue()
-
-        pdf_adjunto = MIMEApplication(archivo_pdf)
-        pdf_adjunto.add_header('Content-Disposition', 'attachment', filename='Ficha_de_protocolo.pdf')
-        mensaje.attach(pdf_adjunto)
-
-        # Configura el servidor SMTP
-        smtp_server = 'smtp.gmail.com'  # Cambia esto según tu proveedor de correo
-        smtp_port = 587    # Puerto de Gmail para TLS
-        smtp_usuario = 'noreplydeptosig@gmail.com'  # Tu dirección de correo
-        smtp_contrasena = 'vjom ooqh oujf slhi'  # Tu contraseña de correo
-
-        # Inicia la conexión con el servidor SMTP
-        server = smtplib.SMTP(smtp_server, smtp_port)
-        server.starttls()
-
-        # Inicia sesión en tu cuenta de correo
-        server.login(smtp_usuario, smtp_contrasena)
-
-        # Envía el correo electrónico
-        server.sendmail(smtp_usuario, correo_destino1, mensaje.as_string())
-
-        # Cierra la conexión con el servidor SMTP
-        server.quit()
-
-        return JsonResponse({'success': True})
-
     return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=405)
+
+@csrf_exempt
+def vista_previa_reaccinacion(request, id):
+    # Obtener el protocolo solicitado
+    protocoloS = ProtocoloSolicitud.objects.get(id=id)
+    
+    # Filtrar los registros relacionados con el protocolo
+    reg = Registro_designio.objects.filter(protocolo=protocoloS.id)
+    
+    # Construir una lista con los datos de cada registro
+    registros_data = [
+        {
+            "id": registro.id,
+            "Motivo": registro.objetivos,
+            "Fecha": registro.fecha.strftime('%Y-%m-%d'),
+            "Profesional_N": registro.profesional.first_name,
+            "Profesional_N_1": registro.profesional.last_name,
+
+        }
+        for registro in reg
+    ]
+    
+    # Preparar la respuesta
+    data = {
+        "registros": registros_data,
+    }
+    
+    return JsonResponse(data)
+
+
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+
+def delegar_admin(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        updates = data.get('updates', [])
+
+        for update in updates:
+            user_id = update.get('user_id')
+            is_superuser = update.get('is_superuser', False)
+
+            try:
+                user = User.objects.get(id=user_id)
+                user.is_superuser = is_superuser
+                user.save()
+            except User.DoesNotExist:
+                return JsonResponse({'status': 'error', 'message': f'Usuario con ID {user_id} no encontrado.'}, status=404)
+
+        return JsonResponse({'status': 'success', 'message': 'Usuarios actualizados correctamente.'})
+
+    usuarios = User.objects.filter(is_staff=False)
+    data = {
+        'Usuarios': usuarios,
+    }
+    return render(request, 'admin.html', data)
 

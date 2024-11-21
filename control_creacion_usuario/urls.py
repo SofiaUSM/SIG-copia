@@ -23,4 +23,8 @@ urlpatterns = [
 
     path('correos/', views.Envio_de_correo, name="Envio_de_correo"),
 
+    path('vista_previa_reaccinacion/<int:id>', views.vista_previa_reaccinacion, name="vista_previa_reaccinacion"),
+
+    path('admin_re/', views.delegar_admin, name="delegar_admin"),
+
 ]

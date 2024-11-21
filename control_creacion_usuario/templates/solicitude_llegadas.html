@@ -37,47 +37,66 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for Solicitudes in Solicitudes %}
+                    {% for item in Solicitudes %}
                     <tr>
-                        <td data-label="Numero de creacion solicitud">{{ Solicitudes.id }}</td>
+                        <td data-label="Numero de creacion solicitud">{{ item.solicitud.id }}</td>
                         <td data-label="Nombre del solicitante">
                             <p style="font-weight: bolder;" class="nombre-solicitante">
-                                {{ Solicitudes.nombre_solicitante }}
+                                {{ item.solicitud.nombre_solicitante }}
 
                             </p>
                         </td>
-                        <td data-label="Fecha de llegada">{{ Solicitudes.fecha|date:"Y/m/d H:i" }}</td>
-                        <td data-label="Departamento" class="nombre-solicitante">{{ Solicitudes.departamento }}</td>
+                        <td data-label="Fecha de llegada">{{ item.solicitud.fecha|date:"Y/m/d H:i" }}</td>
+                        <td data-label="Departamento" class="nombre-solicitante">{{ item.solicitud.departamento }}</td>
                         <td data-label="Descargar Ficha">
-                            <a style="text-decoration: none; position: relative;" href="/solicitud/descargar_pdf/{{ Solicitudes.id }}" download>
+                            <a style="text-decoration: none; position: relative;" href="/solicitud/descargar_pdf/{{ item.solicitud.id }}" download>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="acciones">
                                     <path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32v242.7l-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7V32zM64 352c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64v-32c0-35.3-28.7-64-64-64H346.5l-45.3 45.3c-25 25-65.5 25-90.5 0L165.5 352H64zm368 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/>
                                 </svg>
                             </a>
 
-                            <a style="text-decoration: none;" href="#" data-id="{{ Solicitudes.id }}" class="preview-link">
+                            <a style="text-decoration: none;" href="#" data-id="{{ item.solicitud.id }}" class="preview-link">
 
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="acciones">
                                     <path d="M0 64C0 28.7 28.7 0 64 0L224 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zm384 64l-128 0L256 0 384 128z"/>
                                 </svg>
                             </a>
-                        {% if request.user.is_superuser %}
+                       
 
-                            {% if Solicitudes.enviado_correo %}
+                            {% if item.solicitud.enviado_correo %}
 
-                                <a style="text-decoration: none; position: relative;" href="#" class="email-link" data-bs-toggle="modal" data-bs-target="#dynamicEmailModal" data-email-id="1" data-id="{{ Solicitudes.id }}">
+                                <a style="text-decoration: none; position: relative;" href="#" class="email-link" data-bs-toggle="modal" data-bs-target="#dynamicEmailModal" data-email-id="1" data-id="{{ item.solicitud.id }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="acciones" style="fill: rgb(66, 190, 13);">
                                         <path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/>
                                     </svg>
                                 </a>
                             {% else %}
 
-                                <a style="text-decoration: none; position: relative;" href="#" class="email-link" data-bs-toggle="modal" data-bs-target="#dynamicEmailModal" data-email-id="1" data-id="{{ Solicitudes.id }}">
+                                <a style="text-decoration: none; position: relative;" href="#" class="email-link" data-bs-toggle="modal" data-bs-target="#dynamicEmailModal" data-email-id="1" data-id="{{ item.solicitud.id }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="acciones">
                                         <path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/>
                                     </svg>
                                 </a>
                             {% endif %}
+                            
+                        {% if request.user.is_superuser %}
+
+
+                            {% if item.numero_designios == 0 %}
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="acciones" style="fill: darkgrey;">
+                                    <path d="M128 72a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm32 97.3c28.3-12.3 48-40.5 48-73.3c0-44.2-35.8-80-80-80S48 51.8 48 96c0 32.8 19.7 61 48 73.3L96 224l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0 0 54.7c-28.3 12.3-48 40.5-48 73.3c0 44.2 35.8 80 80 80s80-35.8 80-80c0-32.8-19.7-61-48-73.3l0-54.7 256 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-54.7c28.3-12.3 48-40.5 48-73.3c0-44.2-35.8-80-80-80s-80 35.8-80 80c0 32.8 19.7 61 48 73.3l0 54.7-320 0 0-54.7zM488 96a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM320 392a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/>
+                                </svg>
+                            
+                            {% else %}
+
+                            <a style="text-decoration: none;" href="#" data-protocolo-id="{{ item.solicitud.id }}" class="registro-preview-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="acciones">
+                                    <path d="M128 72a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm32 97.3c28.3-12.3 48-40.5 48-73.3c0-44.2-35.8-80-80-80S48 51.8 48 96c0 32.8 19.7 61 48 73.3L96 224l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0 0 54.7c-28.3 12.3-48 40.5-48 73.3c0 44.2 35.8 80 80 80s80-35.8 80-80c0-32.8-19.7-61-48-73.3l0-54.7 256 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-54.7c28.3-12.3 48-40.5 48-73.3c0-44.2-35.8-80-80-80s-80 35.8-80 80c0 32.8 19.7 61 48 73.3l0 54.7-320 0 0-54.7zM488 96a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM320 392a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/>
+                                </svg>
+                            </a>
+
+                            {% endif %}
+
                         {% endif %}
                             
 
@@ -86,13 +105,13 @@
                             <!-- Select de profesional -->
                             {% if request.user.is_superuser %}
                             <div class="select-wrapper">
-                                <select id="profesional-{{ Solicitudes.id }}" class="profesional-select" 
-                                        data-solicitud-id="{{ Solicitudes.id }}" 
-                                        data-antiguo-profesional="{% if Solicitudes.profesional %}{{ Solicitudes.profesional.id }}{% else %}None{% endif %}" 
+                                <select id="profesional-{{ item.solicitud.id }}" class="profesional-select" 
+                                        data-solicitud-id="{{ item.solicitud.id }}" 
+                                        data-antiguo-profesional="{% if item.solicitud.profesional %}{{ item.solicitud.profesional.id }}{% else %}None{% endif %}" 
                                         required>
-                                    <option value="" disabled {% if not Solicitudes.profesional %}selected{% endif %}>Selecciona un profesional</option>
+                                    <option value="" disabled {% if not item.solicitud.profesional %}selected{% endif %}>Selecciona un profesional</option>
                                     {% for usuario in Usuarios %}
-                                    <option value="{{ usuario.id }}" {% if Solicitudes.profesional and usuario.id == Solicitudes.profesional.id %}selected{% endif %}>
+                                    <option value="{{ usuario.id }}" {% if item.solicitud.profesional and usuario.id == item.solicitud.profesional.id %}selected{% endif %}>
                                         {{ usuario.first_name }} {{ usuario.last_name }}
                                     </option>
                                     {% endfor %}
@@ -101,10 +120,10 @@
                             
                         
                             {% else %}
-                            <select id="profesional-{{ Solicitudes.id }}" class="profesional-select" data-solicitud-id="{{ Solicitudes.id }}" disabled>
-                                <option value="" disabled {% if not Solicitudes.profesional %}selected{% endif %}>Selecciona un profesional</option>
+                            <select id="profesional-{{ item.solicitud.id }}" class="profesional-select" data-solicitud-id="{{ item.solicitud.id }}" disabled>
+                                <option value="" disabled {% if not item.solicitud.profesional %}selected{% endif %}>Selecciona un profesional</option>
                                 {% for usuario in Usuarios %}
-                                <option value="{{ usuario.id }}" {% if Solicitudes.profesional and usuario.id == Solicitudes.profesional.id %}selected{% endif %}>
+                                <option value="{{ usuario.id }}" {% if item.solicitud.profesional and usuario.id == item.solicitud.profesional.id %}selected{% endif %}>
                                     {{ usuario.first_name }} {{ usuario.last_name }}
                                 </option>
                                 {% endfor %}
@@ -116,18 +135,18 @@
 
                             {% if request.user.is_superuser %}
                             
-                            <select name="estado" class="estado-select" data-solicitud-id="{{ Solicitudes.id }}">
+                            <select name="estado" class="estado-select" data-solicitud-id="{{ item.solicitud.id }}">
                                 {% for estado in OPCIONES.ESTADO %}
-                                <option value="{{ estado.0 }}" {% if estado.0 == Solicitudes.estado %}selected{% endif %}>
+                                <option value="{{ estado.0 }}" {% if estado.0 == item.solicitud.estado %}selected{% endif %}>
                                     {{ estado.1 }}
                                 </option>
                                 {% endfor %}
                             </select>
 
                             {% else %}
-                                <select name="estado" class="estado-select" data-solicitud-id="{{ Solicitudes.id }}">
+                                <select name="estado" class="estado-select" data-solicitud-id="{{ item.solicitud.id }}">
                                     {% for estado in OPCIONES.ESTADO|slice:"1:-1" %}
-                                    <option value="{{ estado.0 }}" {% if estado.0 == Solicitudes.estado %}selected{% endif %}>
+                                    <option value="{{ estado.0 }}" {% if estado.0 == item.solicitud.estado %}selected{% endif %}>
                                         {{ estado.1 }}
                                     </option>
                                     {% endfor %}
@@ -135,31 +154,29 @@
                             
                             
                             {% endif %}
-
-                           
                             
                         </td>
                         <td data-label="Carga de trabajo">
-                            <select name="limite" class="limite-select" data-solicitud-id="{{ Solicitudes.id }}" {% if not request.user.is_superuser %}disabled{% endif %}>
+                            <select name="limite" class="limite-select" data-solicitud-id="{{ item.solicitud.id }}" {% if not request.user.is_superuser %}disabled{% endif %}>
                                 {% for limite in OPCIONES.LIMITE_DE_DIA %}
-                                <option value="{{ limite.0 }}" {% if limite.0 == Solicitudes.tipo_limite %}selected{% endif %}>{{ limite.1 }}</option>
+                                <option value="{{ limite.0 }}" {% if limite.0 == item.solicitud.tipo_limite %}selected{% endif %}>{{ limite.1 }}</option>
                                 {% endfor %}
                             </select>
                         </td>
-                        <td data-label="Fecha Designio">{{ Solicitudes.fecha_D|date:"Y/m/d H:i" }}</td>
-                        <td data-label="Fecha Termino">{{ Solicitudes.fecha_T|date:"Y/m/d H:i" }}</td>
+                        <td data-label="Fecha Designio">{{ item.solicitud.fecha_D|date:"Y/m/d H:i" }}</td>
+                        <td data-label="Fecha Termino">{{ item.solicitud.fecha_T|date:"Y/m/d H:i" }}</td>
 
-                        {% if Solicitudes.estado == 'RECHAZADO' %}
+                        {% if item.solicitud.estado == 'RECHAZADO' %}
                         <td data-label="Dias Limite" class="text-danger">
                             RECHAZADO
                         </td>
                         {% else %}
                             <td data-label="Dias Limite" 
-                                class="{% if 'Trabajo terminado' in Solicitudes.dias_restantes %}text-success
-                                    {% elif 'Fecha límite pasada' in Solicitudes.dias_restantes %}text-danger
-                                    {% elif 'Fecha de termino esperada' in Solicitudes.dias_restantes %}text-warning
+                                class="{% if 'Trabajo terminado' in item.dias_restantes %}text-success
+                                    {% elif 'Fecha límite pasada' in item.dias_restantes %}text-danger
+                                    {% elif 'Fecha de termino esperada' in item.dias_restantes %}text-warning
                                     {% else %}text-muted{% endif %}">
-                                {{ Solicitudes.dias_restantes }}
+                                {{ item.dias_restantes }}
                             </td>
                         {% endif %}
 
@@ -273,9 +290,22 @@
     </div>
   </div>
   
+
+<div class="modal fade" id="registroPreviewModal" tabindex="-1" aria-labelledby="registroPreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #707eff;">
+                <h5 class="modal-title" id="registroPreviewModalLabel">Vista previa de registros</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="registroPreviewData"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
 </section>
-<br>
-<br>
 
 {% block custom_js %}
 <script>
@@ -536,7 +566,6 @@
 
 <!-- JavaScript para manejar correos y archivos -->
 <script>
-
     let selectedFichaId = null; // Variable global para almacenar el ID de la ficha seleccionada
 
     // Agregar un evento 'click' a cada enlace para capturar el data-id
@@ -634,7 +663,45 @@
 
 </script>
 
+<script>
+var previewLinks = document.querySelectorAll('.registro-preview-link');
 
+previewLinks.forEach(function(link) {
+    link.addEventListener('click', function(event) {
+        event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+
+        var protocoloId = parseInt(this.getAttribute('data-protocolo-id')); // Convertir a número
+
+        // Hacer una solicitud AJAX a la vista de Django para obtener los datos
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/vista_previa_reaccinacion/' + protocoloId, true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText);
+
+                // Seleccionar el contenedor para mostrar los datos
+                var previewDataElement = document.getElementById('registroPreviewData');
+                previewDataElement.innerHTML = ''; // Limpiar contenido previo
+
+                data.registros.forEach(function(registro) {
+                    previewDataElement.innerHTML += 
+                        '<p><strong>Profesional Anterior:</strong> ' + registro.Profesional_N + ' '+ registro.Profesional_N_1  +'</p>' +
+                        '<p><strong>Objeto:</strong> ' + registro.Motivo + '</p>' +
+                        '<p><strong>Fecha:</strong> ' + registro.Fecha + '</p>' +
+                        '<hr>';
+                });
+
+                // Mostrar el modal
+                $('#registroPreviewModal').modal('show');
+            }
+        };
+        xhr.send();
+    });
+});
+
+
+
+</script>
 
 
 {% endblock custom_js %}

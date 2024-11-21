@@ -2,56 +2,96 @@
 
 {% load static %}
 
-{% block main_content%}
-
-{% block custom_css %} 
-
-{% endblock custom_css %}
-<style>
-body{
-
-  background-color: #333;
-}
-
-.container {
-    background-color: #5d5d5d; /* Color de fondo claro, profesional */
-    border-radius: 10px; /* Bordes redondeados para suavizar el diseño */
-    padding: 40px; /* Espacio interno */
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave para un efecto de elevación */
-    text-align: center; /* Centramos el texto */
-    max-width: 800px; /* Limitar el ancho para que no ocupe toda la pantalla */
-    margin: 50px auto; /* Centramos el contenedor en la página */
-}
-
-/* Estilos para el título */
-.container h1 {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fuente limpia y moderna */
-    font-size: 36px; /* Tamaño de letra grande */
-    color: #333; /* Color oscuro para el texto */
-    font-weight: 600; /* Peso de fuente más fuerte pero no exagerado */
-    margin: 0; /* Eliminamos el margen por defecto */
-}
-
-/* Agregar una animación sutil */
-.container h1 {
-    animation: fadeIn 1s ease-in-out; /* Animación de desvanecido al cargar la página */
-}
-
-/* Definición de la animación */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-</style>
+{% block custom_css %}
+  <link href="{% static 'css/control.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block main_content %}
   <section class="container">
- <h1 style="color: #ffffff;"> Bienvenido A Control SIG</h1>
-  </section>
-  
-  
+    <div class="flex-column-red">
+      <div class="flex-row-content p-1">
+        <!-- Sección de Información: Gráfico de Barras -->
+        <div class="flex-row-dashboard fill-available">
+          <div class="flex-column-gap fill-available">
+            <div class="info-box p-1 fill-available">
+              <h3>Solicitudes por Profesional</h3>
+              <canvas id="solicitudesPorProfesionalChart"></canvas>
+            </div>
+          </div>
+        </div>
 
+        <!-- Sección de Dashboard -->
+        <div class="flex-row-dashboard">
+          <!-- Parte Superior del Dashboard -->
+          <div class="dashboard-top">
+            <div class="flex-column-gap fill-available">
+              <div class="dashboard-box-1 p-1 h-full" style="flex-direction: row; gap: 1rem;">
+                <h3>Total de Solicitudes</h3>
+                <p class="counter" data-target="{{ total_solicitudes }}">0</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Parte Media del Dashboard: Solicitudes en Proceso, Ejecutadas y Rechazadas -->
+          <div class="dashboard-middle fill-available">
+            <!-- Solicitudes en Proceso -->
+            <div class="flex-column-gap fill-available">
+              <div class="dashboard-box-3 h-full">
+                <h3>En Proceso</h3>
+                <p class="counter" data-target="{{ en_proceso }}">0</p>
+              </div>
+            </div>
+
+            <!-- Solicitudes Ejecutadas -->
+            <div class="flex-column-gap fill-available">
+              <div class="dashboard-box-4 h-full">
+                <h3>Ejecutadas</h3>
+                <p class="counter" data-target="{{ ejecutado }}">0</p>
+              </div>
+            </div>
+
+            <!-- Solicitudes Rechazadas -->
+            <div class="flex-column-gap fill-available">
+              <div class="dashboard-box-5 h-full">
+                <h3>Rechazadas</h3>
+                <p class="counter" data-target="{{ rechazado }}">0</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Parte Inferior del Dashboard: Promedio de Carga de Trabajo -->
+          <div class="dashboard-bottom">
+            <div class="flex-column-gap fill-available">
+              <div class="dashboard-box-2 p-1 h-full">
+                <h3>Promedio de carga de trabajo</h3>
+                <p>
+                  <span class="counter" data-target="{{ average_carga_trabajo }}">0</span> Días máximos
+                </p>
+                <ul>
+                  {% for tipo in tipo_limite_stats %}
+                    <li>
+                      <strong>{{ tipo.tipo_limite }}</strong>: {{ tipo.dias_maximos }} Días máximos (<span class="counter" data-target="{{ tipo.total }}">0</span> solicitudes)
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block custom_js %}
+  <!-- Incluir Chart.js desde CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Definir las variables necesarias para el gráfico de barras -->
+  <script>
+    var labels = {{ labels_json|safe }};
+    var data = {{ data_json|safe }};
+  </script>
+
+  <!-- Incluir el script externo de control.js -->
+  <script src="{% static 'js/control.js' %}"></script>
 {% endblock %}

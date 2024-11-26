@@ -532,9 +532,9 @@ def Envio_de_correo(request):
             buffer = Generar_PDF(ficha_id)
 
             # Configuración del correo
-            asunto = 'Nueva ficha generada'
+            asunto = 'Solicitud Asignada'
             mensaje = MIMEMultipart()
-            mensaje['From'] = 'noreplydeptosig@gmail.com'
+            mensaje['From'] = 'departamento.sig@munivalpo.cl'
             destinatarios = list(set([user.email, profesional.email] + emails))
             mensaje['To'] = ', '.join(destinatarios)
             mensaje['Subject'] = asunto
@@ -558,16 +558,16 @@ def Envio_de_correo(request):
                 mensaje.attach(archivo_adjunto)
 
             # Configuración del servidor SMTP
-            smtp_server = 'smtp.gmail.com'
+            smtp_server = 'mail.munivalpo.cl'
             smtp_port = 587
-            smtp_usuario = 'noreplydeptosig@gmail.com'
-            smtp_contrasena = 'vjom ooqh oujf slhi'
+            smtp_usuario = 'servervalpo\\departamento.sig'
+            smtp_contrasena = 'deptosig2024!'
 
             # Enviar el correo
             server = smtplib.SMTP(smtp_server, smtp_port)
             server.starttls()
             server.login(smtp_usuario, smtp_contrasena)
-            server.sendmail(smtp_usuario, destinatarios, mensaje.as_string())
+            server.sendmail("departamento.sig@munivalpo.cl", destinatarios, mensaje.as_string())
             server.quit()
 
             return JsonResponse({'success': True})
@@ -589,10 +589,10 @@ def Envio_de_correo(request):
             superuser_emails = list(superusers)
 
             # Configuración del correo
-            asunto = 'Nueva ficha generada'
+            asunto = 'Solicitud Respondida'
             mensaje = MIMEMultipart()
-            mensaje['From'] = 'noreplydeptosig@gmail.com'
-            destinatarios = [user.email, profesional.email, solicitante] + emails + superuser_emails
+            mensaje['From'] = 'departamento.sig@munivalpo.cl'
+            destinatarios = [user.email, solicitante] + emails + superuser_emails
             mensaje['To'] = ', '.join(destinatarios)
             mensaje['Subject'] = asunto
             mensaje.attach(MIMEText(message, 'plain'))
@@ -615,16 +615,16 @@ def Envio_de_correo(request):
                 mensaje.attach(archivo_adjunto)
 
             # Configuración del servidor SMTP
-            smtp_server = 'smtp.gmail.com'
+            smtp_server = 'mail.munivalpo.cl'
             smtp_port = 587
-            smtp_usuario = 'noreplydeptosig@gmail.com'
-            smtp_contrasena = 'vjom ooqh oujf slhi'
+            smtp_usuario = 'servervalpo\departamento.sig'
+            smtp_contrasena = 'deptosig2024!'
 
             # Enviar el correo
             server = smtplib.SMTP(smtp_server, smtp_port)
             server.starttls()
             server.login(smtp_usuario, smtp_contrasena)
-            server.sendmail(smtp_usuario, destinatarios, mensaje.as_string())
+            server.sendmail("departamento.sig@munivalpo.cl", destinatarios, mensaje.as_string())
             server.quit()
             return JsonResponse({'success': True})
         

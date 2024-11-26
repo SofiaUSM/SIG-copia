@@ -167,11 +167,11 @@
                         <td data-label="Fecha Termino">{{ item.solicitud.fecha_T|date:"Y/m/d H:i" }}</td>
 
                         {% if item.solicitud.estado == 'RECHAZADO' %}
-                        <td data-label="Dias Limite" class="text-danger">
+                        <td data-label="Estado" class="text-muted">
                             RECHAZADO
                         </td>
                         {% else %}
-                            <td data-label="Dias Limite" 
+                            <td data-label="Estado" 
                                 class="{% if 'Trabajo terminado' in item.dias_restantes %}text-success
                                     {% elif 'Fecha límite pasada' in item.dias_restantes %}text-danger
                                     {% elif 'Fecha de termino esperada' in item.dias_restantes %}text-warning
@@ -564,7 +564,6 @@
 
 </script>
 
-<!-- JavaScript para manejar correos y archivos -->
 <script>
     let selectedFichaId = null; // Variable global para almacenar el ID de la ficha seleccionada
 
@@ -647,6 +646,8 @@
             setTimeout(() => {
                 const modal = bootstrap.Modal.getInstance(document.getElementById('dynamicEmailModal'));
                 modal.hide();
+                location.reload();
+
             }, 1000);
         } else {
             alert('Hubo un problema al enviar los datos');

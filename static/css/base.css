@@ -344,6 +344,83 @@
     gap: 15px;
 }
 
+/* =========================================
+   Botones Neumórficos para Fondo Tea Green
+========================================= */
+
+/* Verde */
+.green.tea-green-bg.btn-neumorphic {
+    background-color: var(--tea-green);
+    color: var(--oxford-blue);
+}
+
+/* Azul */
+.blue.tea-green-bg.btn-neumorphic {
+    background-color: var(--tiffany-blue);
+    color: var(--oxford-blue);
+}
+
+/* Rojo */
+.red.tea-green-bg.btn-neumorphic {
+    background-color: var(--red-color);
+    color: #ffffff;
+}
+
+/* Amarillo */
+.yellow.tea-green-bg.btn-neumorphic {
+    background-color: var(--yellow-color);
+    color: var(--oxford-blue);
+}
+
+.tea-green-bg.btn-neumorphic {
+    background-color: var(--tea-green);
+    color: var(--oxford-blue);
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1),
+        -5px -5px 15px rgba(255, 255, 255, 0.7);
+    border: none;
+    padding: 15px 30px;
+    font-size: 1rem;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: var(--primary-font);
+    text-align: center;
+}
+
+.tea-green-bg.btn-neumorphic:hover {
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1),
+        -3px -3px 10px rgba(255, 255, 255, 0.7);
+    transform: translateY(-2px);
+}
+
+.tea-green-bg.btn-neumorphic:active {
+    box-shadow: inset 3px 3px 10px rgba(0, 0, 0, 0.1),
+        inset -3px -3px 10px rgba(255, 255, 255, 0.7);
+    transform: translateY(2px);
+}
+
+/* Variantes de Color para Fondo Tea Green */
+.green.tea-green-bg.btn-neumorphic {
+    background-color: var(--tea-green);
+    color: var(--oxford-blue);
+}
+
+.blue.tea-green-bg.btn-neumorphic {
+    background-color: var(--tiffany-blue);
+    color: var(--oxford-blue);
+}
+
+.red.tea-green-bg.btn-neumorphic {
+    background-color: var(--red-color);
+    color: #ffffff;
+}
+
+.yellow.tea-green-bg.btn-neumorphic {
+    background-color: var(--yellow-color);
+    color: var(--oxford-blue);
+}
+
+
 
 /* =========================================
    Responsive Adjustments

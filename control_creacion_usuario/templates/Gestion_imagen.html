@@ -10,7 +10,7 @@
     <div class="flex-column-red">
       <div class="flex-row-content p-1">
         <div class="info-gestion-box">
-          <div class="flex-row-dashboard fill-available mb-4">
+          <div class="flex-row-dashboard fill-available">
             <!-- Instrucciones de Uso -->
             <div class="flex-column-gap fill-available">
               <h1 class="section-title">Gestión de Imágenes</h1>
@@ -36,7 +36,7 @@
             </div>
           </div>
 
-          <div class="flex-row-dashboard fill-available mb-4">
+          <div class="flex-row-dashboard fill-available">
             <!-- Formulario de Subida de Imágenes -->
             <div class="flex-column-gap fill-available">
               <div class="info-box p-1 fill-available">
@@ -53,7 +53,7 @@
           </div>
         </div>
 
-        <div class="flex-row-dashboard fill-available mb-4">
+        <div class="flex-row-dashboard fill-available">
           <div class="flex-column-gap fill-available">
             <div class="info-box p-1 fill-available">
               <div class="row flex-container">
@@ -62,10 +62,10 @@
                     <div class="card h-100">
                       <a href="{{ imagen.archivo_adjunto.url }}"><img src="{{ imagen.archivo_adjunto.url }}" class="card-img-top" alt="Imagen" /></a>
                       <div class="button-imagen-container">
-                        <button class="btn-neumorphic blue white-bg" onclick="copiarURL('{{ imagen.archivo_adjunto.url }}')">Copiar URL</button>
+                        <button class="btn-neumorphic blue tea-green-bg" onclick="copiarURL('{{ imagen.archivo_adjunto.url }}')">Copiar URL</button>
                         <form action="{% url 'eliminar_imagen' imagen.id %}" method="post" class="mb-0">
                           {% csrf_token %}
-                          <button type="submit" class="btn-neumorphic red white-bg">Eliminar</button>
+                          <button type="submit" class="btn-neumorphic red tea-green-bg">Eliminar</button>
                         </form>
                       </div>
                     </div>

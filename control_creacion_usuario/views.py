@@ -1,3 +1,4 @@
+from email.mime.image import MIMEImage
 import json
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required,user_passes_test
@@ -100,10 +101,10 @@ def solicitude_llegadas(request, dia_p=None):
 
     LIMITE_DE_DIA = {
         ('', ''),
-        ('L', 'LIVIANA 0 - 4 Días máximos'),
-        ('M', 'MEDIA 0 - 8 Días máximos'),
-        ('A', 'ALTO 0 - 15 Días máximos'),
-        ('P', 'Plazo X Asignar los Dias máximos'),
+        ('L', '1 - 2 Días máximos'),
+        ('M', '2 - 4 Días máximos'),
+        ('A', '3 - 5 Días máximos'),
+        ('P', 'Especificar días manualmente'),
     }
 
     OPCIONES = {
@@ -131,9 +132,9 @@ def solicitude_llegadas(request, dia_p=None):
         elif solicitud.fecha_L:
             dias_restantes = (solicitud.fecha_L.date() - now().date()).days
             if dias_restantes < 0:
-                dias_restantes = f"Fecha límite pasada por {-dias_restantes} días"
+                dias_restantes = f"Pasada por {-dias_restantes} días"
             else:
-                dias_restantes = f"Fecha de termino esperada {dias_restantes} días"
+                dias_restantes = f"Te quedan {dias_restantes} días"
         else:
             dias_restantes = "Sin fecha límite"
 
@@ -402,11 +403,11 @@ def actualizar_limite(request):
         dia_limite = request.POST.get('dias')
         # Determinar el número de días según el tipo_limite
         if tipo_limite == 'A':
-            dias_limite = 15
+            dias_limite = 5
         elif tipo_limite == 'M':
-            dias_limite = 8
-        elif tipo_limite == 'L':
             dias_limite = 4
+        elif tipo_limite == 'L':
+            dias_limite = 2
         elif tipo_limite == 'P':
             dias_limite = int(dia_limite)
         else:
@@ -532,13 +533,35 @@ def Envio_de_correo(request):
             buffer = Generar_PDF(ficha_id)
 
             # Configuración del correo
+            
             asunto = 'Solicitud Asignada'
             mensaje = MIMEMultipart()
             mensaje['From'] = 'departamento.sig@munivalpo.cl'
-            destinatarios = list(set([user.email, profesional.email] + emails))
+            destinatarios = list(set([profesional.email] + emails))
             mensaje['To'] = ', '.join(destinatarios)
             mensaje['Subject'] = asunto
-            mensaje.attach(MIMEText(message, 'plain'))
+
+            # Cargar la firma
+            firma_path = os.path.join('media/assets/Firma', f'{user.username}.png')
+            if os.path.exists(firma_path):
+                with open(firma_path, 'rb') as firma_file:
+                    firma_img = MIMEImage(firma_file.read())
+                    firma_img.add_header('Content-ID', '<firma>')
+                    mensaje.attach(firma_img)
+
+            # Crear el contenido del correo con la firma
+            html_content = f"""
+            <html>
+                <body>
+                    <p>{message}</p>
+                    <p>Atentamente. </p>
+                    <br>
+                    <img src="cid:firma" alt="Firma" width="600" height="auto" />
+
+                </body>
+            </html>
+            """
+            mensaje.attach(MIMEText(html_content, 'html'))
 
             # Adjuntar PDF generado
             archivo_pdf = buffer.getvalue()
@@ -561,13 +584,16 @@ def Envio_de_correo(request):
             smtp_server = 'mail.munivalpo.cl'
             smtp_port = 587
             smtp_usuario = 'servervalpo\\departamento.sig'
-            smtp_contrasena = 'deptosig2024!'
+
+            contraseña = "deptosig2024!"
+
+            smtp_contrasena = contraseña
 
             # Enviar el correo
             server = smtplib.SMTP(smtp_server, smtp_port)
             server.starttls()
             server.login(smtp_usuario, smtp_contrasena)
-            server.sendmail("departamento.sig@munivalpo.cl", destinatarios, mensaje.as_string())
+            server.sendmail('departamento.sig@munivalpo.cl', destinatarios, mensaje.as_string())
             server.quit()
 
             return JsonResponse({'success': True})
@@ -582,20 +608,48 @@ def Envio_de_correo(request):
             Protocolo.fecha_T = timezone.now()
             Protocolo.save()
 
-                        # Generar PDF (opcional, según tu lógica)
+            # Generar PDF (opcional, según tu lógica)
             buffer = Generar_PDF(ficha_id)
             
             superusers = User.objects.filter(is_superuser=True).values_list('email', flat=True)
             superuser_emails = list(superusers)
 
-            # Configuración del correo
+
+
+                        # Configuración del correo
+            mi_coreo = f'{user.username}@munivalpo.cl'
+            mi_coreo = mi_coreo.strip()
             asunto = 'Solicitud Respondida'
             mensaje = MIMEMultipart()
-            mensaje['From'] = 'departamento.sig@munivalpo.cl'
-            destinatarios = [user.email, solicitante] + emails + superuser_emails
-            mensaje['To'] = ', '.join(destinatarios)
+            mensaje['From'] = mi_coreo
+            mensaje['To'] = ', '.join([solicitante] + emails + superuser_emails)
+            destinatarios = [solicitante] + emails + superuser_emails  # Remueve el correo del usuario aquí
+
             mensaje['Subject'] = asunto
-            mensaje.attach(MIMEText(message, 'plain'))
+
+            # Agregar el correo invisible en el campo BCC
+            bcc_destinatarios = [mi_coreo]
+
+            # Cargar la firma
+            firma_path = os.path.join('media/assets/Firma', f'{user.username}.png')
+            if os.path.exists(firma_path):
+                with open(firma_path, 'rb') as firma_file:
+                    firma_img = MIMEImage(firma_file.read())
+                    firma_img.add_header('Content-ID', '<firma>')
+                    mensaje.attach(firma_img)
+
+            # Crear el contenido del correo con la firma
+            html_content = f"""
+            <html>
+                <body>
+                    <p>{message}</p>
+                    <p>Atentamente. </p>
+                    <br>
+                    <img src="cid:firma" alt="Firma" width="600" height="auto" />
+                </body>
+            </html>
+            """
+            mensaje.attach(MIMEText(html_content, 'html'))
 
             # Adjuntar PDF generado
             archivo_pdf = buffer.getvalue()
@@ -617,17 +671,27 @@ def Envio_de_correo(request):
             # Configuración del servidor SMTP
             smtp_server = 'mail.munivalpo.cl'
             smtp_port = 587
-            smtp_usuario = 'servervalpo\departamento.sig'
-            smtp_contrasena = 'deptosig2024!'
+            smtp_usuario = f'servervalpo\\{user.username}'
+
+            contraseña = encotra_contraseña(user.username)
+
+            smtp_contrasena = contraseña
 
             # Enviar el correo
             server = smtplib.SMTP(smtp_server, smtp_port)
             server.starttls()
             server.login(smtp_usuario, smtp_contrasena)
-            server.sendmail("departamento.sig@munivalpo.cl", destinatarios, mensaje.as_string())
+            server.sendmail(
+                f'{user.username}@munivalpo.cl', 
+                destinatarios + bcc_destinatarios,  # Incluir los destinatarios normales y BCC
+                mensaje.as_string()
+            )
             server.quit()
+
             return JsonResponse({'success': True})
-        
+
+
+                    
     return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=405)
 
 @csrf_exempt
@@ -658,10 +722,6 @@ def vista_previa_reaccinacion(request, id):
     
     return JsonResponse(data)
 
-
-from django.contrib.auth.models import User
-from django.http import JsonResponse
-
 def delegar_admin(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -686,3 +746,16 @@ def delegar_admin(request):
     }
     return render(request, 'admin.html', data)
 
+def encotra_contraseña(usuario):
+    secrets_file_path = 'pass.txt'
+
+    with open(secrets_file_path, 'r') as file:
+        secrets = file.readlines()
+
+    # Buscar un usuario específico
+    for secret in secrets:
+        saved_user, saved_password = secret.strip().split(':')
+        if saved_user == usuario:
+            print(f"La contraseña para {saved_user} es: {saved_password}")
+
+    return saved_password

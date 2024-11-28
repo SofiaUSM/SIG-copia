@@ -55,7 +55,6 @@
                   <a class="dropdown-item" href="{% url 'Gestion_pdf' %}">Gestion de PDF SIG</a>
                 </li>
 
-                {% if request.user.is_authenticated %}
                   <li>
                     <a class="dropdown-item" href="{% url 'cambiar_contraseña' %}">Cambiar Contraseña</a>
                   </li>
@@ -65,11 +64,11 @@
                       <a class="dropdown-item" href="{% url 'delegar_admin' %}">Asignar ADMIN</a>
                     </li>
                   {% endif %}
-
+                
                   <li>
                     <a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesión</a>
                   </li>
-                {% endif %}
+               
               </ul>
             </li>
           </ul>

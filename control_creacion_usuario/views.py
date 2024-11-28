@@ -51,7 +51,7 @@ def login(request):
         else:
             messages.error(request, 'Usuario o contraseña incorrectos')
 
-    return render(request, 'login.html')
+    return render(request, 'Login.html')
 
 def download_excel(request):
     # Crear un nuevo libro de trabajo de Excel y agregar datos

@@ -616,17 +616,15 @@ def Envio_de_correo(request):
 
 
 
-                        # Configuración del correo
+            # Configuración del correo
             mi_coreo = f'{user.username}@munivalpo.cl'
             mi_coreo = mi_coreo.strip()
-            asunto = 'Solicitud Respondida'
+            asunto = f'Solicitud N° {Protocolo.codigo}'
             mensaje = MIMEMultipart()
             mensaje['From'] = mi_coreo
             mensaje['To'] = ', '.join([solicitante] + emails + superuser_emails)
             destinatarios = [solicitante] + emails + superuser_emails  # Remueve el correo del usuario aquí
-
             mensaje['Subject'] = asunto
-
             # Agregar el correo invisible en el campo BCC
             bcc_destinatarios = [mi_coreo]
 
@@ -756,6 +754,6 @@ def encotra_contraseña(usuario):
     for secret in secrets:
         saved_user, saved_password = secret.strip().split(':')
         if saved_user == usuario:
-            print(f"La contraseña para {saved_user} es: {saved_password}")
+            return saved_password
 
-    return saved_password
+    return None 

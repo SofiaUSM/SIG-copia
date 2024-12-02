@@ -5,6 +5,10 @@
     --tea-green: #DDF8C3;
     --tea-green-v2: #C5ECAC;
     --mint-green: #D1EFEE;
+    --light-teal: #A8E6CF;
+    --lavender: #C6A4FF;
+    --soft-coral: #FFAAA5;
+    --oxford-blue: #16233E;
     --tiffany-blue: #A8E1DF;
     --sky-blue: #88C7DB;
     --blue-gray: #5D97D1;
@@ -207,6 +211,65 @@
     to {
         opacity: 1;
     }
+}
+
+table.dataTable>tbody>tr.odd {
+    background-color: var(--mint-green);
+}
+
+/* ======================================= 
+    FORMULARIO 
+=======================================*/
+
+.form-neumorphism {
+    background-color: #e0e5ec;
+    border-radius: 20px;
+    box-shadow: 4px 4px 7px #a3b1c6, -4px -4px 7px #ffffff;
+    padding: 40px;
+    max-width: 400px;
+    width: 100%;
+}
+
+.form-neumorphism h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.form-neumorphism input {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: #f0f0ff8f !important;
+    box-shadow: inset 2px 2px 4px #a3b1c6, inset -2px -2px 6px #ffffff;
+    /* Sombras internas reducidas */
+    font-size: 16px;
+    color: #333;
+}
+
+.form-neumorphism button {
+    width: 100%;
+    padding: 15px;
+    background-color: #1e90ff;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 18px;
+    box-shadow: 3px 3px 6px #a3b1c6, -3px -3px 6px #ffffff;
+    /* Sombras externas reducidas */
+    cursor: pointer;
+}
+
+.form-neumorphism button:hover {
+    background-color: #1c86ee;
+}
+
+.error-message {
+    color: red;
+    text-align: center;
+    margin-bottom: 10px;
 }
 
 /* =========================================

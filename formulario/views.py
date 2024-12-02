@@ -234,7 +234,7 @@ def crear_protocolo(request):
         Protocolo.save()
 
         # Obtén los datos necesarios para el correo
-        correo_destino1 = 'emanuelvperez2000@gmail.com' 
+        correo_destino1 = 'deisy.pereira@munivalpo.cl' 
         correo_destino2 = request.POST['corre_solicitante']  # Asegúrate de que esto sea una cadena y no una tupla
         asunto = 'Nueva ficha generada'
 

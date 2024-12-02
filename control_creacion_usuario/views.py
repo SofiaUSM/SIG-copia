@@ -190,9 +190,9 @@ def control(request):
 
     # Mapeo de tipo_limite a días máximos
     tipo_limite_days = {
-        "L": 4,  # LIVIANA
-        "M": 8,  # MEDIA
-        "A": 15,  # ALTO
+        "L": 2,  # LIVIANA
+        "M": 4,  # MEDIA
+        "A": 5,  # ALTO
     }
 
     # Contar solicitudes por tipo_limite
@@ -214,7 +214,7 @@ def control(request):
     tipo_limite_stats = [
         {
             "tipo_limite": "ALTO",
-            "dias_maximos": 15,
+            "dias_maximos": 5,
             "total": next(
                 (
                     item["total"]
@@ -226,7 +226,7 @@ def control(request):
         },
         {
             "tipo_limite": "MEDIA",
-            "dias_maximos": 8,
+            "dias_maximos": 4,
             "total": next(
                 (
                     item["total"]
@@ -238,7 +238,7 @@ def control(request):
         },
         {
             "tipo_limite": "LIVIANA",
-            "dias_maximos": 4,
+            "dias_maximos": 2,
             "total": next(
                 (
                     item["total"]

@@ -234,13 +234,13 @@ def crear_protocolo(request):
         Protocolo.save()
 
         # Obtén los datos necesarios para el correo
-        correo_destino1 = 'deisy.pereira@munivalpo.cl' 
+        correo_destino1 = 'emanuelvperez2000@gmail.com' 
         correo_destino2 = request.POST['corre_solicitante']  # Asegúrate de que esto sea una cadena y no una tupla
         asunto = 'Nueva ficha generada'
 
         # Construye el mensaje de correo
         mensaje = MIMEMultipart()
-        mensaje['From'] = 'noreplydeptosig@gmail.com'  
+        mensaje['From'] = 'departamento.sig@munivalpo.cl'  
         mensaje['To'] = correo_destino1
         mensaje['Subject'] = asunto
 
@@ -256,10 +256,10 @@ def crear_protocolo(request):
         mensaje.attach(pdf_adjunto)
 
         # Configura el servidor SMTP
-        smtp_server = 'smtp.gmail.com'  # Cambia esto según tu proveedor de correo
+        smtp_server = 'mail.munivalpo.cl'  # Cambia esto según tu proveedor de correo
         smtp_port = 587    # Puerto de Gmail para TLS
-        smtp_usuario = 'noreplydeptosig@gmail.com'  # Tu dirección de correo
-        smtp_contrasena = 'vjom ooqh oujf slhi'  # Tu contraseña de correo
+        smtp_usuario = 'servervalpo\\departamento.sig'  # Tu dirección de correo
+        smtp_contrasena = 'deptosig2024!'  # Tu contraseña de correo
 
         # Inicia la conexión con el servidor SMTP
         server = smtplib.SMTP(smtp_server, smtp_port)
@@ -269,7 +269,7 @@ def crear_protocolo(request):
         server.login(smtp_usuario, smtp_contrasena)
 
         # Envía el correo electrónico
-        server.sendmail(smtp_usuario, correo_destino1, mensaje.as_string())
+        server.sendmail("departamento.sig@munivalpo.cl", correo_destino1, mensaje.as_string())
 
         # Cierra la conexión con el servidor SMTP
         server.quit()

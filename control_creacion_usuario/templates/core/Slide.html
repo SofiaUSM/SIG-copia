@@ -33,7 +33,7 @@
   <body class="d-flex flex-column h-100">
     <nav class="navbar navbar-expand-sm navbar-dark bg-neumorphic navbar-custom" aria-label="Third navbar example">
       <a href="https://municipalidaddevalparaiso.cl/"><img src="/media/assets/image/version-color-corporativo-caluga-municipalidad.png" height="100" alt="Caluga Administrativa" /></a>
-     <a href="{% url 'inicio' %}"><img src="/media/assets/image/version-color-corporativo-caluga-logoSIG.png" alt="Logo SIG" height="100" /></a>
+      {% comment %} <a href="{% url 'inicio' %}"><img src="/media/assets/image/version-color-corporativo-caluga-logoSIG.png" alt="Logo SIG" height="100" /></a> {% endcomment %}
       <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'control' %}">CONTROL</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
@@ -92,6 +92,7 @@
 
     <!-- Custom JS -->
     {% block custom_js %}
+
     {% endblock %}
   </body>
 </html>

@@ -1,0 +1,114 @@
+/* =========================================
+   Estilos para la Página de Login
+========================================= */
+
+/* Caja con Borde */
+.border-box {
+    border: 3px solid rgba(14, 14, 14, 0.062);
+    padding: 10px;
+    max-width: 50%;
+    /* Cambio en el ancho máximo */
+    margin-left: auto;
+    /* Centra horizontalmente el contenedor */
+    margin-right: auto;
+    /* Centra horizontalmente el contenedor */
+}
+
+/* Grupo de Formularios Más Estrecho */
+.narrower-form-group {
+    max-width: 200px;
+    /* Ajusta el ancho según tus necesidades */
+    background: transparent;
+}
+
+/* Input Animado */
+.animated-input {
+    position: relative;
+    z-index: 1;
+}
+
+.animated-input+label {
+    position: absolute;
+    top: 1em;
+    left: 1em;
+    transition: all 0.3s;
+    pointer-events: none;
+    font-size: 0.8em;
+    color: gray;
+}
+
+.animated-input+label.filled {
+    top: 0.25em;
+    font-size: 0.6em;
+}
+
+.flex-row-dashboard {
+    display: flex;
+    /* flex-direction: column; */
+    gap: 0.5rem;
+    margin: 0.25rem;
+}
+
+/* Mensaje de Éxito */
+.success-message {
+    color: green;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.flex-row-dashboard {
+    width: 100%;
+}
+
+.info-box {
+    width: 100%;
+}
+
+/* ----------------- */
+
+.form-neumorphism {
+    background-color: transparent;
+    border-radius: 20px;
+    box-shadow: 0px 0px 0px rgb(0 0 0 / 0%), 0px 0px 0px rgb(0 0 0 / 0%);
+}
+
+
+
+/* =========================================
+   Ocultar el Botón Predeterminado de Mostrar/Ocultar Contraseña
+========================================= */
+
+/* Para Chrome, Safari, Edge */
+input[type="password"]::-webkit-password-toggle {
+    display: none;
+    -webkit-appearance: none;
+}
+
+/* Para Firefox */
+input[type="password"] {
+    -moz-appearance: textfield;
+}
+
+/* Para IE y Edge Legacy */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
+
+/* Asegurar que el campo de contraseña no muestre iconos adicionales */
+input[type="password"] {
+    position: relative;
+    padding-right: 40px;
+    /* Espacio para el botón personalizado */
+}
+
+
+/* Responsividad */
+@media (min-width: 300px) and (max-width: 600px),
+(min-height: 300px) and (max-height: 600px) {
+    .border-box {
+        max-width: 70%;
+    }
+}

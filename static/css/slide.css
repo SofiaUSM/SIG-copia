@@ -3,13 +3,11 @@
 ========================================= */
 body {
     background-color: var(--mint-green) !important;
-    /* Fondo adaptado */
     font-family: var(--primary-font) !important;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     color: var(--oxford-blue) !important;
-    /* Todo el texto utiliza OXFORD BLUE */
 }
 
 /* =========================================

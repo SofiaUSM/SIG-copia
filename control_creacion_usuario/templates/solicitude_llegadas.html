@@ -5,6 +5,16 @@
 {% block main_content%}
 
 {% block custom_css %} 
+<style>
+    .row>* {
+        padding: calc(var(--bs-gutter-x)* .5);
+    }
+
+    #tabla_registro {
+        width: 100%;
+        font-family: "Roboto Condensed";
+    }
+</style>
 
 {% endblock custom_css %}
 
@@ -19,8 +29,7 @@
 <section class="d-flex justify-content-center">
     <div class="row">
         <div class="col">
-            <h2 style="text-align: center;">   Solicitudes llegadas </h2>
-            <table id="tabla_registro" class="display table-custom" style='width: 100%;  font-family: "Roboto Condensed"'>
+            <table id="tabla_registro" class="display table-custom">
                 <thead>
                     <tr>
                         <th>Id de la solicitud</th>

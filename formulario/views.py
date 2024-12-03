@@ -39,11 +39,11 @@ def crear_protocolo(request):
     if request.method == "POST":
         archivo_adjunto = request.FILES.get('archivo_adjunto', None)
 
-
+        nombre_solicitante = request.POST['nombre_solicitante']
         Protocolo =  ProtocoloSolicitud(
         direccion = request.POST['direccion'],
         departamento = request.POST['departamento'],
-        nombre_solicitante = request.POST['nombre_solicitante'],
+        nombre_solicitante = request.POST['nombre_solicitante'].title(),
         nombre_proyecto = request.POST['nombre_proyecto'],
         corre_solicitante = request.POST['corre_solicitante'],
         area = request.POST['area'],

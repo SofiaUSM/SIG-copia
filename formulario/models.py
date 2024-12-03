@@ -70,6 +70,8 @@ class ProtocoloSolicitud(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     codigo = models.CharField(max_length=10, blank=True, default='')
 
+    orden_trabajo = models.BigIntegerField(null=True, blank= True)
+
     fecha_D = models.DateTimeField(null=True, blank=True)
 
     fecha_T = models.DateTimeField(null=True, blank=True)
@@ -85,6 +87,8 @@ class ProtocoloSolicitud(models.Model):
     archivo_adjunto = models.FileField(upload_to=content_file_name_adjunto, blank=True, null=True)
 
     enviado_correo = models.BooleanField(default=False)
+
+    enviado_correo_t = models.BooleanField(default=False)
     
     class Meta:
         verbose_name = "protocolo_solicitud"

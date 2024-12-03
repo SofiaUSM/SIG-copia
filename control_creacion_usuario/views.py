@@ -613,7 +613,7 @@ def Envio_de_correo(request):
 
             return JsonResponse({'success': True})
         else:
-
+            
             message = request.POST.get('message', '')
             ficha_id = request.POST.get('ficha_id')
             Protocolo = ProtocoloSolicitud.objects.get(id=ficha_id)
@@ -621,6 +621,8 @@ def Envio_de_correo(request):
             profesional = Protocolo.profesional
             Protocolo.estado = 'EJECUTADO'
             Protocolo.fecha_T = timezone.now()
+            Protocolo.enviado_correo_t = True
+
             Protocolo.save()
 
             # Generar PDF (opcional, según tu lógica)

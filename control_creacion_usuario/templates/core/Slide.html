@@ -26,6 +26,10 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css" />
 
     <!-- Custom CSS -->
+
+    <!-- sweetalert2  -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     {% block custom_css %}
 
     {% endblock %}
@@ -35,7 +39,7 @@
       <a href="https://municipalidaddevalparaiso.cl/"><img src="/media/assets/image/version-color-corporativo-caluga-municipalidad.png" height="100" alt="Caluga Administrativa" /></a>
      <a href="{% url 'inicio' %}"><img src="/media/assets/image/version-color-corporativo-caluga-logoSIG.png" alt="Logo SIG" height="100" /></a> 
       <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'control' %}">INTERNO</a>
+        <p class="navbar-brand" href="{% url 'control' %}">INTERNO</p>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarsExample03">
           <ul class="navbar-nav me-auto mb-2 mb-sm-0">

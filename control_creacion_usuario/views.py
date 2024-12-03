@@ -153,6 +153,7 @@ def solicitude_llegadas(request, dia_p=None):
 
     return render(request, 'solicitude_llegadas.html', data)
 
+@login_required(login_url='/login/')
 def control(request):
     # Obtener todas las solicitudes
     total_solicitudes = ProtocoloSolicitud.objects.count()

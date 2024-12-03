@@ -402,7 +402,7 @@ def descargar_pdf(request,id):
         parrafo_cambio = Paragraph(texto_cambio, estilo_parrafo, bulletText='')
 
 
-        fecha_actual = datetime.now()
+        fecha_actual = Protocolo.fecha
         # Obtener solo la fecha (año, mes, día)
         fecha = fecha_actual.strftime('%Y-%m-%d')
 

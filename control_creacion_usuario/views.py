@@ -535,12 +535,21 @@ def Envio_de_correo(request):
 
             # Configuración del correo
             
-            asunto = 'Solicitud Asignada'
+            superusers = User.objects.filter(is_superuser=True, ).exclude(username=user.username).values_list('email', flat=True)
+            superuser_emails = list(superusers)
+            
+            mi_coreo = f'{user.username}@munivalpo.cl'
+            mi_coreo = mi_coreo.strip()
+
+            asunto = f'Solicitud N°{Protocolo.codigo}  Asignada'
             mensaje = MIMEMultipart()
-            mensaje['From'] = 'departamento.sig@munivalpo.cl'
-            destinatarios = list(set([profesional.email] + emails))
+            mensaje['From'] = mi_coreo
+            destinatarios = list(set([profesional.email] + emails + superuser_emails))
             mensaje['To'] = ', '.join(destinatarios)
             mensaje['Subject'] = asunto
+
+            bcc_destinatarios = [mi_coreo]
+
 
             # Cargar la firma
             firma_path = os.path.join('media/assets/Firma', f'{user.username}.png')
@@ -582,11 +591,12 @@ def Envio_de_correo(request):
                 mensaje.attach(archivo_adjunto)
 
             # Configuración del servidor SMTP
+                    # Configuración del servidor SMTP
             smtp_server = 'mail.munivalpo.cl'
             smtp_port = 587
-            smtp_usuario = 'servervalpo\\departamento.sig'
+            smtp_usuario = f'servervalpo\\{user.username}'
 
-            contraseña = "deptosig2024!"
+            contraseña = encotra_contraseña(user.username)
 
             smtp_contrasena = contraseña
 
@@ -594,7 +604,11 @@ def Envio_de_correo(request):
             server = smtplib.SMTP(smtp_server, smtp_port)
             server.starttls()
             server.login(smtp_usuario, smtp_contrasena)
-            server.sendmail('departamento.sig@munivalpo.cl', destinatarios, mensaje.as_string())
+            server.sendmail(
+                mi_coreo,
+                destinatarios + bcc_destinatarios,  # Incluir los destinatarios normales y BCC
+                mensaje.as_string()
+            )
             server.quit()
 
             return JsonResponse({'success': True})
@@ -620,7 +634,7 @@ def Envio_de_correo(request):
             # Configuración del correo
             mi_coreo = f'{user.username}@munivalpo.cl'
             mi_coreo = mi_coreo.strip()
-            asunto = f'Solicitud N° {Protocolo.codigo}'
+            asunto = f'Solicitud N° {Protocolo.codigo} Atendida'
             mensaje = MIMEMultipart()
             mensaje['From'] = mi_coreo
             mensaje['To'] = ', '.join([solicitante] + emails + superuser_emails)

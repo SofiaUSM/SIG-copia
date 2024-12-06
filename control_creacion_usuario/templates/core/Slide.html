@@ -36,68 +36,77 @@
   </head>
   <body class="d-flex flex-column h-100">
     <nav class="navbar navbar-expand-sm navbar-dark bg-neumorphic navbar-custom" aria-label="Third navbar example">
-      <a href="https://municipalidaddevalparaiso.cl/"><img src="/media/assets/image/version-color-corporativo-caluga-municipalidad.png" height="100" alt="Caluga Administrativa" /></a>
+      <a href="https://municipalidaddevalparaiso.cl/"><img src="https://departamentosig.munivalpo.cl/media/assets/imagen_sig/None/adjunto_jOZmpn7.png" height="100" alt="Caluga Administrativa" /></a>
      <a href="{% url 'inicio' %}"><img src="/media/assets/image/version-color-corporativo-caluga-logoSIG.png" alt="Logo SIG" height="100" /></a> 
       <div class="container-fluid">
         <p class="navbar-brand" href="{% url 'control' %}">INTERNO</p>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarsExample03">
-          <ul class="navbar-nav me-auto mb-2 mb-sm-0">
-            <li class="nav-item dropdown">
-            {% if request.user.is_authenticated %}
+          {% if request.user.is_authenticated %}
 
-              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="height: 40px;">
-                  <!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
-                  <path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/>
-                </svg>
-              </a>
-
-              <ul class="dropdown-menu">
-                <li>
-                  <a class="dropdown-item" href="{% url 'solicitude_llegadas' %}">Solicitudes</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="{% url 'Historial_Visitas' %}">Historial usuarios</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="{% url 'Gestion_imagen' %}">Gestion de imagenes SIG</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="{% url 'Gestion_pdf' %}">Gestion de PDF SIG</a>
-                </li>
-
-                {% if request.user.is_authenticated %}
-                  <li>
-                    <a class="dropdown-item" href="{% url 'cambiar_contraseña' %}">Cambiar Contraseña</a>
-                  </li>
-
-                  {% if request.user.is_staff and request.user.is_authenticated %}
-                    <li>
-                      <a class="dropdown-item" href="{% url 'delegar_admin' %}">Asignar ADMIN</a>
-                    </li>
-                  {% endif %}
-                
-                {% endif %}
-
-                  <li>
-                    <a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesión</a>
-                  </li>
-               
-              </ul>
-              <li class="nav-link">
-                <a class="nav-link" href="{% url 'solicitude_llegadas' %}">Solicitudes </a>
-              </li>
-              <li class="nav-link">
-                <a class="nav-link" href="#">Metadato</a>
-              </li>
-              <li class="nav-link">
-                <a class="nav-link" href="{% url 'control' %}">Estadísticas</a>
-              </li>
+          <ul class="navbar-nav col-lg-10 justify-content-lg-center">
        
-
+            <li class="nav-link">
+              <a class="nav-link" href="{% url 'solicitude_llegadas' %}">Solicitudes </a>
+            </li>
+            <li class="nav-link">
+              <a class="nav-link" href="#">Metadato</a>
+            </li>
+            <li class="nav-link">
+              <a class="nav-link" href="{% url 'control' %}">Estadísticas</a>
             </li>
           </ul>
+
+
+         
+
+          <div class="d-lg-flex col-lg-3 justify-content-lg-end">
+            <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+
+              <li class="nav-item dropdown">
+  
+                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="height: 40px;">
+                    <!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                    <path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/>
+                  </svg>
+                </a>
+  
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item" href="{% url 'solicitude_llegadas' %}">Solicitudes</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'Historial_Visitas' %}">Historial usuarios</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'Gestion_imagen' %}">Gestion de imagenes SIG</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'Gestion_pdf' %}">Gestion de PDF SIG</a>
+                  </li>
+  
+                  {% if request.user.is_authenticated %}
+                    <li>
+                      <a class="dropdown-item" href="{% url 'cambiar_contraseña' %}">Cambiar Contraseña</a>
+                    </li>
+  
+                    {% if request.user.is_staff and request.user.is_authenticated %}
+                      <li>
+                        <a class="dropdown-item" href="{% url 'delegar_admin' %}">Asignar ADMIN</a>
+                      </li>
+                    {% endif %}
+                  
+                  {% endif %}
+  
+                    <li>
+                      <a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesión</a>
+                    </li>
+            </li>
+  
+            </ul>
+
+          </div>
           {% endif %}
 
         </div>

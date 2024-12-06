@@ -42,7 +42,7 @@
                         <th>Carga de trabajo</th>
                         <th>Fecha Designio</th>
                         <th>Fecha Enviado</th>
-                        <th>Dias Restante</th>
+                        <th>Dias Hábiles</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,7 +52,6 @@
                         <td data-label="Nombre del solicitante">
                             <p style="font-weight: bolder;" class="nombre-solicitante">
                                 {{ item.solicitud.nombre_solicitante }}
-
                             </p>
                         </td>
                         <td data-label="Fecha de llegada">{{ item.solicitud.fecha|date:"Y/m/d H:i" }}</td>
@@ -248,14 +247,9 @@
                             {% else %}
                             <li>En el punto 1: Ya se encuentra en copia la jefatura o el suplente SIG, además del solicitante.</li>
                             {% endif %}
-
                             <li>En el punto 2: Solo es necesario escribir el mensaje, ya que el cierre con <strong>Atentamente</strong> viene por defecto.</li>
                             <li>En el punto 3: La solicitud de protocolo ya está adjuntada.</li>
-
                           </ul>
-
-    
-
                     </div>
                     
 
@@ -759,6 +753,6 @@ previewLinks.forEach(function(link) {
 
 </script>
 
-
 {% endblock custom_js %}
+
 {% endblock %}

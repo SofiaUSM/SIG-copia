@@ -102,9 +102,9 @@ def solicitude_llegadas(request, dia_p=None):
 
     LIMITE_DE_DIA = {
         ('', ''),
-        ('L', '1 - 2 Días máximos'),
-        ('M', '2 - 4 Días máximos'),
-        ('A', '3 - 5 Días máximos'),
+        ('L', '1 - 2 Días Hábiles'),
+        ('M', '2 - 4 Días Hábiles'),
+        ('A', '3 - 5 Días Hábiles'),
         ('P', 'Especificar días manualmente'),
     }
 
@@ -113,6 +113,8 @@ def solicitude_llegadas(request, dia_p=None):
         'LIMITE_DE_DIA': LIMITE_DE_DIA
     }
 
+    minutos = 0
+    hora = 0
     usuarios = User.objects.all()
 
     # Filtrar las solicitudes según el usuario
@@ -133,9 +135,19 @@ def solicitude_llegadas(request, dia_p=None):
         elif solicitud.fecha_L:
             
             dias_restantes = (solicitud.fecha_L.date() - now().date()).days
-
+            segundos = (solicitud.fecha_L - now()).seconds
+            minutos = segundos//60
+            hora = minutos//60
             if dias_restantes < 0:
-                dias_restantes = f"Pasada por {-dias_restantes} días"
+                if hora <=  0:
+                    if minutos <= 0:
+                     dias_restantes = f"Pasada por {-dias_restantes} días"
+                    else:
+                        dias_restantes = minutos
+                        dias_restantes = f"Te quedan {dias_restantes} minutos"
+                else:
+                    dias_restantes = hora
+                    dias_restantes = f"Te quedan {dias_restantes} horas"
             else:
                 tipo_limite_days = {
                     "L": 2,  # LIVIANA
@@ -148,15 +160,7 @@ def solicitude_llegadas(request, dia_p=None):
                         dias_restantes = tipo_limite_days[solicitud.tipo_limite]
                         dias_restantes = f"Te quedan {dias_restantes} días"
                 else:
-
-
-
-
-
-                    
                     dias_restantes = f"Te quedan {dias_restantes} días"
-
-
 
 
 
@@ -539,8 +543,8 @@ def Calculor_de_trabajo():
     print("Tasa de cumplimiento:", tdc)
 
     return tdc,tpr
-@csrf_exempt  # Solo usar esto si estás probando; para producción, configura CSRF correctamente
 
+@csrf_exempt  # Solo usar esto si estás probando; para producción, configura CSRF correctamente
 def Envio_de_correo(request):
     if request.method == 'POST':
         user = request.user

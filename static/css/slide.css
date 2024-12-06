@@ -111,7 +111,7 @@ body {
     /* Asegura que el texto usa OXFORD BLUE */
     transition: color 0.3s ease;
     font-family: var(--complementary-font-2), sans-serif;
-    font-size: 1.25rem;
+    font-size: 1.9rem;
 }
 
 /* Hover Effect para los Enlaces de la Navbar */

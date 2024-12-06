@@ -441,6 +441,36 @@ $(".limite-select").change(function () {
 });
 });
 
+    $(".estado-select").change(function() {
+        var solicitudId = $(this).data('solicitud-id');
+        var nuevoEstado = $(this).val();
+
+        console.log(nuevoEstado)
+        // Realizar la solicitud AJAX para actualizar el estado
+        $.ajax({
+            url: "{% url 'actualizar_estado' %}",
+            type: "POST",
+            data: {
+                solicitud_id: solicitudId,
+                estado: nuevoEstado,
+                csrfmiddlewaretoken: "{{ csrf_token }}"
+            },
+            success: function(response) {
+                // Manejar la respuesta exitosa si es necesario
+                setTimeout(() => {
+         
+                location.reload();
+
+                }, 1000);
+                console.log("Estado actualizado correctamente");
+            },
+            error: function(xhr, status, error) {
+                // Manejar el error si es necesario
+                console.error("Error al actualizar el estado:", error);
+            }
+        });
+    });
+
 
     $(".profesional-select").change(function() {
     var solicitudId = $(this).data('solicitud-id');

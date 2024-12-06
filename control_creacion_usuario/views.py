@@ -42,6 +42,7 @@ def login(request):
 
     if request.method == 'POST':
         email = request.POST.get('email')
+        email = email.lower()
         password = request.POST.get('password')
         user = authenticate(request, username=email, password=password)
 
@@ -130,11 +131,35 @@ def solicitude_llegadas(request, dia_p=None):
         if solicitud.fecha_T:
             dias_restantes = "Trabajo terminado"
         elif solicitud.fecha_L:
+            
             dias_restantes = (solicitud.fecha_L.date() - now().date()).days
+
             if dias_restantes < 0:
                 dias_restantes = f"Pasada por {-dias_restantes} días"
             else:
-                dias_restantes = f"Te quedan {dias_restantes} días"
+                tipo_limite_days = {
+                    "L": 2,  # LIVIANA
+                    "M": 4,  # MEDIA
+                    "A": 5,  # ALTO
+                }
+
+                if solicitud.tipo_limite in tipo_limite_days:
+                    if dias_restantes > tipo_limite_days[solicitud.tipo_limite]:
+                        dias_restantes = tipo_limite_days[solicitud.tipo_limite]
+                        dias_restantes = f"Te quedan {dias_restantes} días"
+                else:
+
+
+
+
+
+                    
+                    dias_restantes = f"Te quedan {dias_restantes} días"
+
+
+
+
+
         else:
             dias_restantes = "Sin fecha límite"
 

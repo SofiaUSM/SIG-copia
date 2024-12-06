@@ -43,7 +43,7 @@
                 <form id="imageForm" method="post" enctype="multipart/form-data">
                   {% csrf_token %}
                   {{ form.as_p }}
-                  <div style="margin-inline: auto;max-width: 30%;">
+                  <div style="margin-inline: auto;max-width: 50%;overflow: hidden;max-height: 11rem;">
                     <img id="previewImage" src="#" alt="Vista previa de la imagen" class="img-thumbnail" style="display: none;" />
                   </div>
                   <button type="submit" class="btn-neumorphic green white-bg">Subir nueva imagen</button>

@@ -183,6 +183,7 @@ def obtener_sigla(departamento):
     "Dirección de Operaciones": "OPERACIONES",
     "sin direccion": "Periodo Marcha Blanca",
     "SECPLA": "SECPLA",
+    "SIG": "SECPLA",
     "Dirección de Seguridad Ciudadana": "SEGURIDAD",
     "Dirección de Tránsito y Transporte público": "TRANSITO",
     "Dirección de Vivienda, Barrio y Territorio": "VIVIENDA"

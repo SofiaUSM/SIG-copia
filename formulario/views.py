@@ -66,7 +66,7 @@ def crear_protocolo(request):
         if archivo_adjunto:
             cuerpo_mensaje = (
                     'Se ha generado una nueva ficha con el código: ' + Protocolo.codigo + 
-                    '. Adjunto el archivo PDF correspondiente. Revisa la plataforma de control para ver el archivo correspondiente.'
+                    '. Adjunto el archivo PDF correspondiente.'
                 )
         else:
                 cuerpo_mensaje = (
@@ -241,7 +241,7 @@ def crear_protocolo(request):
         # Construye el mensaje de correo
         mensaje = MIMEMultipart()
         mensaje['From'] = 'departamento.sig@munivalpo.cl'  
-        mensaje['To'] = correo_destino1
+        mensaje['To'] = ', '.join([correo_destino1, correo_destino2])
         mensaje['Subject'] = asunto
 
         # Cuerpo del mensaje
@@ -269,7 +269,9 @@ def crear_protocolo(request):
         server.login(smtp_usuario, smtp_contrasena)
 
         # Envía el correo electrónico
-        server.sendmail("departamento.sig@munivalpo.cl", correo_destino1, mensaje.as_string())
+        to_addresses = [correo_destino1, correo_destino2]
+
+        server.sendmail("departamento.sig@munivalpo.cl", to_addresses, mensaje.as_string())
 
         # Cierra la conexión con el servidor SMTP
         server.quit()

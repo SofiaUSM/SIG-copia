@@ -159,6 +159,9 @@ def solicitude_llegadas(request, dia_p=None):
                     if dias_restantes > tipo_limite_days[solicitud.tipo_limite]:
                         dias_restantes = tipo_limite_days[solicitud.tipo_limite]
                         dias_restantes = f"Te quedan {dias_restantes} días"
+                    else:
+                        dias_restantes = f"Te quedan {dias_restantes} días"
+
                 else:
                     dias_restantes = f"Te quedan {dias_restantes} días"
 
@@ -181,6 +184,18 @@ def solicitude_llegadas(request, dia_p=None):
     }
 
     return render(request, 'solicitude_llegadas.html', data)
+
+def calcular_dias_habiles(fecha_inicio, fecha_fin):
+    dias_habiles = 0
+    dia_actual = fecha_inicio
+
+    while dia_actual <= fecha_fin:
+        # Si el día actual no es sábado (5) ni domingo (6), lo contamos
+        if dia_actual.weekday() < 5:  # 0 = Lunes, 1 = Martes, ..., 4 = Viernes
+            dias_habiles += 1
+        dia_actual += timedelta(days=1)
+    
+    return dias_habiles
 
 @login_required(login_url='/login/')
 def control(request):
@@ -444,6 +459,8 @@ def actualizar_limite(request):
             return JsonResponse({'success': False, 'message': 'Tipo de límite no reconocido'})
 
         # Obtener la solicitud y calcular la nueva fecha límite
+        # en dias limites osea P poner una desc
+
         solicitud = ProtocoloSolicitud.objects.get(id=solicitud_id)
         fecha_limite = calcular_fecha_limite(timezone.now(), dias_limite)
 

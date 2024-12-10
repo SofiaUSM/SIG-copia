@@ -93,7 +93,7 @@ body::after {
     width: 81rem;
     /* Ajustar según el contenido */
     max-width: 90%;
-    height: auto;
+    height: 50%;
     /* Permite que el contenido determine la altura */
     box-sizing: border-box;
     z-index: 3;

@@ -39,7 +39,7 @@
                         <th style="min-width: 220px;">Acciones</th>
                         <th>Profesional SIG</th>
                         <th>Estado</th>
-                        <th>Carga de trabajo</th>
+                        <th style="min-width: 250px;">Carga de trabajo</th>
                         <th>Fecha Designio</th>
                         <th>Fecha Enviado</th>
                         <th>Dias Hábiles</th>
@@ -73,7 +73,7 @@
 
                             {% if item.solicitud.enviado_correo and request.user.is_superuser %}
 
-                                <a style="text-decoration: none; position: relative;" href="#" class="email-link" data-bs-toggle="modal" data-bs-target="#dynamicEmailModal" data-email-id="1" data-id="{{ item.solicitud.id }}">
+                                <a style="text-decoration: none; position: relative;" href="#" class="email-link" data-bs-toggle="modal" data-bs-target="#dynamicEmailModal" data-email-id="1" data-id="{{ item.solicitud.id }}" data-correo="{{ item.solicitud.profesional.email }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="acciones" style="fill: rgb(66, 190, 13);">
                                         <path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/>
                                     </svg>
@@ -81,7 +81,7 @@
 
                             {% elif item.solicitud.enviado_correo_t and request.user.is_active %}
 
-                                <a style="text-decoration: none; position: relative;" href="#" class="email-link" data-bs-toggle="modal" data-bs-target="#dynamicEmailModal" data-email-id="1" data-id="{{ item.solicitud.id }}">
+                                <a style="text-decoration: none; position: relative;" href="#" class="email-link" data-bs-toggle="modal" data-bs-target="#dynamicEmailModal" data-email-id="1" data-id="{{ item.solicitud.id }}" data-correo="{{ item.solicitud.corre_solicitante }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="acciones" style="fill: rgb(66, 190, 13);">
                                         <path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/>
                                     </svg>
@@ -89,7 +89,7 @@
 
                             {% else %}
 
-                                <a style="text-decoration: none; position: relative;" href="#" class="email-link" data-bs-toggle="modal" data-bs-target="#dynamicEmailModal" data-email-id="1" data-id="{{ item.solicitud.id }}">
+                                <a style="text-decoration: none; position: relative;" href="#" class="email-link" data-bs-toggle="modal" data-bs-target="#dynamicEmailModal" data-email-id="1" data-id="{{ item.solicitud.id }}" {% if request.user.is_superuser %} data-correo="{{ item.solicitud.profesional.email }}"{% else %} data-correo="{{ item.solicitud.corre_solicitante }}" {% endif %}>
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="acciones">
                                         <path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/>
                                     </svg>
@@ -182,6 +182,15 @@
                                 <option value="{{ limite.0 }}" {% if limite.0 == item.solicitud.tipo_limite %}selected{% endif %}>{{ limite.1 }}</option>
                                 {% endfor %}
                             </select>
+
+                           <a href="#" data-id="{{ item.solicitud.id }}" class="reset-link"> 
+                            <svg width="30px" height="30px" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
+                                <g fill="none" fill-rule="evenodd" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" transform="matrix(0 1 1 0 2.5 2.5)">
+                                <path d="m3.98652376 1.07807068c-2.38377179 1.38514556-3.98652376 3.96636605-3.98652376 6.92192932 0 4.418278 3.581722 8 8 8s8-3.581722 8-8-3.581722-8-8-8"/>
+                                <path d="m4 1v4h-4" transform="matrix(1 0 0 -1 0 6)"/>
+                                </g> 
+                                </svg>
+                            </a>
                         </td>
                         <td data-label="Fecha Designio">{{ item.solicitud.fecha_D|date:"Y/m/d H:i" }}</td>
                         <td data-label="Fecha Termino">{{ item.solicitud.fecha_T|date:"Y/m/d H:i" }}</td>
@@ -226,7 +235,6 @@
          
         </div>
     </div>
-
 <!-- Modal Dinámico de ENVIAR AL CORREO -->
 <div class="modal fade" id="dynamicEmailModal" tabindex="-1" aria-labelledby="dynamicEmailModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -238,24 +246,18 @@
             <div class="modal-body">
                 <form id="dynamicEmailForm">
                     <!-- Campo para agregar correos -->
+                    
                     <div class="mb-3">
-                        <h4>Instrucciones:</h4>
-
-                        <ul>
-                            {% if request.user.is_superuser %}
-                            <li>En el punto 1: Ya se encuentra en copia el profesional SIG.</li>
-                            {% else %}
-                            <li>En el punto 1: Ya se encuentra en copia la jefatura o el suplente SIG, además del solicitante.</li>
-                            {% endif %}
-                            <li>En el punto 2: Solo es necesario escribir el mensaje, ya que el cierre con <strong>Atentamente</strong> viene por defecto.</li>
-                            <li>En el punto 3: La solicitud de protocolo ya está adjuntada.</li>
-                          </ul>
+                        <label for="emailInput" class="form-label">1. Destinatario</label>
+                        <ul id="destinatarioList" class="list-group mb-3">
+                            <!-- Aquí se mostrará dinámicamente el destinatario -->
+                        </ul>
                     </div>
                     
 
                     <div class="mb-3">
-                        <label for="emailInput" class="form-label">1. Agregar en copia</label>
-                        <input type="email" class="form-control" id="emailInput" placeholder="Ingresa un correo">
+                        <label for="emailInput" class="form-label">2. Agregar en copia</label>
+                        <input type="email" class="form-control" id="emailInput" placeholder="Ingresa un correo"> 
                     </div>
 
                     <!-- Botón para agregar correo -->
@@ -267,14 +269,18 @@
 
                     <!-- Área de texto para mensaje -->
                     <div class="mb-3">
-                        <label for="messageText" class="form-label">2. Mensaje</label>
-                        <textarea class="form-control" id="messageText" rows="5" placeholder="Escribe tu mensaje aquí"></textarea>
+                        <label for="messageText" class="form-label">3. Mensaje</label>
+                        <textarea class="form-control" id="messageText" rows="5" placeholder="Escribe tu mensaje aquí">{% if request.user.is_superuser %}Estimado Favor proceder según corresponda.Atte.                     
+                            {% else %}Estimado Solicitante ....Atte.
+                            {% endif %}
+                        </textarea>
+                        <img src="" alt="">
                     </div>
                     
 
                     <!-- Campo para adjuntar archivos -->
                     <div class="mb-3">
-                        <label for="fileInput" class="form-label">3. Adjuntar Archivos máximo 300MB </label>
+                        <label for="fileInput" class="form-label">4. Adjuntar Archivos máximo 300MB </label>
                         <input type="file" class="form-control" id="fileInput" multiple>
                     </div>
 
@@ -325,7 +331,6 @@
     </div>
   </div>
   
-
 <div class="modal fade" id="registroPreviewModal" tabindex="-1" aria-labelledby="registroPreviewModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -335,6 +340,28 @@
             </div>
             <div class="modal-body">
                 <div id="registroPreviewData"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="Nueva_fecha_Designio" tabindex="-1" role="dialog" aria-labelledby="Nueva_fecha_DesignioLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Nueva_fecha_DesignioLabel">Designación de Dias hábiles</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="fechaNueva">Seleccione la nueva fecha y hora:</label>
+                <input type="datetime-local" id="fechaNueva" class="form-control">
+                <div id="errorFecha" class="text-danger mt-2" style="display: none;">La fecha seleccionada no puede ser un sábado o domingo.</div>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="guardarFecha">Guardar Nueva Fecha</button>
+
             </div>
         </div>
     </div>
@@ -364,74 +391,90 @@ $(".limite-select").focus(function () {
     previousValues[solicitudId] = $(this).val(); // Guardar el valor anterior asociado al ID
 });
 
+
+
 $(".limite-select").change(function () {
-    var solicitudId = $(this).data('solicitud-id'); // Obtener el ID de la solicitud
-    var nuevoLimite = $(this).val(); // Obtener el nuevo límite seleccionado
-    var profesionalSelect = $("select[data-solicitud-id='" + solicitudId + "']"); // Obtener el select del profesional basado en la solicitud ID
-    var profesional = profesionalSelect.val(); // Obtener el valor seleccionado del <select> de profesional
+    var solicitudId = $(this).data('solicitud-id');
+    var nuevoLimite = $(this).val();
+    var profesionalSelect = $("select[data-solicitud-id='" + solicitudId + "']");
+    var profesional = profesionalSelect.val();
 
-    // Si nuevoLimite es 'P', solicitar fecha obligatoria
     if (nuevoLimite === 'P') {
-        var dias = prompt("Selecciona la cantidad de días que deseas agregar:", "1");
-
-        // Verificar que el usuario haya ingresado un valor para los días
-        if (dias !== null && dias !== '') {
-            // Validar profesional antes de hacer la solicitud AJAX
-            if (profesional !== undefined && profesional !== null && profesional !== '') {
-                $.ajax({
-                    url: "{% url 'actualizar_limite' %}", // URL del endpoint
-                    type: "POST",
-                    data: {
-                        solicitud_id: solicitudId,
-                        nuevoLimite: nuevoLimite,
-                        dias: dias, // Agregar los días al envío de datos
-                        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val() // Obtener el CSRF token de un input oculto
-                    },
-                    success: function (response) {
-                        // Manejar la respuesta exitosa
-                        alert("Estado actualizado correctamente");
-                    },
-                    error: function (xhr, status, error) {
-                        // Manejar el error si ocurre
-                        alert("Error al actualizar el estado:", error);
-                        $(this).val(previousValues[solicitudId]); // Restaurar el valor anterior en caso de error
-                    }
-                });
-            } else {
-                alert("El profesional seleccionado es 'Selecciona un profesional', no se realizará ninguna acción.");
-                $(this).val(previousValues[solicitudId]); // Restaurar el valor anterior
-            }
-        } else {
-            alert("Debe ingresar una cantidad de días válida.");
-            $(this).val(previousValues[solicitudId]); // Restaurar el valor anterior
-        }
-    } else {
-        // Si nuevoLimite no es 'P', lógica normal
         if (profesional !== undefined && profesional !== null && profesional !== '') {
-            $.ajax({
-                url: "{% url 'actualizar_limite' %}", // URL del endpoint
-                type: "POST",
-                data: {
-                    solicitud_id: solicitudId,
-                    nuevoLimite: nuevoLimite,
-                    csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val() // Obtener el CSRF token de un input oculto
-                },
-                success: function (response) {
-                    // Manejar la respuesta exitosa
-                    alert("Estado actualizado correctamente");
-                },
-                error: function (xhr, status, error) {
-                    // Manejar el error si ocurre
-                    alert("Error al actualizar el estado:", error);
-                    $(this).val(previousValues[solicitudId]); // Restaurar el valor anterior en caso de error
+            // Mostrar el modal
+            var now = new Date();
+            var today = now.toISOString().slice(0, 16); // Formato compatible con datetime-local
+            $("#fechaNueva").val(today); // Setear fecha y hora actual en el input
+            $("#Nueva_fecha_Designio").modal('show');
+
+            // Manejar el botón de guardar
+            $("#guardarFecha").off("click").on("click", function () {
+                var fechaSeleccionada = new Date($("#fechaNueva").val());
+                var dia = fechaSeleccionada.getDay(); // 0 = Domingo, 6 = Sábado
+
+                if (dia === 0 || dia === 6) {
+                    $("#errorFecha").show(); // Mostrar mensaje de error
+                } else {
+                    $("#errorFecha").hide(); // Ocultar mensaje de error
+
+                    $.ajax({
+                        url: "{% url 'actualizar_limite' %}",
+                        type: "POST",
+                        data: {
+                            solicitud_id: solicitudId,
+                            nuevoLimite: nuevoLimite,
+                            fecha: fechaSeleccionada.toISOString(),
+                            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+                        },
+                        success: function (response) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Fecha y límite actualizados correctamente",
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            $("#Nueva_fecha_Designio").modal('hide'); // Cerrar el modal
+                            setTimeout(() => {
+                                location.reload();
+                                }, 1000);
+                        },
+                        error: function (xhr, status, error) {
+                            alert("Error al actualizar el límite:", error);
+                        }
+                    });
                 }
             });
         } else {
-            alert("El profesional seleccionado es 'Selecciona un profesional', no se realizará ninguna acción.");
-            $(this).val(previousValues[solicitudId]); // Restaurar el valor anterior
+            alert("Debe seleccionar un profesional válido.");
         }
+    } else {
+        // Lógica normal para otros valores de nuevoLimite
+        $.ajax({
+            url: "{% url 'actualizar_limite' %}",
+            type: "POST",
+            data: {
+                solicitud_id: solicitudId,
+                nuevoLimite: nuevoLimite,
+                csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+            },
+            success: function (response) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Estado actualizado correctamente",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                setTimeout(() => {
+                    location.reload();
+                    }, 1500);
+            },
+            error: function (xhr, status, error) {
+                alert("Error al actualizar el estado:", error);
+            }
+        });
     }
 });
+
 });
 
     $(".estado-select").change(function() {
@@ -464,7 +507,6 @@ $(".limite-select").change(function () {
         });
     });
 
-
     $(".profesional-select").change(function() {
     var solicitudId = $(this).data('solicitud-id');
     var nuevoProfesional = $(this).val();
@@ -481,7 +523,6 @@ $(".limite-select").change(function () {
         $("#registro_De_Designio").modal("show");
     }
 });
-
 
     // Función para actualizar el profesional sin motivo
     function actualizarProfesional(solicitudId, nuevoProfesional) {
@@ -547,10 +588,7 @@ $(".limite-select").change(function () {
             }
         });
     });
-
     
-    
-        
     var previewLinks = document.querySelectorAll('.preview-link');
     previewLinks.forEach(function(link) {
       link.addEventListener('click', function(event) {
@@ -614,101 +652,118 @@ $(".limite-select").change(function () {
 </script>
 
 <script>
-    let selectedFichaId = null; // Variable global para almacenar el ID de la ficha seleccionada
+let selectedFichaId = null; // Variable global para almacenar el ID de la ficha seleccionada
+let correo_destinatario = null; // Variable global para almacenar el correo destinatario
 
-    // Agregar un evento 'click' a cada enlace para capturar el data-id
-    document.querySelectorAll('.email-link').forEach(link => {
-        link.addEventListener('click', function(event) {
-            selectedFichaId = this.getAttribute('data-id'); // Guardar el data-id del enlace seleccionado
-        });
+// Agregar un evento 'click' a cada enlace para capturar el data-id y data-correo
+document.querySelectorAll('.email-link').forEach(link => {
+    link.addEventListener('click', function (event) {
+        correo_destinatario = this.getAttribute('data-correo');
+        selectedFichaId = this.getAttribute('data-id'); // Guardar el data-id del enlace seleccionado
+
+        // Actualizar el contenido del destinatario en el modal
+        const destinatarioList = document.querySelector('#destinatarioList');
+        destinatarioList.innerHTML = ''; // Limpiar la lista anterior
+        const listItem = document.createElement('li');
+        listItem.classList.add('list-group-item');
+        listItem.style.color = 'gray'; // Aplicar el color directamente
+        listItem.textContent = correo_destinatario; // Añadir el texto
+        destinatarioList.appendChild(listItem);
+
     });
+});
 
+function addEmail() {
+    const emailInput = document.getElementById('emailInput');
+    const emailList = document.getElementById('emailList');
+    const email = emailInput.value.trim();
 
-    function addEmail() {
-        const emailInput = document.getElementById('emailInput');
-        const emailList = document.getElementById('emailList');
-        const email = emailInput.value.trim();
+    if (email) {
+        // Crear un elemento de lista para el nuevo correo
+        const listItem = document.createElement('li');
+        listItem.classList.add('list-group-item');
+        listItem.textContent = email;
 
-        if (email) {
-            // Crear un elemento de lista para el nuevo correo
-            const listItem = document.createElement('li');
-            listItem.classList.add('list-group-item');
-            listItem.textContent = email;
+        // Agregar el elemento a la lista
+        emailList.appendChild(listItem);
 
-            // Agregar el elemento a la lista
-            emailList.appendChild(listItem);
-
-            // Limpiar el campo de entrada
-            emailInput.value = '';
-        }
+        // Limpiar el campo de entrada
+        emailInput.value = '';
     }
+}
 
-    // Manejar la selección de archivos y mostrar los nombres en la lista
-    document.getElementById('fileInput').addEventListener('change', function () {
-        const fileList = document.getElementById('fileList');
-        fileList.innerHTML = ''; // Limpiar la lista de archivos anteriores
+// Manejar la selección de archivos y mostrar los nombres en la lista
+document.getElementById('fileInput').addEventListener('change', function () {
+    const fileList = document.getElementById('fileList');
+    fileList.innerHTML = ''; // Limpiar la lista de archivos anteriores
 
-        for (const file of this.files) {
-            const listItem = document.createElement('li');
-            listItem.classList.add('list-group-item');
-            listItem.textContent = file.name;
-            fileList.appendChild(listItem);
-        }
-    });
+    for (const file of this.files) {
+        const listItem = document.createElement('li');
+        listItem.classList.add('list-group-item');
+        listItem.textContent = file.name;
+        fileList.appendChild(listItem);
+    }
+});
 
-    function sendData() {
-    // Mostrar el spinner de carga
+function sendData() {
     document.getElementById('loadingSpinner').style.display = 'block';
 
-    // Recopilar los correos de la lista
     const emailList = Array.from(document.getElementById('emailList').children).map(item => item.textContent);
-    
-    // Recopilar el mensaje
     const messageText = document.getElementById('messageText').value;
-    
-    // Recopilar los archivos
     const fileInput = document.getElementById('fileInput');
     const formData = new FormData();
-    formData.append('emails', JSON.stringify(emailList)); // Convertir la lista de correos a JSON
+    formData.append('emails', JSON.stringify(emailList));
     formData.append('message', messageText);
-    formData.append('ficha_id', selectedFichaId); // Usar el id de la ficha seleccionada
-    
+    formData.append('ficha_id', selectedFichaId);
+
     for (const file of fileInput.files) {
-        formData.append('files', file); // Agregar cada archivo al FormData
+        formData.append('files', file);
     }
 
-    // Enviar datos mediante AJAX
     fetch('/correos/', {
         method: 'POST',
         body: formData,
         headers: {
-            'X-CSRFToken': '{{ csrf_token }}', // CSRF token para Django
+            'X-CSRFToken': '{{ csrf_token }}',
         }
     })
     .then(response => response.json())
     .then(data => {
-        // Ocultar el spinner de carga
         document.getElementById('loadingSpinner').style.display = 'none';
 
         if (data.success) {
-            alert('Datos enviados con éxito');
+            Swal.fire({
+                icon: "success",
+                title: "Datos enviados con éxito",
+                showConfirmButton: false,
+                timer: 1500
+            });
+
             setTimeout(() => {
                 const modal = bootstrap.Modal.getInstance(document.getElementById('dynamicEmailModal'));
                 modal.hide();
                 location.reload();
-
-            }, 1000);
+            }, 1500);
         } else {
-            alert('Hubo un problema al enviar los datos');
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Hubo un problema al enviar los datos",
+            });
+
         }
     })
     .catch(error => {
+
         document.getElementById('loadingSpinner').style.display = 'none';
         console.error('Error:', error);
-        alert('Ocurrió un error al enviar los datos');
+        Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Ocurrió un error al enviar los datos",
+            });
     });
 }
-
 
 
 </script>
@@ -749,8 +804,67 @@ previewLinks.forEach(function(link) {
     });
 });
 
+</script>
 
+<script>
+        const resetLinks = document.querySelectorAll('.reset-link');
 
+        resetLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault(); // Evita que el enlace recargue la página
+
+                const solicitudId = this.dataset.id; // Obtén el ID de la solicitud
+                const url = '/resert_limite/'; // URL de tu vista Django
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken() // Función para obtener el token CSRF
+                    },
+                    body: JSON.stringify({ id: solicitudId }) // Envía el ID en formato JSON
+                })
+                .then(response => {
+                    if (response.ok) {
+                        
+                        return response.json();
+                    } else {
+                        throw new Error('Error al resetear la solicitud.');
+                    }
+                })
+                .then(data => {
+                    Swal.fire({
+                        icon: "success",
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Hubo un problema al procesar la solicitud",
+                    });
+
+                });
+            });
+        });
+
+        // Función para obtener el token CSRF
+        function getCSRFToken() {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith('csrftoken=')) {
+                    return cookie.substring('csrftoken='.length, cookie.length);
+                }
+            }
+            return '';
+        };
 </script>
 
 {% endblock custom_js %}

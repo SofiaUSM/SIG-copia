@@ -22,7 +22,12 @@ function copiarURL(url) {
     document.body.removeChild(campoTemporal);
 
     // Mostrar un mensaje de éxito
-    alert('URL copiada: ' + urlCompleta);
+    Swal.fire({
+        icon: "success",
+        title: "URL copiada"  + urlCompleta,
+        showConfirmButton: false,
+        timer: 1500
+    });
 }
 
 // Función para manejar la previsualización de la imagen antes de subirla

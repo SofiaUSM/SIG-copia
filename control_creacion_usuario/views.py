@@ -18,6 +18,7 @@ from .models import Imagen_sig,PDF_sig
 from django.shortcuts import get_object_or_404, redirect
 from django.core.paginator import Paginator, Page
 from datetime import datetime, timedelta
+from django.utils.timezone import make_aware
 
 from formulario.models import *
 
@@ -31,6 +32,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
+import pytz
 
 gis = GIS("https://www.arcgis.com", "jimmi.gomez_munivalpo", "Jimgomez8718")
 
@@ -133,40 +135,32 @@ def solicitude_llegadas(request, dia_p=None):
         if solicitud.fecha_T:
             dias_restantes = "Trabajo terminado"
         elif solicitud.fecha_L:
-            
-            dias_restantes = (solicitud.fecha_L.date() - now().date()).days
-            segundos = (solicitud.fecha_L - now()).seconds
-            minutos = segundos//60
-            hora = minutos//60
-            if dias_restantes < 0:
-                if hora <=  0:
-                    if minutos <= 0:
-                     dias_restantes = f"Pasada por {-dias_restantes} días"
-                    else:
-                        dias_restantes = minutos
-                        dias_restantes = f"Te quedan {dias_restantes} minutos"
+            # Calcular la diferencia en segundos
+            total_segundos = (solicitud.fecha_L - now()).total_seconds()
+
+            if total_segundos < 0:  # Si el tiempo ya pasó
+                total_segundos = abs(total_segundos)
+                dias_pasados = int(total_segundos // (24 * 3600))
+                horas_pasadas = int((total_segundos % (24 * 3600)) // 3600)
+                minutos_pasados = int((total_segundos % 3600) // 60)
+
+                if dias_pasados > 0 or horas_pasadas > 0 or minutos_pasados > 0:
+                    dias_restantes = f"Pasada por {dias_pasados} días, {horas_pasadas} horas y {minutos_pasados} minutos"
                 else:
-                    dias_restantes = hora
-                    dias_restantes = f"Te quedan {dias_restantes} horas"
-            else:
-                tipo_limite_days = {
-                    "L": 2,  # LIVIANA
-                    "M": 4,  # MEDIA
-                    "A": 5,  # ALTO
-                }
+                    dias_restantes = "El tiempo límite ha pasado recientemente"
+            else:  # Tiempo restante
+                # Calcular días hábiles restantes
+                dias_habiles_restantes = calcular_dias_habiles(now().date(), solicitud.fecha_L.date())
+                horas_restantes = int((total_segundos % (24 * 3600)) // 3600)
+                minutos_restantes = int((total_segundos % 3600) // 60)
+                
 
-                if solicitud.tipo_limite in tipo_limite_days:
-                    if dias_restantes > tipo_limite_days[solicitud.tipo_limite]:
-                        dias_restantes = tipo_limite_days[solicitud.tipo_limite]
-                        dias_restantes = f"Te quedan {dias_restantes} días"
-                    else:
-                        dias_restantes = f"Te quedan {dias_restantes} días"
-
+                if dias_habiles_restantes > 1:
+                    dias_restantes = f"Te quedan {dias_habiles_restantes} días hábiles"
+                elif horas_restantes > 0:
+                    dias_restantes = f"Te quedan {horas_restantes} horas y {minutos_restantes} minutos"
                 else:
-                    dias_restantes = f"Te quedan {dias_restantes} días"
-
-
-
+                    dias_restantes = f"Te quedan {minutos_restantes} minutos"
         else:
             dias_restantes = "Sin fecha límite"
 
@@ -191,7 +185,7 @@ def calcular_dias_habiles(fecha_inicio, fecha_fin):
 
     while dia_actual <= fecha_fin:
         # Si el día actual no es sábado (5) ni domingo (6), lo contamos
-        if dia_actual.weekday() < 5:  # 0 = Lunes, 1 = Martes, ..., 4 = Viernes
+        if dia_actual.weekday() < 4:  # 0 = Lunes, ..., 4 = Viernes
             dias_habiles += 1
         dia_actual += timedelta(days=1)
     
@@ -445,34 +439,47 @@ def actualizar_limite(request):
     if request.method == 'POST':
         solicitud_id = request.POST.get('solicitud_id')
         tipo_limite = request.POST.get('nuevoLimite')
-        dia_limite = request.POST.get('dias')
-        # Determinar el número de días según el tipo_limite
-        if tipo_limite == 'A':
-            dias_limite = 5
-        elif tipo_limite == 'M':
-            dias_limite = 4
-        elif tipo_limite == 'L':
-            dias_limite = 2
-        elif tipo_limite == 'P':
-            dias_limite = int(dia_limite)
-        else:
-            return JsonResponse({'success': False, 'message': 'Tipo de límite no reconocido'})
+        fecha_completa = request.POST.get('fecha')  # Fecha completa enviada desde el frontend
 
-        # Obtener la solicitud y calcular la nueva fecha límite
-        # en dias limites osea P poner una desc
+        try:
+            # Validar si la solicitud existe
+            solicitud = ProtocoloSolicitud.objects.get(id=solicitud_id)
 
-        solicitud = ProtocoloSolicitud.objects.get(id=solicitud_id)
-        fecha_limite = calcular_fecha_limite(timezone.now(), dias_limite)
+            if tipo_limite == 'P':
+                if not fecha_completa:
+                    return JsonResponse({'success': False, 'message': 'Debe proporcionar una fecha válida para el tipo P'})
+                try:
+                    # Convertir la fecha completa ISO 8601 a datetime
+                    fecha_limite = datetime.strptime(fecha_completa, "%Y-%m-%dT%H:%M:%S.%fZ")
+                    # Asegurarse de que sea consciente de la zona horaria UTC y convertir a la zona horaria local
+                    fecha_limite = make_aware(fecha_limite, timezone=pytz.UTC)
+                except ValueError:
+                    return JsonResponse({'success': False, 'message': 'Formato de fecha inválido'})
+            else:
+                # Calcular los días límite según el tipo
+                if tipo_limite == 'A':
+                    dias_limite = 5
+                elif tipo_limite == 'M':
+                    dias_limite = 4
+                elif tipo_limite == 'L':
+                    dias_limite = 1
+                else:
+                    return JsonResponse({'success': False, 'message': 'Tipo de límite no reconocido'})
 
-        # Actualizar el tipo de límite y la fecha límite en la base de datos
-        solicitud.tipo_limite = tipo_limite
-        solicitud.fecha_L = fecha_limite
-        solicitud.save()
+                # Calcular la fecha límite basada en días
+                fecha_limite = calcular_fecha_limite(timezone.now(), dias_limite)
 
-        return JsonResponse({'success': True})
-    else:
-        return JsonResponse({'success': False, 'message': 'Método no permitido'})
+            # Actualizar la solicitud con el nuevo tipo de límite y fecha límite
+            solicitud.tipo_limite = tipo_limite
+            solicitud.fecha_L = fecha_limite
+            solicitud.save()
 
+            return JsonResponse({'success': True, 'message': 'Límite actualizado correctamente'})
+
+        except ProtocoloSolicitud.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'La solicitud no existe'})
+
+    return JsonResponse({'success': False, 'message': 'Método no permitido'})
 def eliminar_imagen(request, imagen_id):
     imagen = get_object_or_404(Imagen_sig, pk=imagen_id)
     
@@ -610,7 +617,6 @@ def Envio_de_correo(request):
             <html>
                 <body>
                     <p>{message}</p>
-                    <p>Atentamente. </p>
                     <br>
                     <img src="cid:firma" alt="Firma" width="600" height="auto" />
 
@@ -704,7 +710,6 @@ def Envio_de_correo(request):
             <html>
                 <body>
                     <p>{message}</p>
-                    <p>Atentamente. </p>
                     <br>
                     <img src="cid:firma" alt="Firma" width="600" height="auto" />
                 </body>
@@ -820,3 +825,21 @@ def encotra_contraseña(usuario):
             return saved_password
 
     return None 
+
+@csrf_exempt
+def resert_limite(request):
+    if request.method == 'POST':
+        try:
+            import json
+            data = json.loads(request.body)
+            id_solicitud = data.get('id')
+            solicitud = ProtocoloSolicitud.objects.get(id=id_solicitud)
+            solicitud.tipo_limite = ''
+            solicitud.fecha_L = None
+            solicitud.save()
+
+
+            return JsonResponse({'message': 'Solicitud reseteada con éxito.'})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Método no permitido.'}, status=405)

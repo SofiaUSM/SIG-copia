@@ -25,6 +25,9 @@ urlpatterns = [
 
     path('vista_previa_reaccinacion/<int:id>', views.vista_previa_reaccinacion, name="vista_previa_reaccinacion"),
 
+    path('resert_limite/', views.resert_limite, name="resert_limite"),
+
+    
     path('admin_re/', views.delegar_admin, name="delegar_admin"),
 
 ]

@@ -25,7 +25,11 @@ SECRET_KEY = 'sz308p48$%9_v+&$*=d)gd2dak5*n-2-zr5989(c#d(r+9)h55'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.12.80','departamentosig.munivalpo.cl','localhost',"*"]
+ALLOWED_HOSTS = ['192.168.12.80','departamentosig.munivalpo.cl','localhost',"*",'https://5f22-200-50-126-98.ngrok-free.app']
+
+CORS_ALLOWED_ORIGINS = [
+    "https://5f22-200-50-126-98.ngrok-free.app ",
+]
 
 
 # Application definition

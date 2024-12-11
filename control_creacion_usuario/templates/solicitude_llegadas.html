@@ -376,498 +376,285 @@
 <script>
     //Darle diseño a al tabla mediante JS
     $(document).ready(function () {
-    var tabla = $('#tabla_registro').DataTable({
-        searching: false,
-        pageLength: 12,
-        lengthChange: false,
-        language: {
-            url: '//cdn.datatables.net/plug-ins/1.12.1/i18n/es-CL.json'
-        },
-        order: [[0, 'desc']] // '0' indica la primera columna (Solicitudes.id), 'desc' indica orden descendente
-    });
-
-    var previousValues = {}; // Objeto para almacenar los valores anteriores de cada select por ID
-
-// Guardar el valor anterior antes del cambio
-$(".limite-select").focus(function () {
-    var solicitudId = $(this).data('solicitud-id'); // Obtener el ID único de la solicitud
-    previousValues[solicitudId] = $(this).val(); // Guardar el valor anterior asociado al ID
-});
-
-
-
-$(".limite-select").change(function () {
-    var solicitudId = $(this).data('solicitud-id');
-    var nuevoLimite = $(this).val();
-    var profesionalSelect = $("select[data-solicitud-id='" + solicitudId + "']");
-    var profesional = profesionalSelect.val();
-
-    if (nuevoLimite === 'P') {
-        if (profesional !== undefined && profesional !== null && profesional !== '') {
-            // Mostrar el modal
-            var now = new Date();
-            var today = now.toISOString().slice(0, 16); // Formato compatible con datetime-local
-            $("#fechaNueva").val(today); // Setear fecha y hora actual en el input
-            $("#Nueva_fecha_Designio").modal('show');
-
-            // Manejar el botón de guardar
-            $("#guardarFecha").off("click").on("click", function () {
-                var fechaSeleccionada = new Date($("#fechaNueva").val());
-                var dia = fechaSeleccionada.getDay(); // 0 = Domingo, 6 = Sábado
-
-                if (dia === 0 || dia === 6) {
-                    $("#errorFecha").show(); // Mostrar mensaje de error
-                } else {
-                    $("#errorFecha").hide(); // Ocultar mensaje de error
-
-                    $.ajax({
-                        url: "{% url 'actualizar_limite' %}",
-                        type: "POST",
-                        data: {
-                            solicitud_id: solicitudId,
-                            nuevoLimite: nuevoLimite,
-                            fecha: fechaSeleccionada.toISOString(),
-                            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
-                        },
-                        success: function (response) {
-                            Swal.fire({
-                                icon: "success",
-                                title: "Fecha y límite actualizados correctamente",
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                            $("#Nueva_fecha_Designio").modal('hide'); // Cerrar el modal
-                            setTimeout(() => {
-                                location.reload();
-                                }, 1000);
-                        },
-                        error: function (xhr, status, error) {
-                            alert("Error al actualizar el límite:", error);
-                        }
-                    });
-                }
-            });
-        } else {
-            alert("Debe seleccionar un profesional válido.");
-        }
-    } else {
-        // Lógica normal para otros valores de nuevoLimite
-        $.ajax({
-            url: "{% url 'actualizar_limite' %}",
-            type: "POST",
-            data: {
-                solicitud_id: solicitudId,
-                nuevoLimite: nuevoLimite,
-                csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        var tabla = $('#tabla_registro').DataTable({
+            searching: false,
+            pageLength: 12,
+            lengthChange: false,
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.12.1/i18n/es-CL.json'
             },
-            success: function (response) {
-                Swal.fire({
-                    icon: "success",
-                    title: "Estado actualizado correctamente",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-                setTimeout(() => {
-                    location.reload();
-                    }, 1500);
-            },
-            error: function (xhr, status, error) {
-                alert("Error al actualizar el estado:", error);
-            }
+            order: [[0, 'desc']] // '0' indica la primera columna (Solicitudes.id), 'desc' indica orden descendente
         });
-    }
-});
-
-});
-
-    $(".estado-select").change(function() {
+    
+        var previousValues = {}; // Objeto para almacenar los valores anteriores de cada select por ID
+    
+    // Guardar el valor anterior antes del cambio
+    $(".limite-select").focus(function () {
+        var solicitudId = $(this).data('solicitud-id'); // Obtener el ID único de la solicitud
+        previousValues[solicitudId] = $(this).val(); // Guardar el valor anterior asociado al ID
+    });
+    
+    
+    
+    $(".limite-select").change(function () {
         var solicitudId = $(this).data('solicitud-id');
-        var nuevoEstado = $(this).val();
-
-        console.log(nuevoEstado)
-        // Realizar la solicitud AJAX para actualizar el estado
-        $.ajax({
-            url: "{% url 'actualizar_estado' %}",
-            type: "POST",
-            data: {
-                solicitud_id: solicitudId,
-                estado: nuevoEstado,
-                csrfmiddlewaretoken: "{{ csrf_token }}"
-            },
-            success: function(response) {
-                // Manejar la respuesta exitosa si es necesario
-                setTimeout(() => {
-         
-                location.reload();
-
-                }, 1000);
-                console.log("Estado actualizado correctamente");
-            },
-            error: function(xhr, status, error) {
-                // Manejar el error si es necesario
-                console.error("Error al actualizar el estado:", error);
-            }
-        });
-    });
-
-    $(".profesional-select").change(function() {
-    var solicitudId = $(this).data('solicitud-id');
-    var nuevoProfesional = $(this).val();
-    var antProfesional = $(this).data('antiguo-profesional');
-    console.log(antProfesional)
-    // Verificar si el profesional anterior está vacío o es None
-    if (!antProfesional || antProfesional === "None") {
-        // Si el profesional anterior es None o vacío, solo actualizar directamente
-        actualizarProfesional(solicitudId, nuevoProfesional);
-    } else {
-        // Si hay un profesional anterior, mostrar el modal para el motivo
-        $("#nuevo_profesional_id").val(nuevoProfesional);
-        $("#solicitud_id").val(solicitudId);
-        $("#registro_De_Designio").modal("show");
-    }
-});
-
-    // Función para actualizar el profesional sin motivo
-    function actualizarProfesional(solicitudId, nuevoProfesional) {
-        var csrfToken = '{{ csrf_token }}';
-
-        $.ajax({
-            url: "{% url 'actualizar_profesional' %}",
-            type: "POST",
-            data: {
-                solicitud_id: solicitudId,
-                profesional: nuevoProfesional,
-                csrfmiddlewaretoken: csrfToken
-            },
-            success: function(response) {
-                if (response.success) {
-                    $("#response-message").html('<div class="alert alert-success">Profesional actualizado correctamente sin motivo</div>');
-                } else {
-                    $("#response-message").html('<div class="alert alert-danger">Error al actualizar el profesional</div>');
-                }
-            },
-            error: function(xhr, status, error) {
-                $("#response-message").html('<div class="alert alert-danger">Ocurrió un error al actualizar el profesional</div>');
-                console.error("Error al actualizar el profesional:", error);
-            }
-        });
-    }
-
-    // Al hacer clic en "Guardar motivo" en el modal
-    $("#guardarMotivo").click(function() {
-        var motivo = $("#motivo").val();
-        var solicitudId = $("#solicitud_id").val();
-        var nuevoProfesional = $("#nuevo_profesional_id").val();
-        var csrfToken = '{{ csrf_token }}';
-
-        if (!motivo) {
-            alert("Debe ingresar el motivo del cambio.");
-            return;
-        }
-
-        $.ajax({
-            url: "{% url 'actualizar_profesional' %}",
-            type: "POST",
-            data: {
-                solicitud_id: solicitudId,
-                profesional: nuevoProfesional,
-                motivo: motivo,
-                csrfmiddlewaretoken: csrfToken
-            },
-            success: function(response) {
-                if (response.success) {
-                    $("#response-message").html('<div class="alert alert-success">Profesional y motivo actualizados correctamente</div>');
-                    location.reload();
-
-                } else {
-                    $("#response-message").html('<div class="alert alert-danger">Error al actualizar el profesional</div>');
-                }
-                $("#registro_De_Designio").modal("hide");
-            },
-            error: function(xhr, status, error) {
-                $("#response-message").html('<div class="alert alert-danger">Ocurrió un error al actualizar el profesional</div>');
-                console.error("Error al actualizar el profesional:", error);
-                $("#registro_De_Designio").modal("hide");
-            }
-        });
-    });
+        var nuevoLimite = $(this).val();
+        var profesionalSelect = $("select[data-solicitud-id='" + solicitudId + "']");
+        var profesional = profesionalSelect.val();
     
-    var previewLinks = document.querySelectorAll('.preview-link');
-    previewLinks.forEach(function(link) {
-      link.addEventListener('click', function(event) {
-        event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
-    
-        var registroId = parseInt(this.getAttribute('data-id')); // Convertir a número
-    
-        // Hacer una solicitud AJAX a la vista de Django para obtener los datos del registro
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/solicitud/vista_previa/' + registroId, true);
-        xhr.onreadystatechange = function() {
-          if (xhr.readyState === 4 && xhr.status === 200) {
-            var data = JSON.parse(xhr.responseText);
-    
-            var previewDataElement = document.getElementById('previewData');
-            previewDataElement.innerText =   'Fecha de la Solicitud: ' + data.fecha
-                                           + '\n'
-                                           + '\nCodigo: ' + data.codigo
-                                           + '\n'
-                                           + '\nDirección: ' + data.direccion
-                                           + '\n'
-                                           + '\nDepartamento o Unidad Responsable: ' + data.departamento
-                                           + '\n'
-                                           + '\nNombre del solicitante: ' + data.nombre_solicitante
-                                           + '\n'
-                                           + '\nNombre del proyecto: ' + data.nombre_proyecto
-                                           + '\n'
-                                           + '\nCorreo del solicitante: ' + data.corre_solicitante
-                                           + '\n'
-                                           + '\nArea De estudio: ' + data.area
-                                           + '\n'
-                                           + '\nObjetivos de la solicitud:' + data.objetivos
-                                           + '\n'
-                                           + '\nInsumo Solicitado: ' + data.insumo
-                                           + '\n'
-                                           + '\nProductos: ' + data.productos
-                                           + '\n'
-                                           + '\nCambios posible en el Insumo Entregado: ' + data.Cambios
-                                           + '\n';
-                                           
-                                           if (data.archivos_adjuntos_urls && data.archivos_adjuntos_urls.length > 0) {
-        // Agregar enlaces a los archivos adjuntos si existen
-        previewDataElement.innerHTML += '<br><br><strong>Archivos Adjuntos:</strong><br>';
-        data.archivos_adjuntos_urls.forEach(function(url) {
-            previewDataElement.innerHTML += '<a href="' + url + '" download>' + url.split('/').pop() + '</a><br>';
-        });
-    } else {
-        // Manejar el caso en el que no hay archivos adjuntos
-        previewDataElement.innerHTML += '<br><br>No hay archivos adjuntos disponibles';
-    }
-    
-    
-      
-            $('#previewModal').modal('show'); // Mostrar el modal utilizando jQuery
-          }
-        };
-        xhr.send();
-      });
-    });
-
-</script>
-
-<script>
-let selectedFichaId = null; // Variable global para almacenar el ID de la ficha seleccionada
-let correo_destinatario = null; // Variable global para almacenar el correo destinatario
-
-// Agregar un evento 'click' a cada enlace para capturar el data-id y data-correo
-document.querySelectorAll('.email-link').forEach(link => {
-    link.addEventListener('click', function (event) {
-        correo_destinatario = this.getAttribute('data-correo');
-        selectedFichaId = this.getAttribute('data-id'); // Guardar el data-id del enlace seleccionado
-
-        // Actualizar el contenido del destinatario en el modal
-        const destinatarioList = document.querySelector('#destinatarioList');
-        destinatarioList.innerHTML = ''; // Limpiar la lista anterior
-        const listItem = document.createElement('li');
-        listItem.classList.add('list-group-item');
-        listItem.style.color = 'gray'; // Aplicar el color directamente
-        listItem.textContent = correo_destinatario; // Añadir el texto
-        destinatarioList.appendChild(listItem);
-
-    });
-});
-
-function addEmail() {
-    const emailInput = document.getElementById('emailInput');
-    const emailList = document.getElementById('emailList');
-    const email = emailInput.value.trim();
-
-    if (email) {
-        // Crear un elemento de lista para el nuevo correo
-        const listItem = document.createElement('li');
-        listItem.classList.add('list-group-item');
-        listItem.textContent = email;
-
-        // Agregar el elemento a la lista
-        emailList.appendChild(listItem);
-
-        // Limpiar el campo de entrada
-        emailInput.value = '';
-    }
-}
-
-// Manejar la selección de archivos y mostrar los nombres en la lista
-document.getElementById('fileInput').addEventListener('change', function () {
-    const fileList = document.getElementById('fileList');
-    fileList.innerHTML = ''; // Limpiar la lista de archivos anteriores
-
-    for (const file of this.files) {
-        const listItem = document.createElement('li');
-        listItem.classList.add('list-group-item');
-        listItem.textContent = file.name;
-        fileList.appendChild(listItem);
-    }
-});
-
-function sendData() {
-    document.getElementById('loadingSpinner').style.display = 'block';
-
-    const emailList = Array.from(document.getElementById('emailList').children).map(item => item.textContent);
-    const messageText = document.getElementById('messageText').value;
-    const fileInput = document.getElementById('fileInput');
-    const formData = new FormData();
-    formData.append('emails', JSON.stringify(emailList));
-    formData.append('message', messageText);
-    formData.append('ficha_id', selectedFichaId);
-
-    for (const file of fileInput.files) {
-        formData.append('files', file);
-    }
-
-    fetch('/correos/', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRFToken': '{{ csrf_token }}',
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('loadingSpinner').style.display = 'none';
-
-        if (data.success) {
-            Swal.fire({
-                icon: "success",
-                title: "Datos enviados con éxito",
-                showConfirmButton: false,
-                timer: 1500
-            });
-
-            setTimeout(() => {
-                const modal = bootstrap.Modal.getInstance(document.getElementById('dynamicEmailModal'));
-                modal.hide();
-                location.reload();
-            }, 1500);
-        } else {
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Hubo un problema al enviar los datos",
-            });
-
-        }
-    })
-    .catch(error => {
-
-        document.getElementById('loadingSpinner').style.display = 'none';
-        console.error('Error:', error);
-        Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Ocurrió un error al enviar los datos",
-            });
-    });
-}
-
-
-</script>
-
-<script>
-var previewLinks = document.querySelectorAll('.registro-preview-link');
-
-previewLinks.forEach(function(link) {
-    link.addEventListener('click', function(event) {
-        event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
-
-        var protocoloId = parseInt(this.getAttribute('data-protocolo-id')); // Convertir a número
-
-        // Hacer una solicitud AJAX a la vista de Django para obtener los datos
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/vista_previa_reaccinacion/' + protocoloId, true);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                var data = JSON.parse(xhr.responseText);
-
-                // Seleccionar el contenedor para mostrar los datos
-                var previewDataElement = document.getElementById('registroPreviewData');
-                previewDataElement.innerHTML = ''; // Limpiar contenido previo
-
-                data.registros.forEach(function(registro) {
-                    previewDataElement.innerHTML += 
-                        '<p><strong>Profesional Anterior:</strong> ' + registro.Profesional_N + ' '+ registro.Profesional_N_1  +'</p>' +
-                        '<p><strong>Objeto:</strong> ' + registro.Motivo + '</p>' +
-                        '<p><strong>Fecha:</strong> ' + registro.Fecha + '</p>' +
-                        '<hr>';
-                });
-
+        if (nuevoLimite === 'P') {
+            if (profesional !== undefined && profesional !== null && profesional !== '') {
                 // Mostrar el modal
-                $('#registroPreviewModal').modal('show');
-            }
-        };
-        xhr.send();
-    });
-});
-
-</script>
-
-<script>
-        const resetLinks = document.querySelectorAll('.reset-link');
-
-        resetLinks.forEach(link => {
-            link.addEventListener('click', function (e) {
-                e.preventDefault(); // Evita que el enlace recargue la página
-
-                const solicitudId = this.dataset.id; // Obtén el ID de la solicitud
-                const url = '/resert_limite/'; // URL de tu vista Django
-
-                fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCSRFToken() // Función para obtener el token CSRF
-                    },
-                    body: JSON.stringify({ id: solicitudId }) // Envía el ID en formato JSON
-                })
-                .then(response => {
-                    if (response.ok) {
-                        
-                        return response.json();
+                var now = new Date();
+                var today = now.toISOString().slice(0, 16); // Formato compatible con datetime-local
+                $("#fechaNueva").val(today); // Setear fecha y hora actual en el input
+                $("#Nueva_fecha_Designio").modal('show');
+    
+                // Manejar el botón de guardar
+                $("#guardarFecha").off("click").on("click", function () {
+                    var fechaSeleccionada = new Date($("#fechaNueva").val());
+                    var dia = fechaSeleccionada.getDay(); // 0 = Domingo, 6 = Sábado
+    
+                    if (dia === 0 || dia === 6) {
+                        $("#errorFecha").show(); // Mostrar mensaje de error
                     } else {
-                        throw new Error('Error al resetear la solicitud.');
+                        $("#errorFecha").hide(); // Ocultar mensaje de error
+    
+                        $.ajax({
+                            url: "{% url 'actualizar_limite' %}",
+                            type: "POST",
+                            data: {
+                                solicitud_id: solicitudId,
+                                nuevoLimite: nuevoLimite,
+                                fecha: fechaSeleccionada.toISOString(),
+                                csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+                            },
+                            success: function (response) {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Fecha y límite actualizados correctamente",
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                $("#Nueva_fecha_Designio").modal('hide'); // Cerrar el modal
+                                setTimeout(() => {
+                                    location.reload();
+                                    }, 1000);
+                            },
+                            error: function (xhr, status, error) {
+                                alert("Error al actualizar el límite:", error);
+                            }
+                        });
                     }
-                })
-                .then(data => {
+                });
+            } else {
+                alert("Debe seleccionar un profesional válido.");
+            }
+        } else {
+            // Lógica normal para otros valores de nuevoLimite
+            $.ajax({
+                url: "{% url 'actualizar_limite' %}",
+                type: "POST",
+                data: {
+                    solicitud_id: solicitudId,
+                    nuevoLimite: nuevoLimite,
+                    csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+                },
+                success: function (response) {
                     Swal.fire({
                         icon: "success",
-                        title: data.message,
+                        title: "Estado actualizado correctamente",
                         showConfirmButton: false,
                         timer: 1500
                     });
                     setTimeout(() => {
                         location.reload();
-                    }, 1500);
-                })
-                .catch(error => {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Hubo un problema al procesar la solicitud",
-                    });
-
-                });
+                        }, 1500);
+                },
+                error: function (xhr, status, error) {
+                    alert("Error al actualizar el estado:", error);
+                }
+            });
+        }
+    });
+    
+    });
+    
+        $(".estado-select").change(function() {
+            var solicitudId = $(this).data('solicitud-id');
+            var nuevoEstado = $(this).val();
+    
+            console.log(nuevoEstado)
+            // Realizar la solicitud AJAX para actualizar el estado
+            $.ajax({
+                url: "{% url 'actualizar_estado' %}",
+                type: "POST",
+                data: {
+                    solicitud_id: solicitudId,
+                    estado: nuevoEstado,
+                    csrfmiddlewaretoken: "{{ csrf_token }}"
+                },
+                success: function(response) {
+                    // Manejar la respuesta exitosa si es necesario
+                    setTimeout(() => {
+             
+                    location.reload();
+    
+                    }, 1000);
+                    console.log("Estado actualizado correctamente");
+                },
+                error: function(xhr, status, error) {
+                    // Manejar el error si es necesario
+                    console.error("Error al actualizar el estado:", error);
+                }
             });
         });
-
-        // Función para obtener el token CSRF
-        function getCSRFToken() {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.startsWith('csrftoken=')) {
-                    return cookie.substring('csrftoken='.length, cookie.length);
+    
+        $(".profesional-select").change(function() {
+        var solicitudId = $(this).data('solicitud-id');
+        var nuevoProfesional = $(this).val();
+        var antProfesional = $(this).data('antiguo-profesional');
+        console.log(antProfesional)
+        // Verificar si el profesional anterior está vacío o es None
+        if (!antProfesional || antProfesional === "None") {
+            // Si el profesional anterior es None o vacío, solo actualizar directamente
+            actualizarProfesional(solicitudId, nuevoProfesional);
+        } else {
+            // Si hay un profesional anterior, mostrar el modal para el motivo
+            $("#nuevo_profesional_id").val(nuevoProfesional);
+            $("#solicitud_id").val(solicitudId);
+            $("#registro_De_Designio").modal("show");
+        }
+    });
+    
+        // Función para actualizar el profesional sin motivo
+        function actualizarProfesional(solicitudId, nuevoProfesional) {
+            var csrfToken = '{{ csrf_token }}';
+    
+            $.ajax({
+                url: "{% url 'actualizar_profesional' %}",
+                type: "POST",
+                data: {
+                    solicitud_id: solicitudId,
+                    profesional: nuevoProfesional,
+                    csrfmiddlewaretoken: csrfToken
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $("#response-message").html('<div class="alert alert-success">Profesional actualizado correctamente sin motivo</div>');
+                    } else {
+                        $("#response-message").html('<div class="alert alert-danger">Error al actualizar el profesional</div>');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $("#response-message").html('<div class="alert alert-danger">Ocurrió un error al actualizar el profesional</div>');
+                    console.error("Error al actualizar el profesional:", error);
                 }
+            });
+        }
+    
+        // Al hacer clic en "Guardar motivo" en el modal
+        $("#guardarMotivo").click(function() {
+            var motivo = $("#motivo").val();
+            var solicitudId = $("#solicitud_id").val();
+            var nuevoProfesional = $("#nuevo_profesional_id").val();
+            var csrfToken = '{{ csrf_token }}';
+    
+            if (!motivo) {
+                alert("Debe ingresar el motivo del cambio.");
+                return;
             }
-            return '';
-        };
+    
+            $.ajax({
+                url: "{% url 'actualizar_profesional' %}",
+                type: "POST",
+                data: {
+                    solicitud_id: solicitudId,
+                    profesional: nuevoProfesional,
+                    motivo: motivo,
+                    csrfmiddlewaretoken: csrfToken
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $("#response-message").html('<div class="alert alert-success">Profesional y motivo actualizados correctamente</div>');
+                        location.reload();
+    
+                    } else {
+                        $("#response-message").html('<div class="alert alert-danger">Error al actualizar el profesional</div>');
+                    }
+                    $("#registro_De_Designio").modal("hide");
+                },
+                error: function(xhr, status, error) {
+                    $("#response-message").html('<div class="alert alert-danger">Ocurrió un error al actualizar el profesional</div>');
+                    console.error("Error al actualizar el profesional:", error);
+                    $("#registro_De_Designio").modal("hide");
+                }
+            });
+        });
+        
+        var previewLinks = document.querySelectorAll('.preview-link');
+        previewLinks.forEach(function(link) {
+          link.addEventListener('click', function(event) {
+            event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+        
+            var registroId = parseInt(this.getAttribute('data-id')); // Convertir a número
+        
+            // Hacer una solicitud AJAX a la vista de Django para obtener los datos del registro
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/solicitud/vista_previa/' + registroId, true);
+            xhr.onreadystatechange = function() {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText);
+        
+                var previewDataElement = document.getElementById('previewData');
+                previewDataElement.innerText =   'Fecha de la Solicitud: ' + data.fecha
+                                               + '\n'
+                                               + '\nCodigo: ' + data.codigo
+                                               + '\n'
+                                               + '\nDirección: ' + data.direccion
+                                               + '\n'
+                                               + '\nDepartamento o Unidad Responsable: ' + data.departamento
+                                               + '\n'
+                                               + '\nNombre del solicitante: ' + data.nombre_solicitante
+                                               + '\n'
+                                               + '\nNombre del proyecto: ' + data.nombre_proyecto
+                                               + '\n'
+                                               + '\nCorreo del solicitante: ' + data.corre_solicitante
+                                               + '\n'
+                                               + '\nArea De estudio: ' + data.area
+                                               + '\n'
+                                               + '\nObjetivos de la solicitud:' + data.objetivos
+                                               + '\n'
+                                               + '\nInsumo Solicitado: ' + data.insumo
+                                               + '\n'
+                                               + '\nProductos: ' + data.productos
+                                               + '\n'
+                                               + '\nCambios posible en el Insumo Entregado: ' + data.Cambios
+                                               + '\n';
+                                               
+                                               if (data.archivos_adjuntos_urls && data.archivos_adjuntos_urls.length > 0) {
+            // Agregar enlaces a los archivos adjuntos si existen
+            previewDataElement.innerHTML += '<br><br><strong>Archivos Adjuntos:</strong><br>';
+            data.archivos_adjuntos_urls.forEach(function(url) {
+                previewDataElement.innerHTML += '<a href="' + url + '" download>' + url.split('/').pop() + '</a><br>';
+            });
+        } else {
+            // Manejar el caso en el que no hay archivos adjuntos
+            previewDataElement.innerHTML += '<br><br>No hay archivos adjuntos disponibles';
+        }
+        
+        
+          
+                $('#previewModal').modal('show'); // Mostrar el modal utilizando jQuery
+              }
+            };
+            xhr.send();
+          });
+        });
+</script>
+
+<script src="/static/js/solicitud_llegadas.js">
+
 </script>
 
 {% endblock custom_js %}

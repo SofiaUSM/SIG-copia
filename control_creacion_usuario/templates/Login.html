@@ -1,58 +1,60 @@
-{% extends 'core/Slide.html' %}
 
 {% load static %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}" />
 
-{% block main_content %}
-  {% block custom_css %}
-    <!-- Link al CSS específico de Login -->
-    <link href="{% static 'css/Login.css' %}" rel="stylesheet" />
-  {% endblock %}
-  <section class="container">
-    <!-- Contenido del Formulario de Login -->
-    <div class="flex-column-red">
-      <div class="flex-row-content p-1">
-        <div class="flex-row-dashboard fill-available">
-          <div class="flex-column-gap fill-available">
-            <div class="info-box p-1 fill-available">
-              <form action="{% url 'core_login' %}" method="POST" class="form-neumorphism">
-                {% csrf_token %}
 
-                <h1 class="h3 mb-3 fw-normal text-light">Iniciar sesión</h1>
+  <style ></style>
 
-                <div class="form-floating mb-3">
-                  <input type="text" class="form-control text-black" id="email" name="email" placeholder="nombre.ejemplo.com" required />
-                  <label for="email" style="color: black;">Usuario</label>
-                </div>
+  <div class="container">
 
-                <div class="form-floating mb-4 position-relative">
-                  <input type="password" class="form-control text-black" id="password" name="password" placeholder="Contraseña" required />
-                  <label for="password" class="text-black">Contraseña</label>
-                  <span class="position-absolute" style="right: 15px; top: 15px; cursor: pointer;" onclick="togglePassword()"><i class="bi bi-eye" style="color: black;" id="togglePasswordIcon"></i></span>
-                </div>
+    <img src="/media/assets/image/LOGO- PORTAL.png" alt="" class="logo">
 
-                <!-- Botón Neumórfico Adaptado -->
-                <button type="submit" class="w-100 btn-neumorphic green white-bg btn-lg">Iniciar sesión</button>
-              </form>
-            </div>
-          </div>
-        </div>
+    <h1> PORTAL SIG</h1>
+    
+  
+
+  <div class="wrapper">
+
+    <form action="{% url 'core_login' %}" method="POST" >
+      {% csrf_token %}
+
+      <h2>Iniciar Sección </h2>
+        <div class="input-field">
+        <input type="text" id="email" name="email" required >
+        <label>Usuario</label>
       </div>
-    </div>
-  </section>
-  <!-- Mostrar Mensajes de Error (si existen) -->
-  {% if messages %}
+      <div class="input-field">
+        <input type="password" id="password" name="password" required>
+        <label>Contraseña</label>
+      </div>
+   
+      <button type="submit">Ingresar</button>
+      
+    </form>
+  </div>
+    <br>
+    <br>
+    {% if messages %}
+  <div class="wrapper-error">
+
     <div class="alert alert-danger">
       {% for message in messages %}
         {{ message }}
       {% endfor %}
     </div>
+  </div>
   {% endif %}
+ 
 
-  {% block custom_js %}
+
+</div>
+
+  
+  <!-- Mostrar Mensajes de Error (si existen) -->
+
+
     <!-- Link al JS específico de Login -->
-    <script src="{% static 'js/Login.js' %}"></script>
-  {% endblock %}
-{% endblock %}
+    <!-- <script src="{% static 'js/Login.js' %}"></script> -->
 
 
 

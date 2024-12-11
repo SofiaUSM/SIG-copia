@@ -156,7 +156,7 @@ def solicitude_llegadas(request, dia_p=None):
                 
 
                 if dias_habiles_restantes > 1:
-                    dias_restantes = f"Te quedan {dias_habiles_restantes} días hábiles"
+                    dias_restantes = f"Te quedan {dias_habiles_restantes-1} días hábiles"
                 elif horas_restantes > 0:
                     dias_restantes = f"Te quedan {horas_restantes} horas y {minutos_restantes} minutos"
                 else:
@@ -185,7 +185,7 @@ def calcular_dias_habiles(fecha_inicio, fecha_fin):
 
     while dia_actual <= fecha_fin:
         # Si el día actual no es sábado (5) ni domingo (6), lo contamos
-        if dia_actual.weekday() < 4:  # 0 = Lunes, ..., 4 = Viernes
+        if dia_actual.weekday() < 5:  # 0 = Lunes, ..., 4 = Viernes
             dias_habiles += 1
         dia_actual += timedelta(days=1)
     
@@ -680,7 +680,7 @@ def Envio_de_correo(request):
             # Generar PDF (opcional, según tu lógica)
             buffer = Generar_PDF(ficha_id)
             
-            superusers = User.objects.filter(is_superuser=True).values_list('email', flat=True)
+            superusers = User.objects.filter(is_superuser=True).exclude(username="osvaldo.moya").values_list('email', flat=True)
             superuser_emails = list(superusers)
 
 

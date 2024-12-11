@@ -588,7 +588,7 @@ def Envio_de_correo(request):
 
             # Configuración del correo
             
-            superusers = User.objects.filter(is_superuser=True, ).exclude(username=user.username).values_list('email', flat=True)
+            superusers = User.objects.filter(is_superuser=True).exclude(username="osvaldo.moya").values_list('email', flat=True)
             superuser_emails = list(superusers)
             
             mi_coreo = f'{user.username}@munivalpo.cl'

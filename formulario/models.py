@@ -31,6 +31,7 @@ LIMITE_DE_DIA ={
 
 DIRECCION ={
     ('',''),
+    ('Gabinete','Gabinete'),
     ('Administración Municipal','Administración Municipal'),
     ('Dirección de Desarrollo Comunitario','Dirección de Desarrollo Comunitario'),
     ('Dirección de Obras Municipales','Dirección de Obras Municipales'),
@@ -100,6 +101,41 @@ class ProtocoloSolicitud(models.Model):
 class ArchivoProtocolo(models.Model):
     protocolo = models.ForeignKey(ProtocoloSolicitud, on_delete=models.CASCADE, related_name='archivos')
     archivo = models.FileField(upload_to=content_file_name_adjunto)
+
+    class Meta:
+        verbose_name = "archivo_protocolo"
+        verbose_name_plural = "archivos_protocolo"
+
+    def __str__(self):
+        return str(self.protocolo.id) + ' - ' + str(self.id)
+    
+
+def content_file_link_adjunto(instance, filename):
+    # Extraer la extensión del archivo original
+    ext = filename.split('.')[-1]
+    
+    # Carpeta específica basada en el ID del objeto
+    folder = f"assets/document/correo/{instance.protocolo.id}/"
+    
+    # Base name del archivo
+    base_filename = "adjunto"
+    
+    # Ruta completa del archivo inicial
+    file_path = os.path.join(folder, f"{base_filename}.{ext}")
+
+    # Verificar si ya existe un archivo con el mismo nombre
+    counter = 1
+    while os.path.exists(os.path.join(folder, file_path)):
+        # Crear una versión con un sufijo incremental
+        file_path = os.path.join(folder, f"{base_filename}_{counter}.{ext}")
+        counter += 1
+
+    return file_path
+
+
+class Archivo_Link(models.Model):
+    protocolo = models.ForeignKey(ProtocoloSolicitud, on_delete=models.CASCADE, related_name='archivos_link')
+    archivo = models.FileField(upload_to=content_file_link_adjunto)
 
     class Meta:
         verbose_name = "archivo_protocolo"

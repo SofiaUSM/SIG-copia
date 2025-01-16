@@ -85,10 +85,10 @@ DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.postgresql_psycopg2',
         'NAME':'departamento_sig_c',
-        'USER':'departamento_sig_c',
-        'PASSWORD':'Sigcontrol2023',
+        'USER':'postgres',
+        'PASSWORD':'facil1234',
         'HOST':'localhost',
-        'PORT':'5432',
+        'PORT':'5433',
     }
 }
 

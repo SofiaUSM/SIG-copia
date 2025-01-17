@@ -34,11 +34,11 @@
 
         body {
             font-family: 'Ysabeau', sans-serif;
-            background: linear-gradient(to top left, #D4E9D7, #B0D8B5, #A9C9E3, #D6E9F7);
-            background-size: 400% 400%; /* Amplía el área para la animación */
+            background: linear-gradient(to top left, #c8f5d0, #eeffd8, #ffeecf, #c7e0f1, #1975b6);
+            background-size: 800% 800%; /* Amplía el área para la animación */
             background-repeat: no-repeat;
             background-attachment: fixed;
-            animation: gradient 17s ease infinite; /* Animación suave */
+            animation: gradient 20s ease infinite; /* Animación suave */
             min-height: 100vh;
             color: rgb(0, 0, 0);
             margin: 0;
@@ -54,8 +54,8 @@
             flex-wrap: wrap;
             border-radius: 15px;
             overflow: hidden; /* Evita el desbordamiento */
-            background-color: rgba(255, 255, 255, 0.4); /* Fondo blanco semitransparente */
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.3); /* Fondo blanco semitransparente */
+            box-shadow: 4px 8px 12px rgba(0, 0, 0, 0.1);
         }
 
         
@@ -70,16 +70,17 @@
             padding: 1rem;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; 
+            justify-content: center; 
             align-items: flex-start;
-            padding-bottom: 80px;
             flex-grow: 1;
         }
 
         .card-body p {
+            font-family: 'Helvetica', sans-serif;
             margin: 0; /* Elimina márgenes innecesarios */
             line-height: 1.6; /* Mejora la legibilidad del texto */
             font-size: 18px;
+            
         }
 
 
@@ -141,13 +142,13 @@
 
 
         .service-item span {
-            font-size: 1.1rem;
+            font-size: 20px;
             transition: font-size 0.3s ease;
              /* Cambia gradualmente el tamaño del texto */
         }
 
         .service-item:hover span {
-            font-size: 1.2rem; /* Aumenta ligeramente el tamaño del texto */
+            font-size: 25px; /* Aumenta ligeramente el tamaño del texto */
             color: var(--color-let); /* Cambia el color del texto */
         }
 
@@ -186,10 +187,10 @@
             <h1 class="text-center mb-5">DEPARTAMENTO SIG</h1>
             
             
-            <div class="service-grid mb-5">
+            <b><div class="service-grid mb-5">
                 <a href="{% url 'arcgis' %}?departamento={{ departamento_seleccionado }}" target="_blank" class="service-item text-decoration-none">
                     <i class="fa-solid fa-laptop icon-color"></i>
-                    <span class="d-block">Plataformas SIG</span>
+                    <span class="d-block">Plataformas <br> SIG</span>
                 </a>
                 <a href="{% url 'SS' %}" target="_blank" class="service-item text-decoration-none">
                     <i class="fa-regular fa-pen-to-square icon-color"></i>
@@ -197,7 +198,7 @@
                 </a>
                 <a href="#" class="service-item text-decoration-none" data-bs-toggle="modal" data-bs-target="#timeManagementModal">
                     <i class="fa-regular fa-calendar icon-color"></i>
-                    <span class="d-block">Gestión de Tiempo</span>
+                    <span class="d-block">Gestión de <br> Tiempo</span>
                 </a>
                 <a href="{% url 'gestionsig' %}" target="_blank" class="service-item text-decoration-none">
                     <i class="fa-regular fa-handshake icon-color"></i>
@@ -211,16 +212,22 @@
                     <i class="fa-solid fa-earth-americas icon-color"></i>
                     <span class="d-block">Geoportal Valparaíso</span>
                 </a>
-            </div>
+            </div></b>
 
-            <div class="card mb-3">
-                <div class="row g-0">
+            <div class="card mb-3" style="border: none;">
+                <div class="row g-1">
                     <div class="col-md-2"> <!-- La imagen ocupa la mitad -->
                         <img src="/media/assets/image/3.jpg" class="GEO DATA" alt="...">
                     </div>
                     <div class="col-md-10"> <!-- El texto ocupa la otra mitad -->
                         <div class="card-body">
-                            <p class="card-text">Bienvenid@ a la plataforma que brinda acceso a una amplia gama de datos georreferenciados de nuestra comuna. Estos datos son fundamentales para la planificación urbana. En nuestro Departamento de Sistema de Información Geográfica, nos esforzamos por mantener y mejorar continuamente la calidad de los datos georreferenciados. Trabajamos en conformidad con estándares internacionales reconocidos en geodatos, siguiendo rigurosos procedimientos de captura, validación y actualización de la información.</p>
+                            <p class="card-text">
+                                Bienvenid@ a la plataforma que brinda acceso a una amplia gama de datos georreferenciados de nuestra comuna; estos datos son fundamentales para la planificación urbana.
+                            </p>
+                        <br>
+                            <p class="card-text">
+                                En nuestro departamento de Sistema de Información Geográfica, nos esforzamos por mantener y mejorar continuamente la calidad de los datos georreferenciados. Trabajamos en conformidad con estándares internacionales reconocidos en geodatos, siguiendo rigurosos procedimientos de captura, validación y actualización de la información.
+                            </p>
                         </div>
                     </div>
                 </div>

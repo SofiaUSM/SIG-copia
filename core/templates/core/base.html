@@ -21,22 +21,37 @@
     
     <style>
         :root {
-            --color-primary: #B2EF9B;
-            --color-secondary: #436fe9;
-            --color-accent: #8cc7a1;
-            --color-dark: #0a205f;
-            --color-darker: #1B3022;
-            --color-let: #22381E;
+            --color-primary: #A9E5BB; /* Verde claro */
+            --color-secondary: #8FD19E; /* Verde intermedio */
+            --color-accent: #74C69D; /* Verde intenso */
+            --color-nodark: #57A7C6; /* Azul suave */
+            --color-dark: #0A3568; /* Azul oscuro */
+            --color-darker: #054A91; /* Azul profundo */
+            --color-let: #1B3D2F; /* Verde oscuro */
         }
 
+
         body {
-            font-family: Vegur, 'PT Sans', Verdana, sans-serif;
-            background: linear-gradient(to top left, var(--color-secondary), var(--color-accent), var(--color-primary));
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(
+                to top left, 
+                var(--color-dark), 
+                var(--color-darker), 
+                var(--color-nodark), 
+                var(--color-accent), 
+                var(--color-secondary), 
+                var(--color-primary)
+            );
+            background-size: 400% 400%; /* Amplía el área para la animación */
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            animation: gradient 20s ease infinite; /* Animación suave */
             min-height: 100vh;
             color: rgb(0, 0, 0);
+            margin: 0;
         }
+
+
 
         @keyframes gradient {
             0% { background-position: 0% 50%; }
@@ -51,7 +66,7 @@
 
         h1 {
             font-size: 3rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.5);
         }
 
         .service-grid {
@@ -61,6 +76,7 @@
         }
 
         .service-item {
+            color: #64995a;
             background-color: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 15px;
@@ -72,11 +88,29 @@
             justify-content: center;
             align-items: center;
             height: 200px;
+            box-shadow: 0 4px 8px rgba(141, 137, 137, 0.2);
             
         }
 
+        .texto{
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            
+        }
+        
+
         .service-item:hover {
-            background-color: rgba(40, 119, 194, 0.5);
+            background-color: rgba(255, 255, 255, 0.473);
             transform: translateY(-15px)scale(1.1);
         }
 
@@ -87,6 +121,10 @@
             transition: color 0.3s ease;
         }
 
+        .icon-color {
+        color: #22381E; /* Cambia a tu color preferido (ejemplo: azul) */
+        font-size: 30px;
+    }
         .service-grid .service-item:hover i {
             color: var(--color-accent);
         }
@@ -130,34 +168,34 @@
             
             <div class="service-grid mb-5">
                 <a href="{% url 'arcgis' %}?departamento={{ departamento_seleccionado }}" target="_blank" class="service-item text-decoration-none">
-                    <i class="fa-solid fa-laptop"></i>
+                    <i class="fa-solid fa-laptop icon-color"></i>
                     <span class="d-block">Plataformas SIG</span>
                 </a>
-                <a href="{% url 'SS' %}" target="_blank" class="service-item text-decoration-none text-white">
-                    <i class="fa-regular fa-pen-to-square"></i>
+                <a href="{% url 'SS' %}" target="_blank" class="service-item text-decoration-none">
+                    <i class="fa-regular fa-pen-to-square icon-color"></i>
                     <span class="d-block">Solicitud SIG</span>
                 </a>
-                <a href="#" class="service-item text-decoration-none text-white" data-bs-toggle="modal" data-bs-target="#timeManagementModal">
-                    <i class="fa-regular fa-calendar"></i>
+                <a href="#" class="service-item text-decoration-none" data-bs-toggle="modal" data-bs-target="#timeManagementModal">
+                    <i class="fa-regular fa-calendar icon-color"></i>
                     <span class="d-block">Gestión de Tiempo</span>
                 </a>
-                <a href="{% url 'gestionsig' %}" target="_blank" class="service-item text-decoration-none text-white">
-                    <i class="fa-regular fa-handshake"></i>
+                <a href="{% url 'gestionsig' %}" target="_blank" class="service-item text-decoration-none">
+                    <i class="fa-regular fa-handshake icon-color"></i>
                     <span class="d-block">Gestión SIG</span>
                 </a>
-                <a href="https://drive.google.com/file/d/1Rx3FDBdR3vndG1NsleuOQb_p1SM1Km6z/view?usp=drive_link" target="_blank" class="service-item text-decoration-none text-white">
-                    <i class="fa-regular fa-file"></i>
+                <a href="https://drive.google.com/file/d/1Rx3FDBdR3vndG1NsleuOQb_p1SM1Km6z/view?usp=drive_link" target="_blank" class="service-item text-decoration-none">
+                    <i class="fa-regular fa-file icon-color"></i>
                     <span class="d-block">Manual de Procedimientos Solicitudes SIG</span>
                 </a>
-                <a href="https://geoportal-sistema-de-informacion-geografica-munivalpo.hub.arcgis.com/" target="_blank" class="service-item text-decoration-none text-white">
-                    <i class="fa-solid fa-earth-americas"></i>
+                <a href="https://geoportal-sistema-de-informacion-geografica-munivalpo.hub.arcgis.com/" target="_blank" class="service-item text-decoration-none">
+                    <i class="fa-solid fa-earth-americas icon-color"></i>
                     <span class="d-block">Geoportal Valparaíso</span>
                 </a>
             </div>
 
             <div class="row justify-content-center">
                 <div class="col-md-10">
-                    <p class="text-center fs-5">
+                    <p class="texto text-center fs-6">
                         Bienvenid@ a la plataforma que brinda acceso a una amplia gama
                         de datos georreferenciados de nuestra comuna. Estos datos son
                         fundamentales para la planificación urbana. En nuestro Departamento

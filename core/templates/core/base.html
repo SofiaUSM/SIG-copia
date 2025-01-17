@@ -27,30 +27,59 @@
             --color-nodark: #57A7C6; /* Azul suave */
             --color-dark: #0A3568; /* Azul oscuro */
             --color-darker: #054A91; /* Azul profundo */
-            --color-let: #1B3D2F; /* Verde oscuro */
+            --color-let: #153522; /* Verde oscuro */
         }
 
 
         body {
-            font-family: 'Open Sans', sans-serif;
-            background: linear-gradient(
-                to top left, 
-                var(--color-dark), 
-                var(--color-darker), 
-                var(--color-nodark), 
-                var(--color-accent), 
-                var(--color-secondary), 
-                var(--color-primary)
-            );
+            font-family: 'Ysabeau', sans-serif;
+            background: linear-gradient(to top left, #D4E9D7, #B0D8B5, #A9C9E3, #D6E9F7);
             background-size: 400% 400%; /* Amplía el área para la animación */
             background-repeat: no-repeat;
             background-attachment: fixed;
-            animation: gradient 20s ease infinite; /* Animación suave */
+            animation: gradient 17s ease infinite; /* Animación suave */
             min-height: 100vh;
             color: rgb(0, 0, 0);
             margin: 0;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .card {
+            max-width: auto; /* Asegura que la tarjeta ocupe el ancho completo */
+            width: auto; /* Ajusta el tamaño según sea necesario */
+            height: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            border-radius: 15px;
+            overflow: hidden; /* Evita el desbordamiento */
+            background-color: rgba(255, 255, 255, 0.4); /* Fondo blanco semitransparente */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
+        
+
+        .card img {
+            max-width: 100%; /* Asegura que la imagen no se salga del contenedor */
+            height: 100%; /* Mantiene la relación de aspecto */
+            object-fit: cover; /* Cubre el área disponible sin distorsionar la imagen */
+            }
+
+        .card-body {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; 
+            align-items: flex-start;
+            padding-bottom: 80px;
+            flex-grow: 1;
+        }
+
+        .card-body p {
+            margin: 0; /* Elimina márgenes innecesarios */
+            line-height: 1.6; /* Mejora la legibilidad del texto */
+            font-size: 18px;
+        }
 
 
         @keyframes gradient {
@@ -65,8 +94,10 @@
         }
 
         h1 {
+            font-family: 'Ysabeau', sans-serif;
             font-size: 3rem;
-            text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.5);
+            text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+            font-weight: bold;
         }
 
         .service-grid {
@@ -76,66 +107,51 @@
         }
 
         .service-item {
-            color: #64995a;
+            color: var(--color-let);
             background-color: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
             border-radius: 15px;
             padding: 1rem;
             text-align: center;
-            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 200px;
             box-shadow: 0 4px 8px rgba(141, 137, 137, 0.2);
-            
-        }
-
-        .texto{
-            background-color: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 1rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 200px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            overflow: hidden;
             
         }
         
 
         .service-item:hover {
             background-color: rgba(255, 255, 255, 0.473);
-            transform: translateY(-15px)scale(1.1);
-        }
-
-        .service-grid .service-item i {
-            font-size: 3rem;
-            color: var(--color-dark);
-            margin-bottom: 1rem;
-            transition: color 0.3s ease;
+            transform: translateY(-10px) scale(1.05);
+            backface-visibility: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
         .icon-color {
-        color: #22381E; /* Cambia a tu color preferido (ejemplo: azul) */
-        font-size: 30px;
-    }
-        .service-grid .service-item:hover i {
-            color: var(--color-accent);
+            color: #22381E; 
+            font-size: 30px;
+            transition: transform 0.3s ease, font-size 0.3s ease;
+
         }
+
 
         .service-item span {
             font-size: 1.1rem;
-            transition: color 0.3s ease;
+            transition: font-size 0.3s ease;
+             /* Cambia gradualmente el tamaño del texto */
         }
 
         .service-item:hover span {
-            color: var(--color-let);
+            font-size: 1.2rem; /* Aumenta ligeramente el tamaño del texto */
+            color: var(--color-let); /* Cambia el color del texto */
+        }
+
+        .service-item:hover .icon-color {
+            transform: scale(1.2); /* Aumenta el tamaño del icono con el contenedor */
         }
 
         .modal-content {
@@ -193,22 +209,22 @@
                 </a>
             </div>
 
-            <div class="row justify-content-center">
-                <div class="col-md-10">
-                    <p class="texto text-center fs-6">
-                        Bienvenid@ a la plataforma que brinda acceso a una amplia gama
-                        de datos georreferenciados de nuestra comuna. Estos datos son
-                        fundamentales para la planificación urbana. En nuestro Departamento
-                        de Sistema de Información Geográfica, nos esforzamos por mantener y 
-                        mejorar continuamente la calidad de los datos georreferenciados. 
-                        Trabajamos en conformidad con estándares internacionales reconocidos
-                        en geodatos, siguiendo rigurosos procedimientos de captura, validación 
-                        y actualización de la información.
-                    </p>
+            <div class="card mb-3">
+                <div class="row g-0">
+                    <div class="col-md-2"> <!-- La imagen ocupa la mitad -->
+                        <img src="/media/assets/image/3.jpg" class="GEO DATA" alt="...">
+                    </div>
+                    <div class="col-md-10"> <!-- El texto ocupa la otra mitad -->
+                        <div class="card-body">
+                            <p class="card-text">Bienvenid@ a la plataforma que brinda acceso a una amplia gama de datos georreferenciados de nuestra comuna. Estos datos son fundamentales para la planificación urbana. En nuestro Departamento de Sistema de Información Geográfica, nos esforzamos por mantener y mejorar continuamente la calidad de los datos georreferenciados. Trabajamos en conformidad con estándares internacionales reconocidos en geodatos, siguiendo rigurosos procedimientos de captura, validación y actualización de la información.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+                
+        </div>   
     </main>
+
 
     <footer class="footer mt-auto py-3 bg-dark">
         <div class="container text-center">

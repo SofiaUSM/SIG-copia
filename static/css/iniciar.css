@@ -1,5 +1,5 @@
 /* =========================================
-   General Styles
+   General Styles and logo
 ========================================= */
 body {
     background-color: var(--mint-green) !important;
@@ -11,6 +11,17 @@ body {
     color: var(--oxford-blue) !important;
     /* Todo el texto utiliza OXFORD BLUE */
 }
+
+
+.logo-container {
+    position: absolute; /* Lo mantendremos fijo, pero dentro del flujo del contenedor */
+    top: 20px; /* Un pequeño espacio desde la parte superior */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1; /* Asegura que el logo esté por encima del fondo, pero sin cubrir otros contenidos */
+  }
+
+
 
 /* =========================================
    Video Background
@@ -103,38 +114,6 @@ body::after {
     color: ghostwhite;
 }
 
-/* Hover Effect */
-.containerTitle:hover {
-    background: rgb(255, 255, 255);
-    /* Fondo blanco */
-    border: 2px solid rgb(200, 200, 200);
-    /* Borde gris claro */
-    background-color: #dfdfdff2;
-    /* Fondo gris claro */
-    /* Mantenemos border-radius y width */
-    color: var(--oxford-blue);
-}
-
-/* Hover Effect */
-
-
-
-
-
-
-/* Animations */
-.firstAnimation.secondAnimation.containerTitle {
-    --hoverContorno: #959595;
-}
-
-.firstAnimation.secondAnimation.containerTitle:hover,
-.firstAnimation.secondAnimation.containerTitle:focus {
-    animation: cardAnimacion 1.4s;
-    box-shadow: 0 0 0 0.8em rgba(255, 255, 255, 0);
-    border-radius: 20px;
-    /* Asegura que los bordes redondeados se mantengan */
-}
-
 /* Keyframes for Animation */
 @-webkit-keyframes cardAnimacion {
     0% {
@@ -207,8 +186,8 @@ body::after {
     box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
 }
 
-.containerTitle:hover .button-grey {
-    background: rgba(22, 35, 62, 0.50);    
+.button-grey:hover {
+    background: rgb(9, 33, 83);    
     color:ghostwhite;
 }
 

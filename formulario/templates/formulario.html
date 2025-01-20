@@ -11,28 +11,22 @@
     
     <style>
         /* Logo */
-        .logo {
-            max-width: 200px;  /* Ajusta el tamaño del logo para pantallas grandes */
-            height: auto;
-            margin: 0 auto;
-            display: block;
-        }
-
         /* Aseguramos que el contenedor del logo sea centrado */
         .logo-container {
             display: flex;
             justify-content: center;
             align-items: center;
         }
-
+        
         h1 {
             font-family: 'Ysabeau', sans-serif;
             text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
         }
+        
     </style>
-    <header class="py-3 mx-auto" style="background-color: #212529;">
+    <header class="py-0" style="background-color: #212529; box-shadow: 2px 8px 10px rgba(0, 0, 0, 0.4);">
         <div class="logo-container">
-            <img src="/media/assets/image/logosig.png" alt="Municipio Valparaíso Logo" class="logo">
+            <img src="/media/assets/image/version-negativo-caluga-logoSIG.png"  height="200" alt="Municipio Valparaíso Logo" class="logo">
         </div>
     </header>
     
@@ -50,7 +44,7 @@
 <body style="background-color: #e7e7e7;">
     <div class="container py-5">
         <!-- Formulario -->
-        <div id="form-container" class="mx-auto p-3 border-1 rounded" style="background-color: #616161; box-shadow: 0 8px 12px rgba(0, 0, 0, 0.9);">
+        <div id="form-container" class="mx-auto p-1 border-1 rounded" style="background-color: #616161; box-shadow: 1px 2px 16px rgba(0, 0, 0, 0.9);">
             <form method='POST' id="form-guardar-pdf" class="px-3" enctype="multipart/form-data" action="{% url 'crear_protocolo' %}">
                 {% csrf_token %}
                 <h3 class="text-center mb-4" style="color:#000000; margin-top: 20px">Formulario de Protocolo</h3>
@@ -112,11 +106,15 @@
                     <input type="file" name="archivo" multiple="multiple" class="form-control" id="archivo">
                 </div>
 
-                <!-- Botón de envío -->
+
                 <div class="text-center">
-                    <button type="submit" id="btn-guardar-pdf" class="btn btn-primary btn-lg px-5 py-3">Guardar, Descargar y Enviar PDF</button>
-                </div>
-                
+                    <button type="submit" id="btn-guardar-pdf" class="pushable">
+                        <span class="shadow"></span>
+                        <span class="edge"></span>
+                        <span class="front"> Enviar </span>
+                    </button>
+                </div>    
+                                    
                 <!-- Mensaje de información -->
                 <div class="mt-4 text-center" style="font-size: 14px; color: #555;">
                     <label><b>Recibirás una copia en PDF y un código para verificar el estado de la ficha.</b></label>

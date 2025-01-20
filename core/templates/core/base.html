@@ -90,12 +90,6 @@
             100% { background-position: 50% 0%; }
         }
 
-        .logo {
-            max-width: 200px;  /* Ajusta el tamaño del logo para pantallas grandes */
-            height: auto;
-            margin: 0 auto;
-            display: block;
-        }
 
         /* Aseguramos que el contenedor del logo sea centrado */
         .logo-container {
@@ -103,6 +97,8 @@
             justify-content: center;
             align-items: center;
         }
+        
+
 
         h1 {
             font-family: 'Ysabeau', sans-serif;
@@ -166,25 +162,51 @@
         }
 
         .modal-content {
-            background-color: var(--color-darker);
+            background-color: rgba(12, 52, 75, 0.8); /* Azul con opacidad del 50% */
             color: white;
         }
 
-        .btn-primary {
-            background-color: var(--color-primary);
-            border-color: var(--color-primary);
+        /* From Uiverse.io by satyamchaudharydev */ 
+        .buttondep {
+        --bg: #448daa;;
+        --text-color: #fff;
+        position: relative;
+        width: auto;
+        height: 30px;
+        border: none;
+        font-weight: bold; /* Ya está en negrita, asegurándonos de que se aplique */
+        font-family: Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text-color);
+        padding: 1em;
+        font-weight: bold;
+        transition: 0.2s;
+        border-radius: 5px;
+        opacity: 0.8;
+        letter-spacing: 1px;
+        box-shadow: #c6ffcd 0px 3px 2px, #000 0px 8px 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
         }
 
-        .btn-primary:hover {
-            background-color: var(--color-accent);
-            border-color: var(--color-accent);
+        .buttondep:hover {
+        opacity: 1;
         }
+
+        .buttondep:active {
+        top: 4px;
+        box-shadow: #4880c0 0px 3px 2px,#000 0px 3px 5px;
+        }
+
+
     </style>
 </head>
 
-<header class="py-3" style="background-color: #212529;">
+<header class="py-0" style="background-color: #212529; box-shadow: 2px 8px 10px rgba(0, 0, 0, 0.4);">
     <div class="logo-container">
-        <img src="/media/assets/image/logosig.png" alt="Municipio Valparaíso Logo" class="logo">
+        <img src="/media/assets/image/version-negativo-caluga-logoSIG.png" height="200"  alt="Municipio Valparaíso Logo" class="logo">
     </div>
 </header>
 
@@ -245,11 +267,12 @@
     </main>
 
 
-    <footer class="footer mt-auto py-3 bg-dark">
+    <footer class="footer mt-auto py-3" style="background-color: #212529; box-shadow: 2px 8px 20px rgba(0, 0, 0, 0.7);">
         <div class="container text-center">
             <span class="text-muted">&copy; 2025 Ilustre Municipalidad de Valparaíso. Todos los derechos reservados.</span>
         </div>
     </footer>
+    
 
     <!-- Time Management Modal -->
     <div class="modal fade" id="timeManagementModal" tabindex="-1" aria-labelledby="timeManagementModalLabel" aria-hidden="true">
@@ -301,7 +324,7 @@
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="guardarDepartamentoBtn">Guardar</button>
+                    <button type="button" class="buttondep" id="guardarDepartamentoBtn">Guardar</button>
                 </div>
             </div>
         </div>

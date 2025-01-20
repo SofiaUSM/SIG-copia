@@ -7,21 +7,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Protocolo</title>
     <link rel="icon" type="image/x-icon" href="/media/assets/image/iconoSIG.ico" />
-    <header class="bg-dark py-2">
-        <div class="container">
-            <img src="/media/assets/image/logoSIG-colores.png" alt="Municipio Valparaíso Logo" class="logo">
+
+    
+    <style>
+        /* Logo */
+        .logo {
+            max-width: 200px;  /* Ajusta el tamaño del logo para pantallas grandes */
+            height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+
+        /* Aseguramos que el contenedor del logo sea centrado */
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            font-family: 'Ysabeau', sans-serif;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+    <header class="py-3 mx-auto" style="background-color: #212529;">
+        <div class="logo-container">
+            <img src="/media/assets/image/logosig.png" alt="Municipio Valparaíso Logo" class="logo">
         </div>
     </header>
-    <style>
-      .logo {
-      max-width: 120px; /* Ajusta el tamaño del logo a 120px de ancho */
-      height: auto;
-      }
-
-    </style>
-
+    
     <div class="container text-center mt-5">
-        <h1>Protocolo Traspaso de Datos Geoespaciales</h1>
+        <h1 style="color: #030d29; font-weight: bold; ">Protocolo Traspaso de Datos Geoespaciales</h1>
         <br>
     </div>
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
@@ -30,14 +46,14 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 </head>
+
 <body style="background-color: #e7e7e7;">
-  
     <div class="container py-5">
         <!-- Formulario -->
         <div id="form-container" class="mx-auto p-3 border-1 rounded" style="background-color: #616161; box-shadow: 0 8px 12px rgba(0, 0, 0, 0.9);">
             <form method='POST' id="form-guardar-pdf" class="px-3" enctype="multipart/form-data" action="{% url 'crear_protocolo' %}">
                 {% csrf_token %}
-                <h3 class="text-center mb-4" style="color: #20420f; margin-top: 20px">Formulario de Protocolo</h3>
+                <h3 class="text-center mb-4" style="color:#000000; margin-top: 20px">Formulario de Protocolo</h3>
 
                 <!-- Campos de formulario -->
                 <div class="form-group mb-3">
@@ -119,65 +135,84 @@
     <div id="success-message" style="display: none; text-align: center; font-size: 24px;">
         <p>Su formulario se ha enviado correctamente. Esta página se cerrará en breve.</p>
     </div>
-
-    <script>
-        function myFunction() {
-            alert("!!IMPORTANTE!!"
-            +"\nUna vez realizada y enviada la solicitud, la encargada del Departamento SIG (Deisy.Pereira@munivalpo.cl) revisará y asignará la solicitud de acuerdo con los procedimientos establecidos. Lo solicitado se entregará al correo institucional del solicitante.");
-        }
-
-        function cerrarModal() {
-            var modal = document.getElementById("myModal");
-            modal.style.display = "none";
-        }
-
-        const botonGuardarPDF = document.getElementById('btn-guardar-pdf');
-
-        botonGuardarPDF.addEventListener('click', (event) => {
-            if (!validarCampos()) {
-                event.preventDefault(); // Evita el envío del formulario
-                alert('Por favor, complete todos los campos antes de generar el PDF.');
-            } else {
-                setTimeout(() => {
-                    window.close(); // Cierra la ventana actual
-                }, 12000);
-            }
-        });
-
-        function validarCampos() {
-            const formulario = document.forms[0];
-            const direccion = formulario.elements[0].value.trim();
-            const departamento = formulario.elements[1].value.trim();
-            const nombreSolicitante = formulario.elements[2].value.trim();
-            const nombreProyecto = formulario.elements[3].value.trim();
-            const area = formulario.elements[4].value.trim();
-            const objetivos = formulario.elements[5].value.trim();
-            const insumo = formulario.elements[6].value.trim();
-            const producto = formulario.elements[7].value.trim();
-            const cambiosPosible = formulario.elements[8].value.trim();
-
-            // Validar que los campos no estén vacíos
-            if (direccion === '' || departamento === '' || nombreSolicitante === '' ||
-                nombreProyecto === '' || area === '' || objetivos === '' || insumo === '' ||
-                producto === '' || cambiosPosible === '') {
-                return false;
-            }
-
-            return true;
-        }
-
-        document.getElementById('form-guardar-pdf').addEventListener('submit', function(event) {
-            // Evitar el envío del formulario
-            event.preventDefault();
-            // Obtener el contenedor del formulario y el mensaje de éxito
-            var formContainer = document.getElementById('form-container');
-            var successMessage = document.getElementById('success-message');
-
-            // Ocultar el contenedor del formulario y mostrar el mensaje de éxito
-            formContainer.style.display = 'none';
-            successMessage.style.display = 'block';
-            this.submit();
-        });
-    </script>
 </body>
 </html>
+
+{% verbatim %}
+
+<script>
+function myFunction() {
+    alert("!!IMPORTANTE!!"
+    +"\nUna vez realizada y enviada la solicitud, la encargada del Departamento SIG (Deisy.Pereira@munivalpo.cl) revisará y asignará la solicitud de acuerdo con los procedimientos establecidos. Lo solicitado se entregará al correo institucional del solicitante.");
+    }
+
+    function cerrarModal() {
+    var modal = document.getElementById("myModal");
+    modal.style.display = "none";
+    }
+
+    const botonGuardarPDF = document.getElementById('btn-guardar-pdf');
+
+    botonGuardarPDF.addEventListener('click', (event) => {
+    if (!validarCampos()) {
+        event.preventDefault(); // Evita el envío del formulario
+        alert('Por favor, complete todos los campos antes de generar el PDF.');
+    } else {
+
+        setTimeout(() => {
+        window.close(); // Cierra la ventana actual
+        }, 12000);
+    }
+    });
+
+    function validarCampos() {
+    const formulario = document.forms[0];
+
+    // Acceder a los campos por su posición en el formulario
+    const direccion = formulario.elements[0].value.trim();
+    const departamento = formulario.elements[1].value.trim();
+    const nombreSolicitante = formulario.elements[2].value.trim();
+    const nombreProyecto = formulario.elements[3].value.trim();
+    const area = formulario.elements[4].value.trim();
+    const objetivos = formulario.elements[5].value.trim();
+    const insumo = formulario.elements[6].value.trim();
+    const producto = formulario.elements[7].value.trim();
+    const cambiosPosible = formulario.elements[8].value.trim();
+
+    // Validar que los campos no estén vacíos
+    if (
+        direccion === '' ||
+        departamento === '' ||
+        nombreSolicitante === '' ||
+        nombreProyecto === '' ||
+        area === '' ||
+        objetivos === '' ||
+        insumo === '' ||
+        producto === '' ||
+        cambiosPosible === ''
+    ) {
+        return false;
+    }
+
+    return true;
+    }
+    </script>
+    <script>
+    document.getElementById('form-guardar-pdf').addEventListener('submit', function(event) {
+        // Evitar el envío del formulario
+        event.preventDefault();
+        // Obtener el contenedor del formulario y el mensaje de éxito
+        var formContainer = document.getElementById('form-container');
+        var successMessage = document.getElementById('success-message');
+
+        // Ocultar el contenedor del formulario y mostrar el mensaje de éxito
+        formContainer.style.display = 'none';
+        successMessage.style.display = 'block';
+        this.submit();
+    });
+
+    </script>
+
+
+
+{% endverbatim %}

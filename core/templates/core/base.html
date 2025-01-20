@@ -28,17 +28,17 @@
             --color-nodark: #57A7C6; /* Azul suave */
             --color-dark: #0A3568; /* Azul oscuro */
             --color-darker: #054A91; /* Azul profundo */
-            --color-let: #153522; /* Verde oscuro */
+            --color-let: #030d29; /* Verde oscuro */
         }
 
 
         body {
             font-family: 'Ysabeau', sans-serif;
-            background: linear-gradient(to top left, #c8f5d0, #eeffd8, #ffeecf, #c7e0f1, #1975b6);
-            background-size: 800% 800%; /* Amplía el área para la animación */
+            background: linear-gradient(to top left, #5bbd005d, #9fd5ee, #5bbd005d);
+            background-size: 600% 600%; /* Amplía el área para la animación */
             background-repeat: no-repeat;
             background-attachment: fixed;
-            animation: gradient 20s ease infinite; /* Animación suave */
+            animation: gradient 35s ease infinite; /* Animación suave */
             min-height: 100vh;
             color: rgb(0, 0, 0);
             margin: 0;
@@ -91,8 +91,17 @@
         }
 
         .logo {
-            max-width: 200px;
+            max-width: 200px;  /* Ajusta el tamaño del logo para pantallas grandes */
             height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+
+        /* Aseguramos que el contenedor del logo sea centrado */
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         h1 {
@@ -134,7 +143,7 @@
         }
 
         .icon-color {
-            color: #22381E; 
+            color: #030d29; 
             font-size: 30px;
             transition: transform 0.3s ease, font-size 0.3s ease;
 
@@ -149,7 +158,7 @@
 
         .service-item:hover span {
             font-size: 25px; /* Aumenta ligeramente el tamaño del texto */
-            color: var(--color-let); /* Cambia el color del texto */
+            color: #030d29; /* Cambia el color del texto */
         }
 
         .service-item:hover .icon-color {
@@ -173,14 +182,13 @@
     </style>
 </head>
 
-
+<header class="py-3" style="background-color: #212529;">
+    <div class="logo-container">
+        <img src="/media/assets/image/logosig.png" alt="Municipio Valparaíso Logo" class="logo">
+    </div>
+</header>
 
 <body class="d-flex flex-column h-100">
-    <header class="bg-dark py-3">
-        <div class="container">
-            <img src="/media/assets/image/logosig.png" alt="Municipio Valparaíso Logo" class="logo">
-        </div>
-    </header>
 
     <main class="flex-shrink-0">
         <div class="container my-5">
